@@ -1,34 +1,39 @@
 <template>
-    <div>
-      
-       <!-- 渠道信息展示部分 -->
-       
+    <div>    
+       <!-- 渠道信息展示部分 -->       
        <div class="basicMsgTitle">商户信息</div>
        <div class="boxMsg bm">
-          <div class="mags" v-for="(r, index) in msg" :key="index" >{{r.used}}：
-              <span v-if="r.msgs">{{r.msgs}}</span>
-             <img class="logoImg" v-else v-for="(item, index) in r.msgsUrl" :key="index" :src="item" alt="">             
-           </div>
-        </div>
-        <div class="gard1"><Gard /></div>
-        <div class="basicMsgTitle bs">运营信息</div>
-       <div class="boxMsg">
-          <div class="mags" v-for="(r, index) in msg1" :key="index" >{{r.used}}：
-              <span v-if="r.msgs">{{r.msgs}}</span>
-             <img class="logoImg" v-else v-for="(item, index) in r.msgsUrl" :key="index" :src="item" alt="">             
-           </div>
-        </div>
-        <div class="gard1"><Gard /></div>        
-        <div class="basicMsgTitle bs">渠道信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg3" :key="index" >{{r.used}}：<span v-if="r.msgs">{{r.msgs}}</span>
-              <img class="logoImg" v-else :src="r.msgsUrl" alt=""> 
-           </div>
-        </div>
-       
-        <!-- 渠道信息结束 -->
-       
-      
+            <div class="mags">连锁商户编号：{{msg.m1}}</div>
+            <div class="mags">连锁商户名称：{{msg.m2}}</div>
+            <div class="mags">营业执照编号：{{msg.m3}}</div>
+            <div class="mags">营业期限：{{msg.m4}}</div>
+            <div class="mags">营业范围：{{msg.m5}}</div>
+            <div class="mags">营业执照：
+              <img class="logoImg"  v-for="(item, index) in msg.m6" :key="index" :src="item" alt="">
+            </div>
+            <div class="mags">总店地址：{{msg.m7}}</div>
+            <div class="mags">详细地址：{{msg.m8}}</div>
+            <div class="mags">法人姓名：{{msg.m9}}</div>
+            <div class="mags">身份证号：{{msg.m10}}</div>   
+       </div>
+       <div class="gard1"><Gard /></div>
+       <div class="basicMsgTitle bs">运营信息</div>
+       <div class="boxMsg">         
+            <div class="mags">联系人：{{msg.m11}}</div>
+            <div class="mags">联系电话：{{msg.m12}}</div>
+            <div class="mags">电子邮箱：{{msg.m13}}</div>
+            <div class="mags">客服电话：{{msg.m14}}</div> 
+            <div class="mags">商户logo： <img class="logoImg" :src="msg.m15" alt=""> </div>       
+       </div>
+       <div class="gard1"><Gard /></div>        
+       <div class="basicMsgTitle bs">渠道信息</div>
+       <div class="boxMsg">        
+            <div class="mags">所属渠道：{{msg.m16}}</div>
+            <div class="mags">所属渠道编号：{{msg.m17}}</div>
+            <div class="mags">所属渠道商：{{msg.m18}}</div>
+            <div class="mags">商户通道费率：{{msg.m19}}</div> 
+       </div>      
+      <!-- 渠道信息结束 -->      
     </div>
 </template>
 
@@ -38,6 +43,7 @@ import waves from "@/directive/waves"; // 水波纹指令
 import uRLS from "../../../assets/wukai.jpg";
 export default {
   name: "AddDetail",
+  props: ["detail_msg"],
   directives: {
     waves
   },
@@ -50,32 +56,27 @@ export default {
       disabled: true,
       uRLS: uRLS,
       qudaoStore: "金桔联盟",
-      msg: [
-        { used: "连锁商户编号", msgs: "12545885285" },
-        { used: "连锁商户名称", msgs: "成都易付云金融科技" },
-        { used: "营业执照编号", msgs: "10000248898" },
-        { used: "营业期限", msgs: "2018-10-10~2018-20-10" },
-        { used: "营业范围", msgs: "家具。玩具" },
-        { used: "营业执照", msgsUrl: [uRLS, uRLS] },
-        { used: "总店地址", msgs: "环球中心" },
-        { used: "详细地址", msgs: "高西新区" },
-        { used: "法人姓名", msgs: "张学友" },
-        { used: "身份证号", msgs: "5112012121252" }
-      ],
-      msg1: [
-        { used: "联系人", msgs: "刘德华" },
-        { used: "联系电话", msgs: "135400213254" },
-        { used: "电子邮箱", msgs: "2345@qq.com" },
-        { used: "客服电话", msgs: "028-2201-000" },
-        { used: "商户logo", msgsUrl: [uRLS] }
-      ],
-
-      msg3: [
-        { used: "所属渠道", msgs: "成都易付云" },
-        { used: "所属渠道编号", msgs: "5112012121252" },
-        { used: "所属渠道商", msgs: "成都易付云" },
-        { used: "商户通道费率", msgs: "3‰" }
-      ]
+      msg: {
+        m1: "12545885285",
+        m2: "成都易付云金融科技",
+        m3: "10000248898",
+        m4: "2018-10-10~2018-20-10",
+        m5: "家具。玩具",
+        m6: [uRLS, uRLS],
+        m7: "环球中心",
+        m8: "高西新区",
+        m9: "张学友",
+        m10: "5111135400213254",
+        m11: "刘德华",
+        m12: "135400213254",
+        m13: "2345@qq.com",
+        m14: "028-2201-000",
+        m15: uRLS,
+        m16: "成都易付云",
+        m17: "5112012121252",
+        m18: "成都易付云",
+        m19: "3‰"
+      }
     };
   },
   methods: {}
@@ -116,84 +117,5 @@ export default {
   width: 32%;
   height: 100px;
   margin-right: 10px;
-}
-.xiugai {
-  border: 1px solid #1c3672;
-  border-radius: 4px;
-  width: 48%;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  font-size: 16px;
-  color: #1c3672;
-  margin: 30px auto;
-}
-.doRecorde {
-  width: 91.6%;
-  height: 222px;
-  background: #f9f9f9;
-  font-size: 14px;
-  color: #999999;
-  margin: 30px auto;
-  padding: 20px 0 0 0;
-}
-.doTitle {
-  font-size: 16px;
-  color: #333333;
-  margin-left: 4.3%;
-}
-.doDetail {
-  margin: 10px 4.3%;
-}
-/* 下面是通道费率样式 */
-.retes {
-  font-size: 14px;
-  color: #999999;
-  position: relative;
-  top: 20px;
-  left: 4%;
-}
-.retas {
-  font-size: 14px;
-  color: #1c3672;
-  background: none;
-}
-.changeReta {
-  font-size: 14px;
-  color: #1c3672;
-  margin-left: 20px;
-  cursor: pointer;
-}
-.xieyi {
-  margin: 40px 0 0 4%;
-  font-size: 14px;
-  color: #999999;
-}
-.xy {
-  margin-top: 10px;
-}
-.s1 {
-  color: #333333;
-}
-
-.s3 {
-  color: #88acff;
-  margin-left: 10px;
-}
-.xieyiImg {
-  height: 140px;
-  width: 21.8%;
-}
-.imgshow {
-  position: relative;
-  margin: 20px 0 0 4%;
-}
-.imgshow span {
-  position: relative;
-  top: -130px;
-}
-.allChose {
-  margin-top: 30px;
-  text-align: center;
 }
 </style>

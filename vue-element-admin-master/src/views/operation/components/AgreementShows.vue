@@ -1,15 +1,36 @@
 <template>
     <div class="bigBox">
-     <div class="agreeTitle">协议标题：<span>用户认证协议</span></div>
-     <div class="agreeTitle">协议类型：<span>c端用户认证协议</span></div>
+     <div class="agreeTitle">协议标题：<span>{{datalist.agreeTitle}}</span></div>
+     <div class="agreeTitle">协议类型：<span>{{datalist.agreeType}}</span></div>
      <div class="agreeTitle">协议附件：<span><a class="jumps" href="#">用户认证协议.pdf</a></span></div>
      <div class="agreeTitle"> <div class="titles">协议内容：</div><div class="showcontent"  v-html="'<P>11scsdcdcdcvsdvssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssdvsdvdfvfvbf111111</P><P>11111111</P><P>11111111</P><P>11111111</P><P>11scsdcdcdcvsdvdvsdvdfvfvbf111111</P><P>11111111</P><P>11111111</P><P>11111111</P>'"></div></div>
     </div>
 </template>
 
 <script>
+import { AgreemenDetail } from "@/api/operation";
 export default {
-  name: "AgreementShows"
+  name: "AgreementShows",
+  props: ["datalist"],
+  data() {
+    return {
+      msgList: {}
+    };
+  },
+  mounted() {
+    this.getMsg();
+  },
+  methods: {
+    //获取具体协议
+    getMsg() {
+      console.log("获取具体协议信息");
+      console.log(this.datalist);
+      // AgreemenDetail(this.datalist).then(res => {
+      //   console.log(res);
+      // this.msgList=res.data
+      // });
+    }
+  }
 };
 </script>
 

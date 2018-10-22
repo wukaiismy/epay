@@ -1,12 +1,12 @@
 <template>
     <div>
        <!-- 搜索部分 -->
-       <Search />
+       <Search @channelSearch='channelSearch' />
        <!-- 灰色间隔线 -->
         <div class="Gard1"></div>
          <!-- 下面是具体的表格展示部分 -->
                   <div>
-                      <CashBiaoge />
+                      <CashBiaoge  :dataList='dataList' />
                   </div>
     </div>
 </template>
@@ -17,11 +17,18 @@ import CashBiaoge from "./CashBiaoge";
 export default {
   name: "CashDeposit",
   data() {
-    return {};
+    return { dataList: null };
   },
   components: {
     Search,
     CashBiaoge
+  },
+  methods: {
+    // 搜索按钮传值回来
+    channelSearch(data) {
+      // console.log(data);
+      // this.dataList = data;
+    }
   }
 };
 </script>

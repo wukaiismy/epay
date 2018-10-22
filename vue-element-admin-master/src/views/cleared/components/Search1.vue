@@ -1,16 +1,16 @@
 <template>
     <div class="filter-container" >      
            <div class="els">
-                <div class="grid-content">所属渠道商名称：<el-input v-model="channels" clearable  style="width: 140px;"></el-input></div>
-                <div class="grid-content">所属渠道商编号：<el-input v-model="channelsNum" clearable  style="width: 140px;"></el-input></div>
-                <div class="grid-content">结算账号：<el-input v-model="setAccount" clearable style="width: 140px;"></el-input></div>               
+                <div class="grid-content">所属渠道商名称：<el-input v-model="searchList.channels" clearable  style="width: 140px;"></el-input></div>
+                <div class="grid-content">所属渠道商编号：<el-input v-model="searchList.channelsNum" clearable  style="width: 140px;"></el-input></div>
+                <div class="grid-content">结算账号：<el-input v-model="searchList.setAccount" clearable style="width: 140px;"></el-input></div>               
            </div>
          <!-- 第二排的搜索 -->
            <div class="els">
-                <div class="grid-content">结算方式：<el-input v-model="setType" style="width: 140px;" clearable></el-input></div>
-                <div class="grid-content">划付状态：<el-input v-model="payStatus" style="width: 140px;" clearable></el-input></div>
+                <div class="grid-content">结算方式：<el-input v-model="searchList.setType" style="width: 140px;" clearable></el-input></div>
+                <div class="grid-content">划付状态：<el-input v-model="searchList.payStatus" style="width: 140px;" clearable></el-input></div>
                 <span class="userSearch"> 创建日期：</span> 
-                <el-date-picker v-model="date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
+                <el-date-picker v-model="searchList.date" value-format="yyyy-MM-dd" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
                <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
           </div>
     </div>
@@ -18,6 +18,7 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
+import { clearedSearch } from "@/api/cleared";
 export default {
   name: "Search1",
   directives: {
@@ -25,34 +26,26 @@ export default {
   },
   data() {
     return {
-      channels: "",
-      channelsNum: "",
-      storeJc: "",
-      setAccount: "",
-      setType: "",
-      payStatus: "",
-      date: "",
-      listLoading: false,
-      listQuery: []
+      searchList: {
+        channels: "",
+        channelsNum: "",
+        storeJc: "",
+        setAccount: "",
+        setType: "",
+        payStatus: "",
+        date: ""
+      },
+      listLoading: false
     };
   },
   methods: {
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
-      });
-    },
     //搜索功能
     handleFilter() {
-      this.getList();
+      console.log(this.searchList);
+      clearedSearch(this.searchList).then(response => {
+        console.log(response);
+        this.$emit("channelSearch", response);
+      });
     }
   }
 };

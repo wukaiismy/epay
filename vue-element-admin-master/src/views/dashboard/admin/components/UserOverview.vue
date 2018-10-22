@@ -32,7 +32,7 @@
             <el-row :gutter="10" class="twos">
               <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8"  class="twosItem" >
                 <div class="grid-title">待渠道商认证审核</div>
-                 <count-to :start-val="0" :end-val="400" :duration="2600" class="card-panel-nums colers"/>               
+                 <count-to :start-val="0" :end-val="20" :duration="2600" class="card-panel-nums colers"/>               
               </el-col>
               <div class="gards1"></div>
               <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="twosItem" >
@@ -42,7 +42,7 @@
                  <div class="gards1 g2"></div>
               <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="twosItem" >
                 <div class="grid-title">待处理异常订单</div>
-                 <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-nums colers"/>
+                 <count-to :start-val="0" :end-val="400" :duration="2600" class="card-panel-nums colers"/>
               </el-col>            
             </el-row>
         </div>

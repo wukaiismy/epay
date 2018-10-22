@@ -7,37 +7,54 @@
        <!-- 渠道信息展示部分 -->
        <div v-show="isShow">
        <div class="basicMsgTitle">基本信息</div>
-       <div class="boxMsg bm">
-           <div class="mags" v-for="(r, index) in msg" :key="index" >{{r.used}}：{{r.msgs}}</div>
-        </div>
-        <div class="gard1"><Gard /></div>
-        <div class="basicMsgTitle bs">运营信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg1" :key="index" >{{r.used}}：{{r.msgs}}</div>
-        </div>
-        <div class="gard1"><Gard /></div>
-        <div class="basicMsgTitle bs">企业信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg2" :key="index" >{{r.used}}：{{r.msgs}}</div>
-        </div>
-        <div class="gard1"><Gard /></div>
-        <div class="basicMsgTitle bs">法人信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg3" :key="index" >{{r.used}}：<span v-if="r.msgs">{{r.msgs}}</span>
-              <img class="logoImg" v-else :src="r.msgsUrl" alt=""> 
-           </div>
-        </div>
-        <div class="gard1"><Gard /></div>
-         <div class="basicMsgTitle bs">营业执照信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg4" :key="index" >{{r.used}}：<span v-if="r.msgs">{{r.msgs}}</span>
-              <img class="logoImg" v-else :src="r.msgsUrl" alt=""> 
-           </div>
-        </div>
-        <div class="gard1"><Gard /></div>
-         <div class="basicMsgTitle bs">结算信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg5" :key="index" >{{r.used}}：{{r.msgs}}</div>
+       <div class="boxMsg bm">       
+           <div class="mags">渠道编号：{{msg.m1}}</div>
+           <div class="mags">渠道名称：{{msg.m2}}</div>
+           <div class="mags">所属银行：{{msg.m3}}</div>
+           <div class="mags">渠道类型：{{msg.m4}}</div>
+       </div>
+       <div class="gard1"><Gard /></div>
+       <div class="basicMsgTitle bs">运营信息</div>
+       <div class="boxMsg">         
+           <div class="mags">联系人：{{msg.m5}}</div>
+           <div class="mags">联系电话：{{msg.m6}}</div>
+           <div class="mags">电子邮箱：{{msg.m7}}</div>
+           <div class="mags">经营类目：{{msg.m8}}</div>
+           <div class="mags">经营范围：{{msg.m9}}</div>
+           <div class="mags">客服电话：{{msg.m10}}</div>
+           <div class="mags">渠道协议：{{msg.m11}}</div>
+       </div>
+       <div class="gard1"><Gard /></div>
+       <div class="basicMsgTitle bs">企业信息</div>
+       <div class="boxMsg">         
+           <div class="mags">企业名称：{{msg.m12}}</div>
+           <div class="mags">省份城市：{{msg.m13}}</div>
+           <div class="mags">详细地址：{{msg.m14}}</div>
+           <div class="mags">渠道类型：{{msg.m15}}</div>
+       </div>
+       <div class="gard1"><Gard /></div>
+       <div class="basicMsgTitle bs">法人信息</div>
+       <div class="boxMsg">        
+           <div class="mags">法人姓名：{{msg.m16}}</div>
+           <div class="mags">身份证号：{{msg.m17}}</div>
+           <div class="mags">身份证照片： <img class="logoImg" :src="msg.m18" alt=""> </div>           
+       </div>
+       <div class="gard1"><Gard /></div>
+       <div class="basicMsgTitle bs">营业执照信息</div>
+       <div class="boxMsg">       
+           <div class="mags">营业执照编号：{{msg.m19}}</div>
+           <div class="mags">营业期限：{{msg.m20}}</div>
+           <div class="mags">营业范围：{{msg.m21}}</div>
+           <div class="mags">渠道类型：{{msg.m22}}</div>
+           <div class="mags">营业执照： <img class="logoImg" :src="msg.m23" alt=""> </div> 
+       </div>
+       <div class="gard1"><Gard /></div>
+       <div class="basicMsgTitle bs">结算信息</div>
+       <div class="boxMsg">          
+           <div class="mags">结算类型：{{msg.m24}}</div>
+           <div class="mags">结算户名：{{msg.m25}}</div>
+           <div class="mags">结算银行：{{msg.m26}}</div>
+           <div class="mags">结算账号：{{msg.m27}}</div>
         </div>
         <div class="gard1"><Gard /></div>
 
@@ -83,6 +100,7 @@ import waves from "@/directive/waves"; // 水波纹指令
 import uRLS from "../../../assets/wukai.jpg";
 export default {
   name: "Details",
+  props: ["detailMsg"],
   directives: {
     waves
   },
@@ -95,45 +113,36 @@ export default {
       disabled: true,
       uRLS: uRLS,
       retes: "3",
-      msg: [
-        { used: "渠道编号", msgs: "12545885285" },
-        { used: "渠道名称", msgs: "成都易付云金融科技" },
-        { used: "所属银行", msgs: "华夏银行" },
-        { used: "渠道类型", msgs: "普通渠道商" }
-      ],
-      msg1: [
-        { used: "联系人", msgs: "张学友" },
-        { used: "联系电话", msgs: "135400213254" },
-        { used: "电子邮箱", msgs: "2345@qq.com" },
-        { used: "经营类目", msgs: "企业、十点多" },
-        { used: "经营范围", msgs: "家具。玩具" },
-        { used: "客服电话", msgs: "028-2201-000" },
-        { used: "渠道协议", msgs: "很吊的协议" }
-      ],
-      msg2: [
-        { used: "企业名称", msgs: "成都易付云金融科技" },
-        { used: "省份城市", msgs: "四川成都" },
-        { used: "详细地址", msgs: "高西新区" },
-        { used: "渠道类型", msgs: "普通渠道商" }
-      ],
-      msg3: [
-        { used: "法人姓名", msgs: "张学友" },
-        { used: "身份证号", msgs: "5112012121252" },
-        { used: "身份证照片", msgsUrl: uRLS }
-      ],
-      msg4: [
-        { used: "营业执照编号", msgs: "12588dvfgththb45" },
-        { used: "营业期限", msgs: "2018-10-10~2018-20-10" },
-        { used: "营业范围", msgs: "家具。玩具" },
-        { used: "渠道类型", msgs: "家具、玩具" },
-        { used: "营业执照", msgsUrl: uRLS }
-      ],
-      msg5: [
-        { used: "结算类型", msgs: "企业" },
-        { used: "结算户名", msgs: "金桔联盟" },
-        { used: "结算银行", msgs: "华夏银行" },
-        { used: "结算账号", msgs: "125 2252 222 2222" }
-      ],
+      msg: {
+        m1: "12545885285",
+        m2: "成都易付云金融科技",
+        m3: "华夏银行",
+        m4: "普通渠道商",
+        m5: "张学友",
+        m6: "135400213254",
+        m7: "2345@qq.com",
+        m8: "企业、十点多",
+        m9: "家具。玩具",
+        m10: "028-2201-000",
+        m11: "很吊的协议",
+        m12: "成都易付云金融科技",
+        m13: "四川成都",
+        m14: "高西新区",
+        m15: "普通渠道商",
+        m16: "张学友",
+        m17: "5112012121252",
+        m18: uRLS,
+        m19: "12588dvfgththb45",
+        m20: "2018-10-10~2018-20-10",
+        m21: "家具。玩具",
+        m22: "家具、玩具",
+        m23: uRLS,
+        m24: "企业",
+        m25: "金桔联盟",
+        m26: "华夏银行",
+        m27: "125 2252 222 2222"
+      },
+
       mataMsg: [
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",

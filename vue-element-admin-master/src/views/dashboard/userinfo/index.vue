@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { navbarUserInfo } from "@/api/navbarMsg";
 import lines1 from "../../../assets/login/line.png";
 import lines2 from "../../../assets/login/line2.png";
 import lines3 from "../../../assets/login/line3.png";
@@ -62,6 +63,9 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.getMsg();
+  },
   methods: {
     //选择查看的信息
     chosed(index) {
@@ -81,6 +85,16 @@ export default {
         this.isShow3 = true;
         this.lines = lines3;
       }
+    },
+    //获取用户详细信息
+    getMsg() {
+      // 进行ajax请求、
+      // navbarUserInfo().then(res => {
+      //   console.log(res);
+      //   if (res.code == 200) {
+      // this.userInfo=res.data
+      //   }
+      // });
     }
   }
 };

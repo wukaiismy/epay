@@ -1,64 +1,36 @@
 <template>
-    <div class="filter-container" >
-        <el-row :gutter="1" class="els">
-            <el-col :xs="1" :sm="1" :md="4" :lg="4" :xl="6"><div class="grid-content"></div></el-col>
-            <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4">
+    <div class="filter-container" >      
+        <el-row :gutter="1" >          
+            <el-col :span="16">
+              <div class="els">
                 <div class="grid-content">渠道商名称：
-                    <el-input
-                        placeholder="请输入渠道商名称"
-                        v-model="channels"
-                        clearable class="" style="width:160px;">
-                    </el-input></div>
-                </el-col>
-             <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="4">                 
+                    <el-input placeholder="请输入渠道商名称" v-model="searchList.channels" clearable class="" style="width:160px;"></el-input>
+                </div>
                 <div class="grid-content">渠道商编号：
-                    <el-input
-                        placeholder="请输入渠道商编号"
-                        v-model="channelsNum"
-                        style="width: 160px;"
-                        clearable>
-                    </el-input></div>
+                   <el-input placeholder="请输入渠道商编号" v-model="searchList.channelsNum" style="width: 160px;" clearable></el-input>
+                </div>
+                 </div>   
+             </el-col>
+             <el-col :span="8">                 
+                <div class="daoBox" >
+                    <div class="piliang" @click="piliangSubmit">批量导入渠道商</div>
+                    <div class="piliang adds" @click="addChain">新增渠道商</div>
+                </div>
               </el-col>
          </el-row>
-          <el-row :gutter="1" class="els">
-            <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="2"><div class="grid-content"></div></el-col>
-            <el-col :xs="7" :sm="7" :md="7" :lg="7" :xl="5">
-                <span class="userSearch"> 创建时间：</span>
-      <el-date-picker
-      v-model="value1"
-      type="daterange"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-      :default-time="['00:00:00', '23:59:59']">
-    </el-date-picker>
-                </el-col>
-             <el-col :xs="6" :sm="6" :md="6" :lg="5" :xl="4">                 
-                <div class="grid-content">激活状态：
-                    <el-input
-                        placeholder="激活状态"
-                        v-model="channelsStatus"
-                        style="width: 160px;"
-                        clearable>
-                    </el-input></div>
-              </el-col>
-              <el-col :xs="6" :sm="6" :md="6" :lg="5" :xl="4">                 
-                <div class="grid-content">审核状态：
-                    <el-input
-                        placeholder="审核状态"
-                        v-model="channelsStatus1"
-                        style="width: 160px;"
-                        clearable>
-                    </el-input></div>
-              </el-col>
-             <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="2"> 
+         <div  class="rows">
+            <span class="userSearch"> 创建时间：</span>
+            <el-date-picker v-model="searchList.value1" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>                               
+            <div class="grid-content">激活状态：
+              <el-input placeholder="激活状态" v-model="searchList.channelsStatus" style="width: 160px;" clearable></el-input>
+            </div>               
+            <div class="grid-content">审核状态：
+               <el-input placeholder="审核状态" v-model="searchList.channelsStatus1" style="width: 160px;" clearable></el-input>
+            </div>             
               <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
-           </el-col>
-         </el-row>
-         <div class="daoBox" >
-        <div class="piliang" @click="piliangSubmit">批量导入渠道商</div>
-        <div class="piliang adds" @click="addChain">新增渠道商</div>
-        </div>
-
+              <div class="grid-content bb"></div>
+         </div>
+        
           <!-- 批量进件模态框 -->
          <el-dialog :visible.sync="dialogTableVisible"   width="30%" >
               <div class="diaTilte"><span>批量导入渠道商</span></div>
@@ -67,11 +39,14 @@
                <div class="downLoad ds">请上传批量进件文件
               <el-upload
                 class="upload-demo"
+                ref="upload"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
+                 :file-list="fileList"
                 :auto-upload="false">
-                <el-button slot="trigger" size="small" type="primary">选取文件</el-button> 
+                <el-button slot="trigger" size="small" >选取文件</el-button>
+                <el-button  size="small" type="success" style="margin-left: 10px;"   @click="submitUpload">上传</el-button>  
             </el-upload>
                </div>
                <!-- 上传说明 -->
@@ -88,6 +63,7 @@
 </template>
 
 <script>
+import { channelSearch, bulkImport, imgURL } from "@/api/intomanagement";
 import waves from "@/directive/waves"; // 水波纹指令
 export default {
   name: "search",
@@ -96,40 +72,43 @@ export default {
   },
   data() {
     return {
-      channels: "",
-      channelsNum: "",
-      value1: "",
-      channelsStatus: "",
-      channelsStatus1: "",
+      searchList: {
+        channels: "",
+        channelsNum: "",
+        value1: "",
+        channelsStatus: "",
+        channelsStatus1: ""
+      },
+
       listLoading: false,
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      msgList: null,
+      fileList: [],
+      imgURL: ""
     };
   },
+  mounted() {},
   methods: {
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
-      });
-    },
     //搜索功能
     handleFilter() {
-      this.getList();
+      console.log(this.searchList);
+      var searchURL = "incoming/channellist/";
+      var datas = { name: "33", status: "1" };
+      channelSearch(searchURL, datas).then(response => {
+        console.log(response);
+        this.$emit("channelSearch", response);
+      });
     },
     // 批量导入模态框
     piliangSubmit() {
       this.dialogTableVisible = true;
     },
-    //批量下载模板
+    //下载模板
     downModle() {
       alert("批量下载模板");
+      bulkImport("id").then(response => {
+        console.log(response);
+      });
     },
     //新增渠道商按钮
     addChain() {
@@ -137,6 +116,9 @@ export default {
       console.log(222);
     },
     // 上传功能相关
+    submitUpload() {
+      this.$refs.upload.submit();
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -149,24 +131,51 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .els {
-  margin-top: 20px;
+  text-align: center;
   .grid-content {
+    height: 30px;
     display: inline-block;
     font-size: 14px;
+    margin: 30px 0 0px 20px;
     color: #666666;
     .el-input {
       display: inline-block;
     }
   }
 }
+.rows {
+  text-align: center;
+  .grid-content {
+    height: 30px;
+    display: inline-block;
+    font-size: 14px;
+    margin: 10px 0 10px 20px;
+    color: #666666;
+    .el-input {
+      display: inline-block;
+    }
+  }
+  .bb {
+    width: 100px;
+  }
+}
+.daoBox {
+  text-align: right;
+}
+.userSearch {
+  font-size: 14px;
+  color: #666666;
+  margin-left: 20px;
+}
 .el-date-editor--daterange.el-input,
 .el-date-editor--daterange.el-input__inner,
 .el-date-editor--timerange.el-input,
 .el-date-editor--timerange.el-input__inner {
-  width: 70%;
+  width: 255px;
 }
 .searchs {
   position: relative;
+  margin-left: 20px;
 }
 .piliang {
   //   position: absolute;
@@ -180,21 +189,15 @@ export default {
   color: #1c3672;
   line-height: 40px;
   text-align: center;
-  margin-right: 10px;
+  margin: 30px 10px 0px 10px;
+  cursor: pointer;
   //   top: 44px;
   //   right: 200px;
 }
 .adds {
   background-image: linear-gradient(-137deg, #142855 0%, #4553a4 100%);
-  //   right: 40px;
   color: #ffffff;
-}
-.daoBox {
-  position: absolute;
-  width: 315px;
-
-  right: 0.21%;
-  top: 25px;
+  margin-right: 30px;
 }
 
 /* 模态框样式*/

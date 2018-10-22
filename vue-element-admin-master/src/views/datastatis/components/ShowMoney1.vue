@@ -3,40 +3,40 @@
         <el-row class="twos"  :gutter="20">
               <el-col  :xs="4" :sm="4" :md="4" :lg="4" :xl="4" @click.native="checked(1,'newVisitis')"  class="twosItem" :class="isShow=='1'?'selceted':''"  >
                 <div class="grid-title">用户担保交易数</div>              
-                 <count-to :start-val="0" :end-val="400" :decimals='2' :duration="2600" class="card-panel-nums"/>                 
+                 <count-to :start-val="0" :end-val="msg.tradeNum*1" :decimals='2' :duration="2600" class="card-panel-nums"/>                 
               </el-col>
               <div class="gards1"></div>
 
               <el-col  :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="twosItem"  :class="isShow=='2'?'selceted':''"  @click.native="checked(2,'newVisitis')" >
                 <div class="grid-title">用户担保交易总额</div>
-                 <count-to :start-val="0" :end-val="4000" :decimals='2' :duration="2600" class="card-panel-nums"/>  
+                 <count-to :start-val="0" :end-val="msg.tradeAllMoney*1" :decimals='2' :duration="2600" class="card-panel-nums"/>  
                 </el-col>
                 <div class="gards1 g1"></div>
 
               <el-col  :xs="3" :sm="3" :md="3" :lg="3" :xl="3" class="twosItem"  :class="isShow=='3'?'selceted':''" @click.native="checked(3,'messages')" >
                 <div class="grid-title">用户担保交易现金总额</div>
-                <count-to :start-val="0" :end-val="9800" :decimals='2' :duration="2600" class="card-panel-nums"/>  
+                <count-to :start-val="0" :end-val="msg.tradeCMoney*1" :decimals='2' :duration="2600" class="card-panel-nums"/>  
               </el-col> 
                 <div class="gards1 g2"></div>
               <el-col   :xs="3" :sm="3" :md="3" :lg="3" :xl="3"  class="twosItem"  :class="isShow=='4'?'selceted':''"  @click.native="checked(4,'purchases')" >
                 <div class="grid-title">账户现金发生总额</div>
-                <count-to :start-val="0" :end-val="1000" :decimals='2' :duration="2600" class="card-panel-nums"/>          
+                <count-to :start-val="0" :end-val="msg.tradegiveMoney*1" :decimals='2' :duration="2600" class="card-panel-nums"/>          
               </el-col>
               <div class="gards1  g3"></div>
 
               <el-col   :xs="3" :sm="3" :md="3" :lg="3"  :xl="3" class="twosItem"  :class="isShow=='5'?'selceted':''"  @click.native="checked(5,'shoppings')" >
                 <div class="grid-title">用户账户储值总额</div>
-                 <count-to :start-val="0" :decimals='2'  :end-val="4000.99" :duration="2600" class="card-panel-nums"/>  
+                 <count-to :start-val="0" :decimals='2'  :end-val="msg.tradeJMoney*1" :duration="2600" class="card-panel-nums"/>  
                 </el-col>
                 <div class="gards1 g4"></div>
               <el-col   :xs="3" :sm="3" :md="3" :lg="3"  :xl="3" class="twosItem"   :class="isShow=='6'?'selceted':''"  @click.native="checked(6,'shoppings')">
                 <div class="grid-title">商户现金储值总额</div>
-                <count-to :start-val="0" :end-val="4000" :decimals='2' :duration="2600" class="card-panel-nums"/>  
+                <count-to :start-val="0" :end-val="msg.tradexianJMoney*1" :decimals='2' :duration="2600" class="card-panel-nums"/>  
               </el-col>
                <div class="gards1 g5"></div>
               <el-col   :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="twosItem" :class="isShow=='7'?'selceted':''"  @click.native="checked(7,'shoppings')">
                 <div class="grid-title">储蓄收益</div>
-                <count-to :start-val="0" :end-val="4000" :decimals='2' :duration="2600" class="card-panel-nums"/>  
+                <count-to :start-val="0" :end-val="msg.tradeRate*1" :decimals='2' :duration="2600" class="card-panel-nums"/>  
               </el-col>                
             </el-row>
     </div>
@@ -46,10 +46,20 @@
 import CountTo from "vue-count-to";
 export default {
   name: "ShowMoney1",
+  props: ["searchMsg"],
   data() {
     return {
       date: "",
-      isShow: 2
+      isShow: 2,
+      msg: {
+        tradeNum: "100000",
+        tradeAllMoney: "315000.01",
+        tradeCMoney: "666620.02",
+        tradegiveMoney: "222222.36",
+        tradeJMoney: "26559522.02",
+        tradexianJMoney: "26559522.99",
+        tradeRate: "15552656.69"
+      }
     };
   },
   components: {

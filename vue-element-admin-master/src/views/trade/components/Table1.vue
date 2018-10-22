@@ -1,6 +1,6 @@
 <template>
     <div id="dalos">
-         <Search @addChain='addChain' />
+         <Search  @channelSearch='channelSearch' />
          <!-- 我是表格组件 -->
         <div class="bigBoxs">
           <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit highlight-current-row style="width:100%;">     
@@ -13,7 +13,7 @@
               <el-table-column property="qdName" label="渠道商名称"  align="center"></el-table-column>
               <el-table-column  label="交易金额" width="85%"  align="center">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney}}</span>
+                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
                 </template>
               </el-table-column>
               <el-table-column property="payFcu" label="支付方式"  align="center"></el-table-column>
@@ -79,24 +79,12 @@
 
 <script>
 import Search from "./Search.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import { merchantMsg, merchantDetail, merchantDownload } from "@/api/vi";
 export default {
   name: "Table1",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -275,41 +263,48 @@ export default {
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
-    },
-    // 详情按钮
-    passsubmit(data) {
-      console.log("====================================");
-      console.log("你点击了详情按钮");
-      this.dialogTableVisible = true;
-      console.log(data);
-      console.log("====================================");
-    },
-
-    // 导出按钮
-    daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      // this.gridData = data;
     },
     //   获取数据啊
     getList() {
       this.listLoading = true;
-      // Just to simulate the time of the request
+      console.log("用户退款表格基本信息");
+      var basicURL = "incoming/channellist/";
+      // merchantMsg(basicURL,"1").then(res => {
+      //   console.log(res);
+      // });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
     },
-    //搜索功能
+    // 详情按钮
+    passsubmit(data) {
+      this.dialogTableVisible = true;
+      console.log(data);
+      var detailURL = "incoming/channellist/";
+      // merchantDetail(detailURL,data.tardNum).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // });
+    },
+
+    // 导出按钮
+    daochuJump() {
+      console.log("导出按钮");
+      var DownloadURL = "incoming/channellist/";
+      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
+    },
 
     //分页功能选择
     handleSizeChange(val) {
@@ -319,11 +314,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
     }
   }
 };
@@ -339,8 +329,7 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
+
 .xiaz {
   color: #f6a623;
 }
@@ -357,16 +346,12 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
 .pagination-container {
   margin: 22px 0 60px 30%;
 }
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {

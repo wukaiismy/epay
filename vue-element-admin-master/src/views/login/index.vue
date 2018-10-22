@@ -47,7 +47,7 @@
           验证码：
         </span>
         <el-input
-          v-model="loginForm.yzm"
+          v-model="loginForm.captcha"
           placeholder="请输入验证码"
           name="username"
           type="text"
@@ -55,7 +55,7 @@
         />
       </el-form-item>
        <!-- 验证码图片 -->
-         <img class="yzmImg" src="../../assets/login/bg.png" alt="">
+         <img class="yzmImg" @click="imgYzm"  :src="imgmsg"  alt="">
 
       <el-button :loading="loading" type="primary" style="width:400px;height:48px;margin-left:40px;" @click.native.prevent="handleLogin">登录</el-button>
 
@@ -86,30 +86,31 @@
 
 <script>
 import { isvalidUsername } from "@/utils/validate";
-
+import axios from "axios";
 export default {
   name: "Login",
   components: {},
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
-        callback(new Error("Please enter the correct user name"));
+        callback(new Error("请输入正确的账号"));
       } else {
         callback();
       }
     };
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
+        callback(new Error("密码不能小于6位"));
       } else {
         callback();
       }
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "1111111",
-        yzm: ""
+        username: "420663746",
+        password: "123456",
+        captcha: "",
+        timestamp: ""
       },
       exList: [
         { names: "渠道商", nums: "渠道编号.dt", exp: "10000000036565.dt" },
@@ -127,7 +128,8 @@ export default {
       passwordType: "password",
       loading: false,
       showDialog: false,
-      redirect: undefined
+      redirect: undefined,
+      imgmsg: ""
     };
   },
   watch: {
@@ -144,7 +146,25 @@ export default {
   destroyed() {
     // window.removeEventListener('hashchange', this.afterQRScan)
   },
+  mounted() {
+    this.imgYzm();
+  },
   methods: {
+    // 图片验证码
+    imgYzm() {
+      var that = this;
+      axios
+        .get("http://192.168.1.28:8001/api/v1/captcha/")
+        .then(function(res) {
+          console.log(res.data.data.timestamp);
+          that.loginForm.timestamp = res.data.data.timestamp.toString();
+          that.imgmsg = res.data.data.captcha;
+          that.imgmsg = "data:image/jpg;base64," + that.imgmsg;
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+    },
     showPwd() {
       if (this.passwordType === "password") {
         this.passwordType = "";
@@ -166,7 +186,7 @@ export default {
               this.loading = false;
             });
         } else {
-          console.log("error submit!!");
+          console.log("提交错误!!");
           return false;
         }
       });

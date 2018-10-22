@@ -89,7 +89,8 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "noredirect",
     name: "进件管理",
-    meta: { title: "进件管理", icon: "list", noCache: true },
+    meta: { title: "进件管理", icon: "list", roles: ["admin", "super_editor"] },
+    // roles: ['admin','super_editor'] 这是权限管理需要的东西，之后要加上
     // alwaysShow: true, // will always show the root menu
     children: [
       {
@@ -236,25 +237,25 @@ export const asyncRouterMap = [
     path: "/datastatis",
     component: Layout,
     name: "数据统计",
-    meta: { title: "数据统计", icon: "international" },
+    meta: { title: "数据统计", icon: "international", roles: ["admin"] },
     children: [
       {
         path: "PlatformTrad",
         component: () => import("@/views/datastatis/PlatformTrad"),
         name: "平台交易统计",
-        meta: { title: "平台交易统计", noCache: true }
+        meta: { title: "平台交易统计", noCache: true, roles: ["admin"] }
       },
       {
         path: "ChanelTrad",
         component: () => import("@/views/datastatis/ChanelTrad"),
         name: "渠道交易统计",
-        meta: { title: "渠道交易统计", noCache: true }
+        meta: { title: "渠道交易统计", noCache: true, roles: ["admin"] }
       },
       {
         path: "StoreTrad",
         component: () => import("@/views/datastatis/StoreTrad"),
         name: "商户交易统计",
-        meta: { title: "商户交易统计", noCache: true }
+        meta: { title: "商户交易统计", noCache: true, roles: ["admin"] }
       }
     ]
   },
@@ -309,12 +310,21 @@ export const asyncRouterMap = [
   {
     path: "/systemsetings",
     component: Layout,
+    name: "系统设置",
+    redirect: "/systemsetings/RoleAuthorization",
+    meta: { title: "系统设置", icon: "shopping" },
     children: [
       {
-        path: "index",
-        component: () => import("@/views/systemsetings/index"),
-        name: "系统设置",
-        meta: { title: "系统设置", icon: "shopping" }
+        path: "RoleAuthorization",
+        component: () => import("@/views/systemsetings/RoleAuthorization"),
+        name: "角色权限",
+        meta: { title: "角色权限", noCache: true }
+      },
+      {
+        path: "UserAuthorization",
+        component: () => import("@/views/systemsetings/UserAuthorization"),
+        name: "用户权限管理",
+        meta: { title: "用户权限管理", noCache: true }
       }
     ]
   },

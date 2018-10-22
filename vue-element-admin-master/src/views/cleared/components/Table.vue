@@ -1,6 +1,6 @@
 <template>
     <div id="dalos">
-     <Search @addChain='addChain' />
+     <Search  @channelSearch='channelSearch'/>
       <!-- 我是表格组件 -->
      <div class="bigBoxs">
        <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  border fit highlight-current-row style="width:100%;">      
@@ -14,7 +14,7 @@
             <el-table-column property="JSNum" label="结算账户"  align="center"></el-table-column>
             <el-table-column  label="结算金额" width="85%"  align="center">
                 <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
                 </template>
             </el-table-column>     
             <el-table-column label="状态"  align="center"  width="95%">
@@ -72,24 +72,13 @@
 
 <script>
 import Search from "./Search.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import { merchantMsg, merchantDetail, merchantDownload } from "@/api/vi";
+
 export default {
   name: "Table",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -244,40 +233,47 @@ export default {
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
+      // this.gridData = data;
     },
-
+    // 获取商户结算基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("商户结算表格基本信息");
+      // merchantMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     //详情按钮
     handleClick(val) {
       this.multipleSelection = val;
       console.log(val);
       this.dialogTableVisible = true;
+      console.log("你点击了详情按钮");
+      // merchantDetail(data.payTardNum).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // });
     },
 
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      // merchantDownload(this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {
@@ -287,24 +283,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
-    },
-    // 下面是添加模态框的方法
-    submitAdd() {
-      alert("添加成功");
-    },
-    // 取消按钮
-    quxiao() {
-      this.dialogTableVisible1 = false;
-      this.dialogTableVisible2 = false;
-    },
-    //修改模态框提交
-    submitChange() {
-      alert("修改成功");
     }
   }
 };
@@ -320,8 +298,7 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
+
 .xiaz {
   color: #1c3672;
 }
@@ -338,9 +315,7 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }

@@ -5,7 +5,7 @@
        
         <div class="card-panel-description">
           <div class="card-panel-text">今日交易笔数</div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num"/>
+          <count-to :start-val="0" :end-val="1024" :duration="2600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -13,8 +13,8 @@
       <div class="card-panel" @click="handleSetLineChartData('messages')">
         
         <div class="card-panel-description">
-          <div class="card-panel-text">今日交易总数</div>
-           ￥<count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num"/>
+          <div class="card-panel-text">今日交易总额</div>
+           ￥<count-to :start-val="0"  :decimals='2' :end-val="81212.22" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -23,7 +23,7 @@
        
         <div class="card-panel-description">
           <div class="card-panel-text">本月交易笔数</div>
-         <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num"/>
+         <count-to :start-val="0"  :end-val="9280" :duration="3200" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -31,7 +31,7 @@
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">        
         <div class="card-panel-description">
           <div class="card-panel-text">本月交易总额</div>
-           ￥<count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num"/>
+           ￥<count-to :start-val="0"  :decimals='2' :end-val="47136250.00" :duration="3600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -81,8 +81,7 @@ export default {
       font-size: 48px;
     }
     .card-panel-description {
-      
-    text-align:center;
+      text-align: center;
       margin-top: 26px;
       margin-left: 0px;
       .card-panel-text {

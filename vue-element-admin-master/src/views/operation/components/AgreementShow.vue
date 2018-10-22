@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { AgreemenMsg } from "@/api/operation";
 export default {
   name: "AgreementShow",
   data() {
@@ -38,17 +39,31 @@ export default {
       ]
     };
   },
+  created() {
+    this.getList();
+  },
   methods: {
+    //协议基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("协议表格基本信息");
+      // AgreemenMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     // 查看按钮
     passsubmit(data) {
       console.log(data);
-      this.$emit("showAgree", data.agreeTitle);
+      this.$emit("showAgree", data);
     },
 
     // 编辑按钮
     edits(data) {
       console.log(data);
-      this.$emit("editAgree", data.agreeTitle);
+      this.$emit("editAgree", data.agreeType);
     }
   }
 };

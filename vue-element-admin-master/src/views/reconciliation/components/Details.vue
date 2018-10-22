@@ -30,7 +30,7 @@
          <div class="gard1"><Gard /></div>
         <!-- 对账的表格展示 -->
         <div class="bigBoxs" >
-            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @row-click="handleSelectionChange" highlight-current-row style="width:100%;">                
+            <el-table class="tableBox"  :key="tableKey" :data="gridData" border fit style="width:100%;">                
                   <el-table-column property="types" label=""  align="center" ></el-table-column>
                   <el-table-column property="aXT" label="信条平台"  align="center" ></el-table-column>
                   <el-table-column property="others" label="第三方"  align="center"></el-table-column>             
@@ -42,7 +42,7 @@
 <script>
 import Gard from "./Gard.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import uRLS from "../../../assets/wukai.jpg";
+import { merchantDetail } from "@/api/reconciliation";
 export default {
   name: "Details",
   directives: {
@@ -55,9 +55,7 @@ export default {
     return {
       isShow: true,
       disabled: true,
-      uRLS: uRLS,
-      retes: "3",
-
+      tableKey: 0,
       msg: {
         date: "2018-10-10 10:10:10",
         channelNum: "20000000032010001",
@@ -104,21 +102,15 @@ export default {
     };
   },
   methods: {
-    // 修改按钮
-    xiugai() {
-      console.log("修改信息");
-    },
-    //修改费率
-    changeReta() {
-      this.disabled = false;
-    },
-    // 激活
-    jihuosJump() {
-      alert("确定激活？");
-    },
-    //关闭
-    guanbiJump() {
-      alert("确定关闭？");
+    //父组件调用传值并发起请求
+    getMsg(data) {
+      console.log(data);
+
+      // merchantDetail(data).then(res => {
+      //   console.log(res);
+      // this.msg=data.msg
+      // this.gridData=data.gridData
+      // });
     }
   }
 };
@@ -137,9 +129,6 @@ export default {
   text-align: center;
   line-height: 50px;
   cursor: pointer;
-}
-
-.tow {
 }
 .basicMsgTitle {
   font-size: 16px;
@@ -166,91 +155,7 @@ export default {
   width: 92%;
   margin: 20px 4%;
 }
-.logoImg {
-  width: 32%;
-  height: 100px;
-}
-.xiugai {
-  border: 1px solid #1c3672;
-  border-radius: 4px;
-  width: 48%;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  font-size: 16px;
-  color: #1c3672;
-  margin: 30px auto;
-}
-.doRecorde {
-  width: 91.6%;
-  height: 222px;
-  background: #f9f9f9;
-  font-size: 14px;
-  color: #999999;
-  margin: 30px auto;
-  padding: 20px 0 0 0;
-}
-.doTitle {
-  font-size: 16px;
-  color: #333333;
-  margin-left: 4.3%;
-}
-.doDetail {
-  margin: 10px 4.3%;
-}
-/* 下面是通道费率样式 */
-.retes {
-  font-size: 14px;
-  color: #999999;
-  position: relative;
-  top: 20px;
-  left: 4%;
-}
-.retas {
-  font-size: 14px;
-  color: #1c3672;
-  background: none;
-}
-.changeReta {
-  font-size: 14px;
-  color: #1c3672;
-  margin-left: 20px;
-  cursor: pointer;
-}
-.xieyi {
-  margin: 40px 0 0 4%;
-  font-size: 14px;
-  color: #999999;
-}
-.s1 {
-  color: #333333;
-}
-.s2 {
-  color: #1c3672;
-}
-.s3 {
-  color: #88acff;
-  margin-left: 10px;
-}
-.xieyiImg {
-  height: 140px;
-  width: 21.8%;
-}
-.imgshow {
-  position: relative;
-  margin: 20px 0 0 4%;
-}
-.imgshow span {
-  position: relative;
-  top: -130px;
-}
-.allChose {
-  margin-top: 30px;
-  text-align: center;
-}
-.xiaz {
-  color: #1c3672;
-}
+
 .tiaoz {
   color: #88acff;
 }

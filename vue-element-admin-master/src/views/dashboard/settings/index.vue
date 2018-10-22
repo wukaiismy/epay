@@ -1,8 +1,8 @@
 <template>
     <div class="bigBox">
       <img @click="backJump" class="backLogo" src="../../../assets/login/shut.png" alt="">
-     <div class="zhanghao">系统账户：10000000456761.mch</div>
-     <div>手机号码：13520021365</div>
+     <div class="zhanghao">系统账户：{{ids}}</div>
+     <div>手机号码：{{tel}}</div>
      <div> &nbsp;&nbsp;&nbsp;旧密码：
      <el-input
         placeholder="请输入旧密码"
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { navbarPswdChange } from "@/api/navbarMsg";
 export default {
   name: "settings",
   data() {
@@ -38,10 +40,24 @@ export default {
       repswd: ""
     };
   },
+  computed: {
+    ...mapGetters(["ids", "tel"])
+  },
   methods: {
     sumbit() {
       console.log("确认提交");
-      this.$store.dispatch("componentsId", "adminDashboard");
+
+      // 进行ajax请求、
+      // navbarPswdChange(this.pswd, this.newpswd).then(res => {
+      //   console.log(res);
+      //   if (res.code == 200) {
+      //   }
+      // });
+      //退出登录
+      this.$store.dispatch("FedLogOut").then(() => {
+        location.reload(); // In order to re-instantiate the vue-router object to avoid bugs
+      });
+      // this.$store.dispatch("componentsId", "adminDashboard");
     },
     //返回按钮
     backJump() {

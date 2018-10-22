@@ -54,8 +54,11 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
+import { channelMsgList, channelDownload } from "@/api/datastatis";
+
 export default {
   name: "CashBiaoge",
+  props: ["dataList"],
   directives: {
     waves
   },
@@ -199,10 +202,16 @@ export default {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
-      console.log(data);
-      this.$emit("addChain", data);
+    //担保押金表格基本信息
+    getList() {
+      this.listLoading = true;
+      console.log("担保押金表格基本信息");
+      // channelMsgList("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
 
     // 详情按钮
@@ -220,16 +229,6 @@ export default {
       console.log(data);
     },
 
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
-
     //分页功能选择
     handleSizeChange(val) {
       this.getList();
@@ -242,9 +241,11 @@ export default {
 
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      // channelDownload(this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     }
   }
 };

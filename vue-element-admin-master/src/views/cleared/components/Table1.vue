@@ -1,6 +1,6 @@
 <template>
     <div id="dalos">
-     <Search @addChain='addChain' />
+     <Search @addChain='addChain' @channelSearch='channelSearch' />
       <!-- 我是表格组件 -->
      <div class="bigBoxs">
        <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  border fit highlight-current-row style="width:100%;">      
@@ -12,7 +12,7 @@
             <el-table-column property="accountType" label="结算类型" width="99%" align="center"></el-table-column>
             <el-table-column  label="结算金额" width="85%"  align="center">
                 <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
                 </template>
             </el-table-column>     
             <el-table-column label="状态"  align="center"  width="99%">
@@ -66,25 +66,15 @@
 
 <script>
 import Search from "./Search1.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import { merchantMsg, merchantDetail, merchantDownload } from "@/api/vi";
+
 export default {
   name: "Table1",
   directives: {
     waves
   },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
-  },
+
   data() {
     return {
       pages: {
@@ -216,7 +206,6 @@ export default {
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
@@ -227,29 +216,42 @@ export default {
       console.log(data);
       this.$emit("addChain", data);
     },
-
+    // 搜索按钮传值回来
+    channelSearch(data) {
+      console.log(data);
+      // this.gridData = data;
+    },
+    //获取渠道结算结算基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("渠道结算表格基本信息");
+      // merchantMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     //详情按钮
     handleClick(val) {
       this.multipleSelection = val;
       console.log(val);
       this.dialogTableVisible = true;
+      console.log("你点击了详情按钮");
+      // merchantDetail(data.payTardNum).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // });
     },
 
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      // merchantDownload(this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {
@@ -259,24 +261,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
-    },
-    // 下面是添加模态框的方法
-    submitAdd() {
-      alert("添加成功");
-    },
-    // 取消按钮
-    quxiao() {
-      this.dialogTableVisible1 = false;
-      this.dialogTableVisible2 = false;
-    },
-    //修改模态框提交
-    submitChange() {
-      alert("修改成功");
     }
   }
 };
@@ -292,8 +276,7 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
+
 .xiaz {
   color: #1c3672;
 }
@@ -310,16 +293,13 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {
@@ -378,7 +358,6 @@ export default {
 .item {
   position: relative;
   padding: 1px 0 20px 0;
-  /* background-color: aqua; */
   height: 20px;
   text-align: left;
   margin-top: 10px;
@@ -401,7 +380,6 @@ export default {
   right: 63.82%;
   color: #666666;
 }
-
 .shangjia {
   color: #4990e2;
 }

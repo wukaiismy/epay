@@ -1,9 +1,9 @@
 <template>
     <div>
       <div class="bigBox">      
-        <div class="items">用户类型：<el-input placeholder="请输入用户类型" v-model="userType" clearable></el-input></div>
-        <div  class="items">商户名称：<el-input placeholder="请输入商户名称" v-model="userName" clearable></el-input></div>
-        <div  class="items">交易日期：<el-date-picker v-model="date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
+        <div class="items">用户类型：<el-input placeholder="请输入用户类型" v-model="dataList.userType" clearable></el-input></div>
+        <div  class="items">商户名称：<el-input placeholder="请输入商户名称" v-model="dataList.userName" clearable></el-input></div>
+        <div  class="items">交易日期：<el-date-picker v-model="dataList.date" value-format="yyyy-MM-dd" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
           </div> 
         <el-button @click="sumbit">下载对账单</el-button>
       </div>
@@ -18,20 +18,29 @@
 </template>
 
 <script>
+import { reconDownload } from "@/api/reconciliation";
 export default {
   name: "MerchantStatement",
   data() {
     return {
-      userType: "",
-      userName: "",
-      date: "",
+      dataList: {
+        userType: "",
+        userName: "",
+        date: ""
+      },
       dialogTableVisible: false
     };
   },
   methods: {
     //下载对账单
     sumbit() {
+      // reconDownload(this.dataList).then(res => {
+      //   console.log(res);
+      // if(res.data.code='202'){
       this.dialogTableVisible = true;
+      // }
+
+      // });
     },
     //模态框确定按钮
     qued() {

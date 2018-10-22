@@ -8,39 +8,51 @@
        <div v-show="isShow">
        <div class="basicMsgTitle">基本信息</div>
        <div class="boxMsg bm">
-           <div class="mags" v-for="(r, index) in msg" :key="index" >{{r.used}}：{{r.msgs}}</div>
+           <div class="mags">渠道编号：{{msg.m1}}</div>
+           <div class="mags">渠道名称：{{msg.m2}}</div>
+           <div class="mags">所属渠道：{{msg.m3}}</div>
+           <div class="mags">所属渠道商编号：{{msg.m4}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">运营信息</div>
-       <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg1" :key="index" >{{r.used}}：{{r.msgs}}</div>
+        <div class="boxMsg">
+           <div class="mags">联系人：{{msg.m5}}</div>
+           <div class="mags">联系电话：{{msg.m6}}</div>
+           <div class="mags">电子邮箱：{{msg.m7}}</div>
+           <div class="mags">经营类目：{{msg.m8}}</div>
+           <div class="mags">客服电话：{{msg.m9}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">商户信息</div>
        <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg2" :key="index" >{{r.used}}：{{r.msgs}}</div>
+           <div class="mags">商户名称：{{msg.m10}}</div>
+           <div class="mags">省份城市：{{msg.m11}}</div>
+           <div class="mags">详细地址：{{msg.m12}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">法人信息</div>
        <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg3" :key="index" >{{r.used}}：<span v-if="r.msgs">{{r.msgs}}</span>
-              <img class="logoImg" v-else :src="r.msgsUrl" alt=""> 
-           </div>
+           <div class="mags">法人姓名：{{msg.m13}}</div>
+           <div class="mags">身份证号：{{msg.m14}}</div>
+           <div class="mags">身份证照片： <img class="logoImg"  v-for="(item, index) in msg.m15" :key="index" :src="item" alt=""></div>                   
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">营业执照信息</div>
        <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg4" :key="index" >{{r.used}}：<span v-if="r.msgs">{{r.msgs}}</span>
-             
-                   <img class="logoImg" v-else v-for="(item, index) in r.msgsUrl" :key="index" :src="item" alt="">
-             
-              
-           </div>
+           <div class="mags">营业执照编号：{{msg.m16}}</div>
+           <div class="mags">营业期限：{{msg.m17}}</div>
+           <div class="mags">营业范围：{{msg.m18}}</div>           
+           <div class="mags">营业执照： <img class="logoImg" :src="msg.m19" alt=""> </div> 
+           <div class="mags">运营协议： <img class="logoImg" :src="msg.m20" alt=""> </div>               
+           <div class="mags">补充材料： <img class="logoImg"  v-for="(item, index) in msg.m21" :key="index" :src="item" alt=""></div>
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">结算信息</div>
        <div class="boxMsg">
-           <div class="mags" v-for="(r, index) in msg5" :key="index" >{{r.used}}：{{r.msgs}}</div>
+            <div class="mags">结算类型：{{msg.m22}}</div>
+            <div class="mags">结算户名：{{msg.m23}}</div>
+            <div class="mags">结算银行：{{msg.m24}}</div>
+            <div class="mags">结算账号：{{msg.m25}}</div>
         </div>
         <div class="gard1"><Gard /></div>
 
@@ -74,11 +86,7 @@
                 <el-button v-waves class="searchs" type="success"  @click="jihuosJump">激活商户</el-button>
                 <el-button v-waves class="searchs" type="warning"  @click="guanbiJump">关闭商户</el-button>
                
-            </div> 
-        
-        
-        
-        
+            </div>                      
         </div>
         <!-- 渠道配置结束 -->
     </div>
@@ -90,6 +98,7 @@ import waves from "@/directive/waves"; // 水波纹指令
 import uRLS from "../../../assets/wukai.jpg";
 export default {
   name: "Details1",
+  props: ["detailMsg"],
   directives: {
     waves
   },
@@ -102,44 +111,33 @@ export default {
       disabled: true,
       uRLS: uRLS,
       qudaoStore: "金桔联盟",
-      msg: [
-        { used: "渠道编号", msgs: "12545885285" },
-        { used: "渠道名称", msgs: "成都易付云金融科技" },
-        { used: "所属渠道", msgs: "金桔联盟" },
-        { used: "所属渠道商编号", msgs: "10000248898" }
-      ],
-      msg1: [
-        { used: "联系人", msgs: "刘德华" },
-        { used: "联系电话", msgs: "135400213254" },
-        { used: "电子邮箱", msgs: "2345@qq.com" },
-        { used: "经营类目", msgs: "企业/生活/购物" },
-        { used: "客服电话", msgs: "028-2201-000" }
-      ],
-      msg2: [
-        { used: "商户名称", msgs: "成都易付云金融科技" },
-        { used: "省份城市", msgs: "四川成都" },
-        { used: "详细地址", msgs: "高西新区" }
-      ],
-      msg3: [
-        { used: "法人信息", msgs: "张学友" },
-        { used: "身份证号", msgs: "5112012121252" },
-        { used: "身份证照片", msgsUrl: uRLS }
-      ],
-      msg4: [
-        { used: "营业执照编号", msgs: "12588dvfgththb45" },
-        { used: "营业期限", msgs: "2018-10-10~2018-20-10" },
-        { used: "营业范围", msgs: "家具。玩具" },
-        { used: "渠道类型", msgs: "家具、玩具" },
-        { used: "营业执照", msgsUrl: [uRLS, uRLS] },
-        { used: "运营协议", msgsUrl: [uRLS] },
-        { used: "补充材料", msgsUrl: [uRLS] }
-      ],
-      msg5: [
-        { used: "结算类型", msgs: "企业" },
-        { used: "结算户名", msgs: "金桔联盟" },
-        { used: "结算银行", msgs: "华夏银行" },
-        { used: "结算账号", msgs: "125 2252 222 2222" }
-      ],
+      msg: {
+        m1: "12545885285",
+        m2: "成都易付云金融科技",
+        m3: "金桔联盟",
+        m4: "10982983982989",
+        m5: "张学友",
+        m6: "135400213254",
+        m7: "2345@qq.com",
+        m8: "企业、十点多",
+        m9: "800-820-8820",
+        m10: "成都易付云金融科技",
+        m11: "四川成都",
+        m12: "高西新区",
+        m13: "张学友",
+        m14: "5112012121252",
+        m15: [uRLS, uRLS],
+        m16: "3jhjhj3ihjk3jlkjkl3jjkjlkj3jkljlkjl3jk",
+        m17: "2018-12-29～2088-12-30",
+        m18: "建设材料 / 装潢材料 / 日常用品 / 机电设备及配件 / 办公用品",
+        m19: uRLS,
+        m20: uRLS,
+        m21: [uRLS, uRLS],
+        m22: "企业",
+        m23: "金桔联盟",
+        m24: "华夏银行",
+        m25: "125 2252 222 2222"
+      },
       mataMsg: [
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",

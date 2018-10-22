@@ -1,12 +1,12 @@
 <template>
     <div class="filter-container" >      
            <div class="els">
-                <div class="grid-content">直营/连锁子商户名称：<el-input v-model="sonStoreName" style="width: 140px;" clearable></el-input></div>
-                <div class="grid-content">直营/连锁子商户编号：<el-input v-model="sonStoreNum" style="width: 140px;" clearable></el-input></div>
-                <div class="grid-content">连锁商户名称：<el-input v-model="storeName" style="width: 140px;" clearable></el-input></div>
-                <div class="grid-content">连锁商户编号：<el-input v-model="storeNum" style="width: 140px;" clearable></el-input></div>   
+                <div class="grid-content">直营/连锁子商户名称：<el-input v-model="searchList.sonStoreName" style="width: 140px;" clearable></el-input></div>
+                <div class="grid-content">直营/连锁子商户编号：<el-input v-model="searchList.sonStoreNum" style="width: 140px;" clearable></el-input></div>
+                <div class="grid-content">连锁商户名称：<el-input v-model="searchList.storeName" style="width: 140px;" clearable></el-input></div>
+                <div class="grid-content">连锁商户编号：<el-input v-model="searchList.storeNum" style="width: 140px;" clearable></el-input></div>   
                 <span class="userSearch"> 创建日期：</span> 
-                <el-date-picker v-model="date" type="daterange"  start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
+                <el-date-picker v-model="searchList.date" type="daterange"  start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
                 <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
           </div>
     </div>
@@ -14,6 +14,7 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
+import { searchDataMsg } from "@/api/datastatis";
 export default {
   name: "SearchStore",
   directives: {
@@ -21,32 +22,26 @@ export default {
   },
   data() {
     return {
-      sonStoreName: "",
-      sonStoreNum: "",
-      storeName: "",
-      storeNum: "",
-      date: "",
+      searchList: {
+        sonStoreName: "",
+        sonStoreNum: "",
+        storeName: "",
+        storeNum: "",
+        date: ""
+      },
+
       listLoading: false,
       listQuery: []
     };
   },
   methods: {
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
-      });
-    },
     //搜索功能
     handleFilter() {
-      this.getList();
+      console.log(this.searchList);
+      searchDataMsg(this.searchList).then(response => {
+        console.log(response);
+        this.$emit("channelSearch", response);
+      });
     }
   }
 };

@@ -62,18 +62,18 @@
         <el-dialog :visible.sync="dialogTableVisible2" custom-class='sssss' top="15vh"   width="500px" >
             <div class="diaTilte"><div class="titleMotai">编辑</div>
                <div class="item"><div class="abs">用户类型：</div><span>
-                    <select v-model="dataChosed.pushObj" class="selectBox"  @click="ss()" >
+                    <select v-model="dataAdd.pushObj" class="selectBox"  @click="ss()" >
                       <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
                     </select>                                
                 </span></div>             
-              <div class="item"><div class="abs">短信内容：</div><span class=" shuoms "><el-input type="textarea" placeholder="输入短信内容"  :autosize="{ minRows: 3, maxRows: 5}"  v-model="dataChosed.pushContent"></el-input></span></div>
+              <div class="item"><div class="abs">短信内容：</div><span class=" shuoms "><el-input type="textarea" placeholder="输入短信内容"  :autosize="{ minRows: 3, maxRows: 5}"  v-model="dataAdd.pushContent"></el-input></span></div>
               <div class="item"><div class="abs">推送机制：</div><span>
-                  <select v-model="dataChosed.mechanism" class="selectBox"  @click="ss()" >
+                  <select v-model="dataAdd.mechanism" class="selectBox"  @click="ss()" >
                       <option v-for="(a,index) in options1" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
                   </select>
                   </span></div>
               <div class="item"><div class="abs">触发条件：</div><span>
-                  <select v-model="dataChosed.triggerCondition" class="selectBox"  @click="ss()" >
+                  <select v-model="dataAdd.triggerCondition" class="selectBox"  @click="ss()" >
                      <option v-for="(a,index) in options2" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
                   </select>
                   </span></div>             
@@ -88,6 +88,8 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
+import { smsMsg, smsSubmit, deleted, merchantDownload } from "@/api/operation";
+
 export default {
   name: "SetModule",
   directives: {
@@ -108,6 +110,12 @@ export default {
       dialogTableVisible1: false,
       dialogTableVisible2: false,
       dataChosed: {
+        pushObj: "dis",
+        pushContent: "",
+        mechanism: "dis1",
+        triggerCondition: "dis2"
+      },
+      dataAdd: {
         pushObj: "dis",
         pushContent: "",
         mechanism: "dis1",
@@ -253,6 +261,17 @@ export default {
     this.getList();
   },
   methods: {
+    //获取结算模块基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("结算模块表格基本信息");
+      // smsMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     ss() {
       this.options[0].disabled = "disabled";
       this.options1[0].disabled = "disabled";
@@ -272,8 +291,11 @@ export default {
       console.log(data);
     },
     // 删除按钮
-    deleted() {
+    deleted(data) {
       alert("删除成功");
+      // deleted(data).then(res => {
+      //   console.log(res);
+      // })
     },
     // 新增按钮
     addSms() {
@@ -283,16 +305,11 @@ export default {
     submitAdd() {
       alert("提交成功");
       console.log(this.dataChosed);
+      // smsSubmit(this.dataChosed).then(res => {
+      //   console.log(res);
+      //
+      // })
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {

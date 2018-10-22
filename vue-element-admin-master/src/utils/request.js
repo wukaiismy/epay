@@ -1,34 +1,43 @@
-import axios from 'axios'
-import { Message } from 'element-ui'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
+import axios from "axios";
+import { Message } from "element-ui";
+import store from "@/store";
+import { getToken } from "@/utils/auth";
 
-// create an axios instance
+//  创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 5000 // request timeout
-})
-
-// request interceptor
+  timeout: 5000 //  请求超时时间
+});
+axios.defaults.headers.post["Content-Type"] =
+  "application/x-www-form-urlencoded";
+//整理数据
+axios.defaults.transformRequest = function(data) {
+  // data = Qs.stringify(data);
+  data = JSON.stringify(data);
+  return data;
+};
+// request拦截器
 service.interceptors.request.use(
   config => {
+    config.headers["Content-Type"] = "application/json;charset=UTF-8";
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers['X-Token'] = getToken()
+      config.headers["Authorization"] = getToken();
     }
-    return config
+    return config;
   },
   error => {
     // Do something with request error
-    console.log(error) // for debug
-    Promise.reject(error)
+    console.log(error); // for debug
+    Promise.reject(error);
   }
-)
+);
 
-// response interceptor
+//respone拦截器
 service.interceptors.response.use(
   response => response,
+
   /**
    * 下面的注释为通过在response里，自定义code来标示请求状态
    * 当code返回如下情况则说明权限有问题，登出并返回到登录页
@@ -63,14 +72,14 @@ service.interceptors.response.use(
   //   }
   // },
   error => {
-    console.log('err' + error) // for debug
+    console.log("err" + error); // for debug
     Message({
-      message: error.message,
-      type: 'error',
+      message: "请求服务器错误，请重试！",
+      type: "error",
       duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    });
+    return Promise.reject(error);
   }
-)
+);
 
-export default service
+export default service;

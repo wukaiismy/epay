@@ -1,18 +1,20 @@
 <template>
   <div class="navbars" id="qqq">
+    <!-- 侧导航栏的符号 -->
     <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
+   
       <div class="titles">官方后台</div>
+       <!--面包屑  -->
     <breadcrumb class="breadcrumb-container"/>
     <div class="right-menu">  
       <!-- 头部导航栏的相应部分 -->
-      <template  v-if="device!=='mobile'" >
-        
+      <template  v-if="device!=='mobile'" >        
       <div @click="downLoads" class="downloadBox  downLoads"><img class="downLoad" src="../../../assets/login/download.png" alt=""><span>下载</span></div>
       <div class="downloadBox kaifa"><img class="downLoad" src="../../../assets/login/developmentofthedocument.png" alt=""><span>开发文档</span></div>
       <div class="downloadBox caozuo"><img class="downLoad" src="../../../assets/login/operationmanual.png" alt=""><span>操作手册</span></div> 
       <div class="gards"></div>
-      <div class="downloadBox companyName" @click='userinfoShow'>成都易付云金融科技中心</div>
-      <div class="downloadBox numberId" @click="actBlog">100000366565.dt</div>
+      <div class="downloadBox companyName" @click='userinfoShow'>{{name}}</div>
+      <div class="downloadBox numberId" @click="actBlog">{{ids}}</div>
       <div class="gard1"></div>
       </template>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -34,8 +36,7 @@
     </div>
 
 <el-dialog :visible.sync="dialogTableVisible" id="bbb">
-  <div class="diaTilte"><img src="../../../assets/login/prompt.png" alt=""><span>报表文件生成后系统保留7天，过期自动删除</span></div>
-  
+  <div class="diaTilte"><img src="../../../assets/login/prompt.png" alt=""><span>报表文件生成后系统保留7天，过期自动删除</span></div> 
   <el-table :data="gridData" height="610" border class="titleTables" id='sss' >
     <el-table-column property="date" label="申请时间" width="190" align="center" ></el-table-column>
     <el-table-column property="types" label="类型" width="160" align="center"></el-table-column>
@@ -57,15 +58,16 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { navbarDownLoads } from "@/api/navbarMsg";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
-import ErrorLog from "@/components/ErrorLog";
+// import ErrorLog from "@/components/ErrorLog";
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger,
-    ErrorLog
+    Hamburger
+    // ErrorLog
   },
   data() {
     return {
@@ -123,20 +125,26 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["sidebar", "name", "avatar", "device"])
+    ...mapGetters(["sidebar", "name", "ids", "tel", "avatar", "device"])
   },
+  mounted() {},
   methods: {
     toggleSideBar() {
       this.$store.dispatch("toggleSideBar");
     },
     logout() {
-      this.$store.dispatch("LogOut").then(() => {
+      //退出登录
+      this.$store.dispatch("FedLogOut").then(() => {
         location.reload(); // In order to re-instantiate the vue-router object to avoid bugs
       });
     },
     // 点击下载按钮
     downLoads() {
       this.dialogTableVisible = true;
+      // 进行ajax请求、
+      TODO: navbarDownLoads().then(response => {
+        this.gridData = response.data;
+      });
     },
     // 模态框下载按钮
     handleClick(row, status) {

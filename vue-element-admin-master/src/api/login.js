@@ -1,29 +1,34 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
-export function loginByUsername(username, password) {
+export function loginByUsername(username, password, captcha, timestamp) {
+  console.log(666);
   const data = {
     username,
-    password
-  }
+    password,
+    captcha,
+    timestamp
+  };
+  console.log(data);
   return request({
-    url: '/login/login',
-    method: 'post',
+    url: "login/",
+    // url: "/login/login",
+    method: "post",
     data
-  })
+  });
 }
 
 export function logout() {
   return request({
-    url: '/login/logout',
-    method: 'post'
-  })
+    url: "/login/logout",
+    method: "post"
+  });
 }
 
 export function getUserInfo(token) {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
-  })
+    url: "userfile/",
+    // url: "/user/info",
+    method: "get"
+    // params: { token }
+  });
 }
-

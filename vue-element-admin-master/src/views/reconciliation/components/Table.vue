@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Search @addChain='addChain' />
+      <Search  @channelSearch='channelSearch' />
       <!-- 我是表格组件 -->
       <el-row :gutter="20">
         <el-col :span="16"> 
@@ -11,12 +11,12 @@
               <el-table-column property="tardNum" label="交易订单号"  align="center"></el-table-column>
               <el-table-column label="信条对账金额"  align="center">
                  <template slot-scope="scope">
-                  <span type="text" size="small" class="xiaz">￥{{scope.row.money1}}</span>
+                  <span type="text" size="small" class="xiaz">￥{{scope.row.money1| toThousandFilter}}</span>
                 </template>
               </el-table-column>
               <el-table-column  label="第三方对账金额"  align="center">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="xiaz">￥{{scope.row.money2}}</span>
+                  <span type="text" size="small" class="xiaz">￥{{scope.row.money2| toThousandFilter}}</span>
                 </template>
               </el-table-column>
               <el-table-column  label="异常类型"  align="center" width="95%">
@@ -55,7 +55,7 @@
       <el-col :span="8">    
           <!-- 下面是每个渠道商信息显示部门 -->
           <div class="rightMenu" v-show="isShow">
-            <Details />
+            <Details ref='detailShow' />
           </div>
       </el-col>
     </el-row>
@@ -66,22 +66,17 @@
 import Search from "./search.vue";
 import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import {
+  merchantMsg,
+  adoptPlatform,
+  adoptThird,
+  merchantDownload
+} from "@/api/reconciliation";
+
 export default {
   name: "Table",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -206,10 +201,21 @@ export default {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
+      // this.gridData = data;
+    },
+    //获取对账异常基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("对账异常表格基本信息");
+      // merchantMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
     //全选
     handleSelectionChange(val) {
@@ -219,38 +225,34 @@ export default {
     // 查看按钮
     passsubmit(data) {
       console.log("你点击了查看按钮");
-      console.log(data);
+      console.log(data.tardNum);
       this.isShow = true;
+      this.$refs.detailShow.getMsg(data.tardNum);
     },
 
     // 采纳平台按钮
     cainaJump() {
-      console.log("====================================");
       console.log("你点击了采纳平台按钮");
-      console.log("====================================");
+      // adoptPlatform(this.multipleSelection).then(res => {
+      //   console.log(res);
+      // });;
     },
     // 采纳第三方按钮
     sanfangJump() {
-      console.log("====================================");
       console.log("你点击了采纳第三方按钮");
-      console.log("====================================");
+      // adoptThird(this.multipleSelection).then(res => {
+      //   console.log(res);
+      // });;
     },
 
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      // merchantDownload(this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {
@@ -260,22 +262,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-    // 删除记录
-    handleModifyStatus(row, status) {
-      console.log(status);
-      console.log(row);
-
-      row.status = status;
-    },
-    // 导出功能
-    handleDownload() {
-      console.log("正在导出");
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
     }
   }
 };
@@ -291,7 +277,6 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-
 .xiaz {
   color: #1c3672;
 }
@@ -311,16 +296,12 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
 .pagination-container {
-  margin: 0 0 60px 2%;
+  margin: 22px 0 60px 100px;
 }
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {

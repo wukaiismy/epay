@@ -8,13 +8,19 @@
 </template>
 
 <script>
+import { EditDetail } from "@/api/operation";
 export default {
   name: "EditAgree",
+  props: ["dataEdit"],
   data() {
     return {
       channelName: "",
       channelType: ""
     };
+  },
+  mounted() {},
+  methods: {
+    getMsg() {}
   }
 };
 </script>

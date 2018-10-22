@@ -45,6 +45,8 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
+import { smsMsg, smsSubmit, deleted } from "@/api/operation";
+
 export default {
   name: "MsgRecord",
   directives: {
@@ -55,7 +57,6 @@ export default {
       pages: {
         currentPage: 5
       },
-      multipleSelection: [],
       value1: "",
       tableKey: 0,
       list: null,
@@ -170,6 +171,17 @@ export default {
     this.getList();
   },
   methods: {
+    //获取消息记录基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("消息记录表格基本信息");
+      // smsMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     //全选
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -184,23 +196,19 @@ export default {
     },
 
     // 删除按钮
-    deleted() {
+    deleted(data) {
       alert("删除成功");
+      // deleted(data).then(res => {
+      //   console.log(res);
+      // })
     },
     // 批量删除按钮
     addSms() {
       alert("批量删除成功");
+      // deleted(  this.multipleSelection).then(res => {
+      //   console.log(res);
+      // })
     },
-
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {

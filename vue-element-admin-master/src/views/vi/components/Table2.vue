@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Search @addChain='addChain' />
+      <Search  @channelSearch='channelSearch' />
       <!-- 我是表格组件 -->
         <div class="bigBoxs">
            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
@@ -13,7 +13,7 @@
               <el-table-column property="sotreQudao" label="所属渠道商"  align="center"></el-table-column>
               <el-table-column label="押金金额"  align="center"  width="95%">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney}}</span>
+                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
                 </template>
               </el-table-column>  
               <el-table-column  label="押金期限"  align="center"  width="80%">
@@ -23,12 +23,12 @@
               </el-table-column>
               <el-table-column label="押金笔数"  align="center"  width="95%">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum}}</span>
+                  <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum| toThousandFilter}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="押金总额"  align="center"  width="90%">
                   <template slot-scope="scope">
-                    <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeAllMoney}}</span>
+                    <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeAllMoney| toThousandFilter}}</span>
                 </template>
               </el-table-column>
               <el-table-column  label="状态"  align="center" width="80%" >
@@ -38,7 +38,7 @@
                   <span type="text" size="small" class="stopServer" v-if="scope.row.statuss==3">暂停服务</span>
                 </template>
               </el-table-column>      
-              <el-table-column  label="操作"   align="center" width="90%">
+              <el-table-column  label="操作"   align="center" width="100%">
                 <template slot-scope="scope" >
                   <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz" >详情</el-button>
                   <el-button type="text" size="small" class="shanchu" @click="returnsubmit(scope.row)">修改</el-button>
@@ -49,7 +49,7 @@
       <div class="allChose">
           <el-button v-waves class="searchs" plain type="primary" @click="jihuoJump">批量上架</el-button>
           <el-button v-waves class="searchs" plain  @click="passJump">批量下架</el-button>
-          <el-button v-waves class="searchs" type="danger" plain  @click="allJump">暂停服务</el-button>
+          <el-button v-waves class="searchs" type="danger" plain  @click="stopServes">暂停服务</el-button>
           <el-button v-waves class="searchs"  icon="el-icon-plus"  @click="AddJump">添加</el-button>
           <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button>
       </div> 
@@ -95,24 +95,24 @@
                   <span class="addSpan"><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.yaMoney" placeholder="请输入账户名称"></el-input></span>
               </div>
                <div class="item i1"><div class="abs abs1">押金期限：</div>
-                  <span class="addSpan"><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.Day" placeholder="请输入充值金额"></el-input>天</span>
+                  <span class="addSpan"><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.Day" placeholder="请输入充值金额"></el-input> 天</span>
               </div>
-              <div class="item i1"><div class="abs abs1">是否开通押金：</div>
+              <!-- <div class="item i1"><div class="abs abs1">是否开通押金：</div>
                  <span  class="addSpan cheeked">
                    <el-radio v-model="msg.kaitong" label="1">是</el-radio>
                    <el-radio v-model="msg.kaitong" label="2">否</el-radio>
                    <br>
                  </span>
-              </div>
-              <div class="item i1"><div class="abs abs1"></div>
+              </div> -->
+              <!-- <div class="item i1"><div class="abs abs1"></div>
                 <span class="addSpan shuoms ">设置后，到期自动解押；否则需要手动解押，押金结算只能在解押时才能发起扣款</span>
-              </div>
-              <div class="item i1"><div class="abs abs1">是否立即下架：</div>
+              </div> -->
+              <!-- <div class="item i1"><div class="abs abs1">是否立即下架：</div>
                  <span  class="addSpan">
                     <el-radio v-model="msg.xiajia" label="1">是</el-radio>                  
                     <el-radio v-model="msg.xiajia" label="2">否</el-radio>
                   </span>
-              </div>      
+              </div>       -->
                <div class="item i1"><div class="abs abs1">商家类型：</div>
                   <span class="addSpan"><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeType" placeholder="请输入商家类型"></el-input></span>
               </div>
@@ -132,7 +132,7 @@
        <!-- 添加模态框结束 -->
 
        <!-- 下面是修改模态框 -->  
-      <el-dialog :visible.sync="dialogTableVisible2"    width="680px" >
+      <!-- <el-dialog :visible.sync="dialogTableVisible2"    width="680px" >
             <div class="diaTilte d1"><div class="titleMotai">账户信息</div>
               <div class="item i1"><div class="abs abs1">账户名称：</div>
                   <span class="addSpan"><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeName" placeholder="请输入账户名称"></el-input></span>
@@ -167,39 +167,37 @@
               </div>
                <div class="item i1"> <div class="abs abs1">适用门店：</div>
                   <span class="addSpan ">押金账户将通用于所有门店</span>
-              </div>
+              </div> -->
                    
                 <!-- 下面是按钮 -->
-                 <div class="btnBox">
+                 <!-- <div class="btnBox">
                      <el-button class="btnsubs"   @click="submitChange">确认修改</el-button>
                      <el-button class="quXiao"  @click="quxiao">取消</el-button>                           
                  </div>  
               </div>             
-      </el-dialog>
+      </el-dialog> -->
 
     </div>
 </template>
 
 <script>
 import Search from "./search.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import {
+  merchantMsg,
+  merchantDetail,
+  merchantChange,
+  merchantPutaway,
+  merchantSoldOut,
+  merchantStop,
+  merchantAdd,
+  merchantDownload,
+  merchantChangeSubmit
+} from "@/api/vi";
 export default {
   name: "Table2",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -370,21 +368,34 @@ export default {
           rechargeAllMoney: "900000",
           statuss: "2"
         }
-      ]
+      ],
+      detailMsg: {},
+      changeMsg: {}
     };
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
+      // this.gridData = data;
+    },
+    //获取商户押金基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("商户押金表格基本信息");
+      var basicURL = "incoming/channellist/";
+      // merchantMsg(basicURL,"1").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
     //全选
     handleSelectionChange(val) {
@@ -393,35 +404,50 @@ export default {
     },
     // 详情按钮
     passsubmit(data) {
-      console.log("====================================");
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
       console.log(data);
-      console.log("====================================");
+      var detailURL = "incoming/channellist/";
+      // merchantDetail(detailURL,data.danbaoNum).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // });
     },
     // 修改按钮
     returnsubmit(data) {
       console.log("你点击了修改按钮");
       this.dialogTableVisible2 = true;
-      console.log(data);
+      // merchantChange(data.danbaoNum).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    // 暂停服务按钮
+    // 批量上架按钮
     jihuoJump() {
-      console.log("====================================");
-      console.log("你点击了暂停服务按钮");
-      console.log("====================================");
+      console.log("批量上架");
+      var PutawayURL = "incoming/channelact";
+      // merchantPutaway(PutawayURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
     // 批量下架按钮
     passJump() {
-      console.log("====================================");
-      console.log("你点击了批量下架按钮");
-      console.log("====================================");
+      console.log("批量下架");
+      var SoldOutURL = "incoming/channelact";
+      // merchantSoldOut(SoldOutURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    // 批量激活和通过按钮
-    allJump() {
-      console.log("====================================");
-      console.log("你点击了批量激活和通过");
-      console.log("====================================");
+    // 暂停服务按钮
+    stopServes() {
+      console.log("暂停服务");
+      var StopURL = "incoming/channelact";
+      // merchantStop(StopURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
     // 添加按钮
     AddJump() {
@@ -430,19 +456,13 @@ export default {
     },
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      var DownloadURL = "incoming/channelact";
+      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {
@@ -453,25 +473,14 @@ export default {
       console.log("选择分页");
       this.getList();
     },
-    // 删除记录
-    handleModifyStatus(row, status) {
-      console.log(status);
-      console.log(row);
 
-      row.status = status;
-    },
-    // 导出功能
-    handleDownload() {
-      console.log("正在导出");
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
-    },
     // 下面是添加模态框的方法
     submitAdd() {
       alert("添加成功");
+      // merchantAdd(this.msg).then(res => {
+      //   console.log(res);
+      //
+      // });
     },
     // 取消按钮
     quxiao() {
@@ -481,6 +490,9 @@ export default {
     //修改模态框提交
     submitChange() {
       alert("修改成功");
+      // merchantChangeSubmit(this.msg).then(res => {
+      //   console.log(res);
+      // });
     }
   }
 };
@@ -496,13 +508,12 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
 .xiaz {
   color: #1c3672;
 }
 .shanchu {
   color: #f6a623;
+  font-size: 14px;
 }
 .bigBoxs {
   width: 96.47%;
@@ -514,9 +525,7 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }

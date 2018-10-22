@@ -1,6 +1,6 @@
 <template>
     <div>
-       <Search @addChain='addChain' />
+       <Search  @channelSearch='channelSearch' />
        <!-- 我是表格组件 -->
       <div class="bigBoxs">
           <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData" border fit @selection-change="handleSelectionChange"  highlight-current-row style="width:100%;">
@@ -18,22 +18,22 @@
             </el-table-column>
             <el-table-column label="赠送金额"  align="center"  width="90%">
                <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.giveMoney}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.giveMoney| toThousandFilter}}</span>
               </template>
             </el-table-column>
             <el-table-column  label="充值数量"  align="center"  width="80%">
                <template slot-scope="scope">
-                 <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum}}</span>
+                 <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum| toThousandFilter}}</span>
                </template>
             </el-table-column>
             <el-table-column label="充值总额"  align="center"  width="95%">
                <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeAllMoney}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeAllMoney| toThousandFilter}}</span>
               </template>
             </el-table-column>
             <el-table-column label="赠送总额"  align="center"  width="90%">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.giveAllMoney}}</span>
+                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.giveAllMoney| toThousandFilter}}</span>
               </template>
             </el-table-column>
             <el-table-column  label="状态"  align="center" width="80%" >
@@ -54,7 +54,7 @@
      <div class="allChose">
        <el-button v-waves class="searchs" plain type="primary" @click="jihuoJump">批量上架</el-button>
        <el-button v-waves class="searchs" plain  @click="passJump">批量下架</el-button>
-       <el-button v-waves class="searchs" type="danger" plain  @click="allJump">暂停服务</el-button>
+       <el-button v-waves class="searchs" type="danger" plain  @click="stopServes">暂停服务</el-button>
        <el-button v-waves class="searchs"  icon="el-icon-plus"  @click="AddJump">添加</el-button>
        <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button>
       </div> 
@@ -104,7 +104,7 @@
               <div class="item"><div class="abs abs1">账户名称：</div> <span class="addSpan">
                  <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeName" placeholder="请输入账户名称"></el-input>
               </span></div>
-              <div class="item"><div class="abs abs1">优惠时段：</div><span class="addSpan">
+              <div class="item"><div class="abs abs1">有效日期：</div><span class="addSpan">
                   <el-date-picker v-model="msg.date" type="daterange" value-format="yyyy-MM-dd" size='small' style="width:46%; height:30px;"  range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期"> </el-date-picker>
               </span></div>
               <div class="item"><div class="abs abs1">充值金额：</div><span class="addSpan">
@@ -114,20 +114,22 @@
                   <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.giveMoney" placeholder="请输入赠送金额"></el-input>
               </span></div>
               <div class="item"><div class="abs abs1">消费扣款比例：</div><span class="addSpan">
-                <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.rate" placeholder="请输入扣款比例"></el-input></span>
+                <!-- <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.rate" placeholder="请输入扣款比例"></el-input> -->
+                 {{rate}}
+                </span>
               </div>
               <div class="item">
                   <div class="abs abs1">违约赔付比例：</div>
                   <span class="addSpan"><el-input  size="small"  style="width:8.8%; height:40px;" v-model="msg.rates" placeholder=""></el-input> &nbsp;％<i class="ratess">违约赔付比例在21％～41％之间</i>
               </span></div>
-              <div class="item"><div class="abs abs1">优惠是否自动翻倍：</div><span class="addSpan">
+              <!-- <div class="item"><div class="abs abs1">优惠是否自动翻倍：</div><span class="addSpan">
                     <el-radio v-model="msg.fanbei" label="1">是</el-radio>
                     <el-radio v-model="msg.fanbei" label="2">否</el-radio>
               </span></div>
               <div class="item"><div class="abs abs1">到期是否自动下架：</div><span class="addSpan">
                     <el-radio v-model="msg.xiajia" label="1">是</el-radio>
                     <el-radio v-model="msg.xiajia" label="2">否</el-radio>
-              </span></div>
+              </span></div> -->
                <div class="item"><div class="abs abs1">商家类型：</div><span class="addSpan">
                  <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeType" placeholder="请输入商家类型"></el-input>
               </span></div>
@@ -153,62 +155,6 @@
       </el-dialog>
        <!-- 添加模态框结束 -->
 
-       <!-- 下面是修改模态框 -->
-      <el-dialog :visible.sync="dialogTableVisible2"    width="680px" >
-            <div class="diaTilte d1"><div class="titleMotai">账户信息</div>
-              <div class="item"><div class="abs abs1">账户名称：</div><span class="addSpan">
-                  <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeName" placeholder="请输入账户名称"></el-input>
-              </span></div>
-              <div class="item"><div class="abs abs1">优惠时段：</div><span class="addSpan">
-                  <el-date-picker v-model="msg.date" type="daterange" value-format="yyyy-MM-dd" size='small' style="width:46%; height:30px;" range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-              </span></div>
-              <div class="item"><div class="abs abs1">充值金额：</div><span class="addSpan">
-                  <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.rechargeMoney" placeholder="请输入充值金额"></el-input>
-              </span></div>
-               <div class="item"><div class="abs abs1">赠送金额：</div><span class="addSpan">
-                    <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.giveMoney" placeholder="请输入赠送金额"></el-input>
-              </span></div>
-              <div class="item"><div class="abs abs1">消费扣款比例：</div><span class="addSpan">
-                  <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.rate" placeholder="请输入扣款比例"></el-input>
-              </span></div>
-              <div class="item"><div class="abs abs1">违约赔付比例：</div><span class="addSpan">
-                 <el-input  size="small"  style="width:8.8%; height:40px;" v-model="msg.rates" placeholder=""></el-input> &nbsp;％<i class="ratess">违约赔付比例在21％～41％之间</i>
-              </span></div>
-              <div class="item"><div class="abs abs1">优惠是否自动翻倍：</div><span  class="addSpan">
-                    <el-radio v-model="msg.fanbei" label="1">是</el-radio>
-                    <el-radio v-model="msg.fanbei" label="2">否</el-radio>
-              </span></div>
-              <div class="item"><div class="abs abs1">到期是否自动下架：</div><span class="addSpan">
-                    <el-radio v-model="msg.xiajia" label="1">是</el-radio>
-                    <el-radio v-model="msg.xiajia" label="2">否</el-radio>
-              </span></div>
-              <div class="item"><div class="abs abs1">账户状态：</div><span class="addSpan">
-                    <el-radio v-model="msg.xjStatus" label="1">上架</el-radio>
-                    <el-radio v-model="msg.xjStatus" label="2">下架</el-radio>
-              </span></div>
-              <div class="item"><div class="abs abs1">商家类型：</div><span class="addSpan">
-                <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeType" placeholder="请输入商家类型"></el-input>
-              </span></div>
-              <div class="item"><div class="abs abs1">商家名称：</div><span class="addSpan">
-                <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeNames" placeholder="请输入商家名称"></el-input>
-              </span></div>
-              <div class="item"><div class="abs abs1">适用门店：</div><span class="addSpan cheeked">
-                    <el-checkbox-group v-model="msg.checkList">
-                      <el-checkbox class="firstChild" label="科华北路店"></el-checkbox>
-                      <el-checkbox label="科华北路店B"></el-checkbox>
-                      <el-checkbox label="科华北路店C"></el-checkbox>
-                      <el-checkbox label="科华北路店"></el-checkbox>
-                      <el-checkbox label="科华北路店 B"></el-checkbox>
-                      <el-checkbox label="科华北路店 C"></el-checkbox>
-                  </el-checkbox-group>
-              </span></div>
-                <!-- 下面是按钮 -->
-              <div class="btnBox">
-                  <el-button class="btnsubs"   @click="submitChange">确认修改</el-button>
-                  <el-button class="quXiao"  @click="quxiao">取消</el-button>              
-              </div>  
-          </div>             
-      </el-dialog>
    </div>
 </template>
 
@@ -216,22 +162,21 @@
 import Search from "./search.vue";
 // import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import {
+  merchantMsg,
+  merchantDetail,
+  merchantChange,
+  merchantPutaway,
+  merchantSoldOut,
+  merchantStop,
+  merchantAdd,
+  merchantDownload,
+  merchantChangeSubmit
+} from "@/api/vi";
 export default {
   name: "Table",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -255,9 +200,6 @@ export default {
         giveMoney: "",
         rate: "",
         rates: "",
-        fanbei: "1",
-        xiajia: "1",
-        xjStatus: "2",
         storeType: "",
         storeNames: "",
         checkList: []
@@ -417,21 +359,41 @@ export default {
           giveAllMoney: "100000",
           statuss: "2"
         }
-      ]
+      ],
+      detailMsg: {},
+      changeMsg: {}
     };
   },
   components: {
     Search
-    // Details
+  },
+  computed: {
+    rate: function() {
+      var aa = this.msg.rechargeMoney + ":" + this.msg.giveMoney;
+      this.msg.rate = aa;
+      return aa;
+    }
   },
   created() {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
+      // this.gridData = data;
+    },
+    // 获取商户交易基本列表信息
+    getList() {
+      this.listLoading = true;
+      var basicURL = "incoming/channellist/";
+      console.log("商户交易表格基本信息");
+      // merchantMsg(basicURL,'1').then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
     //全选
     handleSelectionChange(val) {
@@ -440,35 +402,51 @@ export default {
     },
     // 详情按钮
     passsubmit(data) {
-      console.log("====================================");
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
       console.log(data);
-      console.log("====================================");
+      var detailURL = "incoming/channellist/";
+      // merchantDetail(detailURL,data.danbaoNum).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // });
     },
     // 修改按钮
     returnsubmit(data) {
       console.log("你点击了修改按钮");
       this.dialogTableVisible2 = true;
+      // merchantChange(data.danbaoNum).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
       console.log(data);
     },
-    // 暂停服务按钮
+    // 批量上架按钮
     jihuoJump() {
-      console.log("====================================");
-      console.log("你点击了暂停服务按钮");
-      console.log("====================================");
+      console.log("批量上架");
+      var PutawayURL = "incoming/channelact";
+      // merchantPutaway(PutawayURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
     // 批量下架按钮
     passJump() {
-      console.log("====================================");
-      console.log("你点击了批量下架按钮");
-      console.log("====================================");
+      console.log("批量下架");
+      var SoldOutURL = "incoming/channelact";
+      // merchantSoldOut(SoldOutURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    // 批量激活和通过按钮
-    allJump() {
-      console.log("====================================");
-      console.log("你点击了批量激活和通过");
-      console.log("====================================");
+    // 暂停服务按钮
+    stopServes() {
+      console.log("暂停服务");
+      var StopURL = "incoming/channelact";
+      // merchantStop(StopURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
     // 添加按钮
     AddJump() {
@@ -477,19 +455,13 @@ export default {
     },
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      var DownloadURL = "incoming/channelact";
+      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
 
     //分页功能选择
     handleSizeChange(val) {
@@ -500,25 +472,15 @@ export default {
       console.log("选择分页");
       this.getList();
     },
-    // 删除记录
-    handleModifyStatus(row, status) {
-      console.log(status);
-      console.log(row);
 
-      row.status = status;
-    },
-    // 导出功能
-    handleDownload() {
-      console.log("正在导出");
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
-    },
     // 下面是添加模态框的方法
     submitAdd() {
       alert("添加成功");
+      var AddURL = "incoming/channelreview";
+      // merchantAdd(AddURL,this.msg).then(res => {
+      //   console.log(res);
+      //
+      // });
     },
     // 取消按钮
     quxiao() {
@@ -528,6 +490,9 @@ export default {
     //修改模态框提交
     submitChange() {
       alert("修改成功");
+      // merchantChangeSubmit(this.msg).then(res => {
+      //   console.log(res);
+      // });
     }
   }
 };
@@ -543,8 +508,7 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
+
 .xiaz {
   color: #1c3672;
 }

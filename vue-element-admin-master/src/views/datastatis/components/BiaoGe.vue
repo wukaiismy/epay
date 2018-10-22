@@ -59,6 +59,7 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
+import { tebleMsg } from "@/api/datastatis";
 export default {
   name: "BiaoGe",
   directives: {
@@ -204,10 +205,16 @@ export default {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
-      console.log(data);
-      this.$emit("addChain", data);
+    // 获取基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("表格基本信息");
+      // tebleMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
 
     // 详情按钮
@@ -227,16 +234,6 @@ export default {
       this.$router.push({ path: "/trade/userRefund" });
     },
 
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
-
     //分页功能选择
     handleSizeChange(val) {
       this.getList();
@@ -245,13 +242,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-    // 删除记录
-    handleModifyStatus(row, status) {
-      console.log(status);
-      console.log(row);
-
-      row.status = status;
     }
   }
 };
@@ -268,9 +258,7 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }
@@ -308,94 +296,6 @@ export default {
   margin-bottom: 40px;
 }
 .moneyStyles {
-  font-size: 14px;
-  color: #1c3672;
-}
-/* 下面是模态框的样式*/
-.el-dialog,
-.sssss {
-  margin: 0 auto 20px;
-}
-.diaTilte {
-  position: relative;
-  text-align: center;
-  line-height: 36px;
-  font-size: 16px;
-  color: #1c3672;
-  width: 498px;
-  margin-bottom: 20px;
-  left: -4%;
-  top: -60px;
-}
-.d1 {
-  width: 678px;
-  left: -2.94%;
-}
-.titleMotai {
-  background: #f0f0f0;
-}
-.item {
-  position: relative;
-  padding: 1px 0 20px 0;
-  /* background-color: aqua; */
-  height: 20px;
-  text-align: left;
-  margin-top: 20px;
-}
-.item span {
-  font-size: 14px;
-  color: #333333;
-  margin-left: 44.2%;
-}
-.item .addSpan {
-  margin-left: 36.176%;
-}
-.abs {
-  position: absolute;
-  right: 55.8%;
-  font-size: 14px;
-  color: #999999;
-}
-.abs1 {
-  right: 63.82%;
-  color: #666666;
-}
-
-.item .shangjia {
-  color: #4990e2;
-}
-.ratess {
-  font-size: 12px;
-  color: #1c3672;
-  margin: 20px;
-}
-.cheeked {
-  display: inline-block;
-  width: 46.17%;
-}
-.firstChild {
-  margin-left: 35px;
-}
-.btnBox {
-  position: relative;
-  top: 100px;
-  width: 100%;
-  height: 40px;
-  margin: 30px auto 30px;
-}
-.btnsubs {
-  width: 240px;
-  height: 40px;
-  background-image: linear-gradient(-180deg, #ebf1fc 0%, #d1ddf6 100%);
-  border-radius: 4px;
-  font-size: 14px;
-  color: #1c3672;
-}
-.quXiao {
-  width: 240px;
-  height: 40px;
-  border: 1px solid #1c3672;
-  border-radius: 4px;
   font-size: 14px;
   color: #1c3672;
 }

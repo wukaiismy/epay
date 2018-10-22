@@ -1,6 +1,6 @@
 <template>
     <div>
-       <Search @addChain='addChain' />
+       <Search @channelSearch='channelSearch' />
        <!-- 我是表格组件 -->
        <div class="bigBoxs">
           <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
@@ -16,7 +16,7 @@
             <el-table-column property="sotreQudao" label="所属渠道商"  align="center"></el-table-column>
             <el-table-column label="押金总额"  align="center"  width="95%">
               <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.yajinAllMoney}}</span>
+                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.yajinAllMoney | toThousandFilter}}</span>
               </template>
             </el-table-column>      
             <el-table-column  label="状态"  align="center" width="80%" >
@@ -78,24 +78,17 @@
 
 <script>
 import Search from "./SearchUser.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import {
+  merchantMsg,
+  merchantDetail,
+  userUnpack,
+  merchantDownload
+} from "@/api/vi";
 export default {
   name: "Table3",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -270,21 +263,34 @@ export default {
           yajinAllMoney: "9000",
           statuss: "2"
         }
-      ]
+      ],
+      detailMsg: {},
+      changeMsg: {}
     };
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
+      // this.gridData = data;
+    },
+    // 获取用户押金基本列表信息
+    getList() {
+      this.listLoading = true;
+      var basicURL = "incoming/channellist/";
+      console.log("用户押金表格基本信息");
+      // merchantMsg(basicURL,"1").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
     //全选
     handleSelectionChange(val) {
@@ -293,42 +299,42 @@ export default {
     },
     // 详情按钮
     passsubmit(data) {
-      console.log("====================================");
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
-      console.log(data);
-      console.log("====================================");
+      var detailURL = "incoming/channellist/";
+      // merchantDetail(detailURL,data.userAccount).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // })
     },
     // 表格右边单个解压按钮
     jieyaJump1(data) {
-      console.log("====================================");
       console.log("你点击了单个解压");
-      console.log("====================================");
-      this.jieyaJump();
+      var UnpackURL = "incoming/channellist/";
+      // userUnpack(UnpackURL,data.userAccount ).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // })
     },
     // 解压按钮
     jieyaJump() {
-      console.log("====================================");
       console.log("你点击了解压");
-      console.log("====================================");
+      var UnpackURL = "incoming/channellist/";
+      // userUnpack(UnpackURL,this.multipleSelection ).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // })
     },
 
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      var DownloadURL = "incoming/channelact";
+      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
-
     //分页功能选择
     handleSizeChange(val) {
       this.getList();
@@ -337,24 +343,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
-    },
-    // 下面是添加模态框的方法
-    submitAdd() {
-      alert("添加成功");
-    },
-    // 取消按钮
-    quxiao() {
-      this.dialogTableVisible1 = false;
-      this.dialogTableVisible2 = false;
-    },
-    //修改模态框提交
-    submitChange() {
-      alert("修改成功");
     }
   }
 };
@@ -369,8 +357,6 @@ export default {
 .searchHandle {
   margin-left: 30px;
   margin-top: 5px;
-}
-.backspaces {
 }
 .xiaz {
   color: #1c3672;
@@ -388,9 +374,7 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }

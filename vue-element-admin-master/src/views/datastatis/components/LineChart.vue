@@ -80,6 +80,9 @@ export default {
     },
     setOptions({ expectedData, actualData } = {}) {
       this.chart.setOption({
+        title: {
+          text: "单位：万元"
+        },
         xAxis: {
           data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
           boundaryGap: false,

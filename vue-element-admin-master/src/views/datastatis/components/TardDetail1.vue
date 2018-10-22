@@ -7,16 +7,23 @@
             <div class="Gard"></div>
             <!-- 事件查询 -->
             <div class="searchBox">
-                   <el-button type="primary" icon="el-icon-search"  class="searchSubmit">搜索</el-button>
-                   <div class="datas"><span class="userSearch"> 时间：</span>  <el-date-picker width='140px'  v-model="date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker></div>      
-                   <el-button type="primary" plain  class="searchMonth">按月查询</el-button>
-                   <el-button type="primary" plain class="searchDay">按日查询</el-button>              
+                   <el-button type="primary"  @click="searchDate" icon="el-icon-search"  class="searchSubmit">搜索</el-button>
+                   <div class="datas"><span class="userSearch"> 时间：</span>
+                        <div class="dateBox"  v-show="dateType">
+                          <el-date-picker width='140px' value-format="yyyy-MM-dd" @change='change(1)'  v-model="date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
+                       </div>
+                       <div  class="dateBox" v-show="!dateType">
+                         <el-date-picker width='140px' value-format="yyyy-MM"  @change='change(2)'  v-model="date1" type="month" ></el-date-picker>                     
+                       </div>
+                     </div>      
+                   <el-button  @click="searchDay(1)" type="primary" plain  class="searchMonth">按月查询</el-button>
+                   <el-button  @click="searchDay(2)" type="primary" plain class="searchDay">按日查询</el-button>              
             </div>
             <div class="showMoney">
-              <ShowMoney  @handleSetLineChartData="handleSetLineChartData" />
+              <ShowMoney  @handleSetLineChartData="handleSetLineChartData" :searchMsg='searchMsg' />
             </div> 
             <!-- 下面是图表部分 -->
-            <div class="units">单位：万元</div> 
+            <!-- <div class="units">单位：万元</div>  -->
              <line-chart :chart-data="lineChartData"/>  
              <!-- 灰色间隔线 -->
               <div class="Gard1"></div>
@@ -29,6 +36,7 @@
 </template>
 
 <script>
+import { searchDay } from "@/api/datastatis";
 import CountTo from "vue-count-to";
 import Show1 from "./Show11";
 import ShowMoney from "./ShowMoney1";
@@ -57,7 +65,11 @@ export default {
   data() {
     return {
       date: "",
-      lineChartData: lineChartData.newVisitis
+      date1: "",
+      dateMsg: "",
+      lineChartData: lineChartData.newVisitis,
+      searchMsg: null,
+      dateType: true
     };
   },
   components: {
@@ -67,7 +79,49 @@ export default {
     LineChart,
     BiaoGe
   },
+  mounted() {
+    //  获取初始化数据
+    this.getMsgs();
+  },
   methods: {
+    //获取初始数据
+    getMsgs() {
+      // searchDay().then(res => {
+      //   console.log(res);
+      // this.searchMsg=res.data
+      // });
+    },
+    //按日、月查询
+    searchDay(index) {
+      if (index == "1") {
+        this.dateType = false;
+        this.datemsg = this.date1;
+      } else if (index == "2") {
+        // searchDay(data.payTardNum).then(res => {
+        //   console.log(res);
+        // this.searchMsg=res.data
+        // });
+        this.dateType = true;
+        this.datemsg = this.date;
+      }
+    },
+    change(index) {
+      console.log(6666);
+      if (index == "1") {
+        this.datemsg = this.date;
+      } else if (index == "2") {
+        this.datemsg = this.date1;
+      }
+    },
+    // 搜索按钮提交
+    searchDate() {
+      console.log(this.datemsg);
+
+      // searchDay(this.date).then(res => {
+      //   console.log(res);
+      // this.searchMsg=res.data
+      // });
+    },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type];
     }
@@ -109,5 +163,8 @@ export default {
   font-size: 14px;
   color: #1c3672;
   margin-left: 50px;
+}
+.dateBox {
+  display: inline-block;
 }
 </style>

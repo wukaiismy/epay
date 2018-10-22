@@ -1,6 +1,6 @@
 <template>
     <div id="dalos">
-         <Search @addChain='addChain' />
+         <Search  @channelSearch='channelSearch' />
          <!-- 我是表格组件 -->
          <div class="bigBoxs">
             <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit highlight-current-row style="width:100%;">      
@@ -13,7 +13,7 @@
                 <el-table-column property="qdName" label="渠道商名称"  align="center"></el-table-column>
                 <el-table-column  label="交易金额" width="85%"  align="center">
                   <template slot-scope="scope">
-                    <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney}}</span>
+                    <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
                   </template>
                 </el-table-column>
                   <el-table-column property="payFcu" label="支付方式"  align="center"></el-table-column>
@@ -75,31 +75,23 @@
 
 <script>
 import Search from "./Search.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import {
+  merchantMsg,
+  merchantDetail,
+  merchantDownload,
+  abOrderSubmit
+} from "@/api/vi";
 export default {
   name: "Table2",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
       pages: {
         currentPage: 5
       },
-
       multipleSelection: [],
       value1: "",
       tableKey: 0,
@@ -110,6 +102,7 @@ export default {
       dialogTableVisible1: false,
       dialogTableVisible2: false,
       msg: {
+        keyId: "",
         abReason: "",
         status: "1",
         detail: "",
@@ -265,7 +258,6 @@ export default {
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
@@ -276,32 +268,62 @@ export default {
       console.log(data);
       this.$emit("addChain", data);
     },
+    // 搜索按钮传值回来
+    channelSearch(data) {
+      console.log(data);
+      // this.gridData = data;
+    },
+    //获取异常订单基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("异常订单表格基本信息");
+      var basicURL = "incoming/channellist/";
+      // merchantMsg(basicURL,"1").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     //详情按钮
     handleClick(val) {
       this.multipleSelection = val;
       console.log(val);
       this.dialogTableVisible = true;
+      console.log("你点击了详情按钮");
+      var detailURL = "incoming/channellist/";
+      // merchantDetail(detailURL,data.tardNum).then(res => {
+      //   console.log(res);
+      // this.detailMsg=data
+      // });
     },
     //    异常订单处理
     abOrder(val) {
       console.log(val);
 
       this.dialogTableVisible1 = true;
+      this.msg.keyId = val.tardNum;
+    },
+    //  异常订单处理确认提交
+    submitAdd() {
+      console.log(this.msg);
+      alert("添加成功");
+      var abOrderURL = "incoming/channellist/";
+      // abOrderSubmit(abOrderURL,this.msg).then(res => {
+      //   console.log(res);
+
+      // });
     },
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
-      console.log("你点击了导出按钮");
-      console.log("====================================");
+      console.log("导出按钮");
+      var DownloadURL = "incoming/channellist/";
+      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // this.msg=data
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
+
     //搜索功能
 
     //分页功能选择
@@ -312,24 +334,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
-    },
-    // 下面是添加模态框的方法
-    submitAdd() {
-      alert("添加成功");
-    },
-    // 取消按钮
-    quxiao() {
-      this.dialogTableVisible1 = false;
-      this.dialogTableVisible2 = false;
-    },
-    //修改模态框提交
-    submitChange() {
-      alert("修改成功");
     }
   }
 };

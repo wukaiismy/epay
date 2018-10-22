@@ -1,11 +1,11 @@
 <template>
     <div>
-      <Search @addChain='addChain' />
+      <Search @addChain='addChain'  @channelSearch='channelSearch' />
       <!-- 我是表格组件 -->
       <el-row :gutter="20">
         <el-col :span="16"> 
           <div class="bigBoxs">
-            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
+            <el-table class="tableBox"  @current-change="handleCurrentpage" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
                 <el-table-column align="center" type="selection"  width="55"></el-table-column>
                 <el-table-column property="date" label="商户编号"  align="center" ></el-table-column>
                 <el-table-column property="types" label="连锁商户名称"  align="center"></el-table-column>
@@ -46,9 +46,9 @@
           </div>
       </el-col>
       <el-col :span="8">    
-    <!-- 下面是每个渠道商信息显示部门 -->
-     <div class="rightMenu">
-       <Details />
+    <!-- 下面是每个连锁子商户信息显示部门 -->
+     <div class="rightMenu" v-show="isshow">
+       <Details :detailMsg='detailMsg' />
      </div>
      </el-col>
    </el-row>
@@ -59,22 +59,21 @@
 import Search from "./search2.vue";
 import Details from "./Details2.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import {
+  channelMsg,
+  channelPass,
+  channelRejected,
+  channelVolumeActivation,
+  channelVolumePass,
+  channelALL,
+  channelVolumeRejected,
+  channelDownload,
+  channelDetail
+} from "@/api/intomanagement";
 export default {
   name: "Table2",
   directives: {
     waves
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   data() {
     return {
@@ -88,6 +87,7 @@ export default {
       list: null,
       total: 1,
       listLoading: true,
+      isshow: false,
       gridData: [
         {
           date: "125451251152",
@@ -188,7 +188,8 @@ export default {
           statuss: "1",
           statu1: "1"
         }
-      ]
+      ],
+      detailMsg: null
     };
   },
   components: {
@@ -204,6 +205,35 @@ export default {
       console.log(data);
       this.$emit("addChain", data);
     },
+    // 搜索按钮传值回来
+    channelSearch(data) {
+      console.log(data);
+      // this.gridData = data;
+    },
+    //  获取连锁子商户进件基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("连锁子商户进件表格基本信息");
+      let channelURL = "incoming/chainchildlist/";
+      channelMsg(channelURL).then(res => {
+        console.log(res);
+      });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
+    //选择当前行显示具体的信息
+    handleCurrentpage(val) {
+      console.log(val);
+      let channelDetailURL = "incoming/channelid";
+      channelDetail(channelDetailURL, val.date).then(res => {
+        console.log(res);
+        this.detailMsg = res.data;
+      });
+      //显示详细信息
+      console.log("显示详细信息");
+      this.isshow = true;
+    },
     //全选
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -211,56 +241,69 @@ export default {
     },
     // 单个通过按钮按钮
     passsubmit(data) {
-      console.log("====================================");
       console.log("你点击了单个通过按钮");
       console.log(data.types);
-      console.log("====================================");
+      var channelPassURL = "incoming/channelreview";
+      // channelPass(channelPassURL,data.date).then(res => {
+      //   console.log(res);
+      // });
     },
     // 单个驳回按钮
     returnsubmit(data) {
       console.log("你点击了单个驳回按钮");
-      console.log(data.types);
+      var channelRejectedURL = "incoming/channelturndown";
+      // channelRejected(channelRejectedURL,data.date).then(res => {
+      //   console.log(res);
+      // });
     },
     // 批量激活按钮
     jihuoJump() {
-      console.log("====================================");
-      console.log("你点击了批量激活");
-      console.log("====================================");
+      console.log("你点击了通过激活");
+      var channeljhURL = "incoming/channelact";
+      // channelVolumeActivation(channeljhURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // });
     },
     // 批量通过按钮
     passJump() {
-      console.log("====================================");
       console.log("你点击了通过激活");
-      console.log("====================================");
+      var channelAPassURL = "incoming/channelreview";
+      // channelVolumeActivation(channelAPassURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // });
     },
     // 批量激活和通过按钮
     allJump() {
-      console.log("====================================");
       console.log("你点击了批量激活和通过");
-      console.log("====================================");
+      var channelAllURL = "incoming/channelactandrev";
+      // channelALL(channelAllURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // });
     },
     // 批量驳回按钮
     bohuiJump() {
-      console.log("====================================");
-      console.log("你点击了批量驳回");
-      console.log("====================================");
+      var channelRejectedURL = "incoming/channelturndown";
+      // channelVolumeRejected(channelRejectedURL,this.multipleSelection).then(res => {
+      //   console.log(res);
+      // });
     },
     // 导出按钮
     daochuJump() {
-      console.log("====================================");
       console.log("你点击了导出按钮");
-      console.log("====================================");
+      let channelDownloadURL = "incoming/channeltoexcel/";
+      let dataList = [];
+      //导出时后台需要FormData格式的数据
+      var param = new FormData();
+      param.append("ids", [11477723]);
+      var aa = { ids: [11477723] };
+      // this.multipleSelection.forEach(function(v) {
+      //   dataList.push(v.date);
+      // });
+      // console.log(dataList);
+      // channelDownload(channelDownloadURL,param).then(res => {
+      //   console.log(res);
+      // });
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
-    //搜索功能
-
     //分页功能选择
     handleSizeChange(val) {
       this.getList();
@@ -269,22 +312,6 @@ export default {
     handleCurrentChange(val) {
       console.log("选择分页");
       this.getList();
-    },
-    // 删除记录
-    handleModifyStatus(row, status) {
-      console.log(status);
-      console.log(row);
-
-      row.status = status;
-    },
-    // 导出功能
-    handleDownload() {
-      console.log("正在导出");
-    },
-
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
     }
   }
 };
@@ -322,7 +349,7 @@ export default {
   /* height: 43px; */
 }
 .pagination-container {
-  margin: 0 0 60px 2%;
+  margin: 20px 0 60px 150px;
 }
 .allChose {
   width: 100%;

@@ -1,6 +1,6 @@
 <template>
     <div id="dalos">
-     <Search @addChain='addChain' />
+     <Search  @channelSearch='channelSearch' />
       <!-- 我是表格组件 -->
      <div class="bigBoxs">
        <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  border fit highlight-current-row style="width:100%;">      
@@ -22,9 +22,13 @@
             <el-table-column  label="操作"   align="center" >
                 <template slot-scope="scope" >
                     <el-button  type="text" size="small" class="xiaz" @click="handleClick(scope.row)"  v-if="scope.row.statuss==1">处理详情</el-button>
-                    <div v-else>
-                        <el-button  type="text" size="small" class="xiaz" @click="handleClick(scope.row)" >风险分析</el-button> 
-                        <el-button  type="text" size="small" class="xiaz" @click="handleClick(scope.row)" >已暂停服务</el-button>     
+                    <div  v-if="scope.row.statuss==2">
+                        <el-button  type="text" size="small" class="ppss" @click="handleClick(scope.row)" >风险分析</el-button> 
+                        <el-button  type="text" size="small" class="shanchu" @click="stopClick(scope.row)" >暂停服务</el-button>     
+                     </div>
+                     <div v-if="scope.row.statuss==3||scope.row.statuss==4">
+                        <el-button  type="text" size="small" class="ppss" @click="handleClick(scope.row)" >风险分析</el-button> 
+                        <el-button  type="text" size="small" class="noppss"  >已暂停服务</el-button>     
                      </div>
                 </template>
             </el-table-column>        
@@ -41,62 +45,62 @@
     <!-- 主体内容结束 -->
 
      <!-- 下面是详情模态框 -->
-     <el-dialog :visible.sync="dialogTableVisible" custom-class='sssss' top="10vh"   width="500px" >
+     <el-dialog :visible.sync="dialogTableVisible" custom-class='sssss' top="20vh"   width="500px" >
        
-        <div class="diaTilte"><div class="titleMotai">商户信息</div>
-            <div class="item"><div class="abs">创建日期：</div><span>2017-10-01 10:10:10</span></div>
-            <div class="item"><div class="abs">交易日期：</div><span>2017-10-01 10:10:10</span></div>
-            <div class="item"><div class="abs">商户类型：</div><span>连锁商户</span> </div>
-            <div class="item"><div class="abs">支付方式：</div><span>担保账户支付</span></div>
-            <div class="item"><div class="abs">连锁/直营商户名称：</div><span>万达集团</span></div>
-            <div class="item"><div class="abs">连锁/直营商户编号：</div><span>2001215487965221</span></div>
-            <div class="item"><div class="abs">子商户名称：</div><span>金桔联盟</span></div>
-            <div class="item"><div class="abs">子商户编号：</div><span>90215487965221</span></div>
-            <div class="item"><div class="abs">所属渠道商：</div><span>成都易付云公司</span></div>
-            <div class="item"><div class="abs">渠道商编号：</div><span>10015487965221</span></div>
-            <div class="item"><div class="abs">所属银行：</div><span>上海银行</span></div>
-        </div>
-      
-        <div class="diaTilte title2"><div class="titleMotai">结算信息</div>
-            <div class="item"><div class="abs">平台子账户：</div><span>10015487965221</span></div>
-            <div class="item"><div class="abs">结算状态：</div><span class="shangjia">结算成功</span></div>
-            <div class="item"><div class="abs">结算金额：</div><span>￥3000.00</span></div>
-            <div class="item"><div class="abs">结算类型：</div><span>企业</span></div>
-            <div class="item"><div class="abs">结算户名：</div><span>张学友</span></div>
-            <div class="item"><div class="abs">结算银行：</div><span>上海银行</span></div>
-            <div class="item"><div class="abs">结算账户：</div><span>200 22251 00265 222</span></div>
+        <div class="diaTilte"><div class="titleMotai">风险原因</div>
+            <div class="item"><div class="abs">交易频率：</div><span>3.41</span></div>
+            <div class="item"><div class="abs">高频次分析：</div><span>固定范围内用户高频次交易</span></div>
+            <div class="item"><div class="abs">高频次体现：</div><span>无</span> </div>            
+        </div>      
+        <div class="diaTilte title2"><div class="titleMotai">处理记录</div>
+            <div class="item1">2018-12-30 24:24:24   系统暂停服务</div>
+            <div class="item1">2018-12-30 24:24:24   系统暂停服务 ，运营已核实，什么什么原因  </div>
+            <div class="item1">2018-12-30 24:24:24   系统暂停服务 ，运营已核实，什么什么原因  </div>
+            
        </div>          
       </el-dialog> 
+       <!-- 详情模态框结束 -->
+        <!-- 下面是暂停模态框 -->
+     <el-dialog :visible.sync="dialogTableVisible1" custom-class='sssss' top="20vh"   width="500px" >       
+        <div class="diaTilte"><div class="titleMotai">风险原因</div>
+            <div class="item"><div class="abs">交易频率：</div><span>3.41</span></div>
+            <div class="item"><div class="abs">高频次分析：</div><span>固定范围内用户高频次交易</span></div>
+            <div class="item"><div class="abs">高频次体现：</div><span>无</span> </div>            
+        </div>      
+        <div class="diaTilte title2"><div class="titleMotai">处理记录</div>
+            <div class="item1">2018-12-30 24:24:24   系统暂停服务</div>
+            <div class="item1">2018-12-30 24:24:24   系统暂停服务 ，运营已核实，什么什么原因  </div>
+            <div class="item1">2018-12-30 24:24:24   系统暂停服务 ，运营已核实，什么什么原因  </div>
+            <div class="item1">
+              <el-input type="textarea" style="width: 460px;" :autosize="{ minRows: 6, maxRows: 7}" placeholder="请输入内容" v-model="textarea3"></el-input>
+            </div>
+             <!-- 下面的选择按钮 -->
+       <div class="item1 submit">      
+          <el-button v-waves class="submmitBtn"   @click="submmitBtn">提交</el-button>
+          <el-button v-waves class="stopBtn"    @click="stopBtn">暂停服务</el-button>
+       </div> 
+       </div>          
+      </el-dialog> 
+       <!-- 暂停模态框结束 -->
  </div>
 </template>
 
 <script>
 import Search from "./Search.vue";
-// import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import { MerchantRiskMsg } from "@/api/monitorCenter";
 export default {
   name: "Table",
   directives: {
     waves
   },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
-  },
+
   data() {
     return {
       pages: {
         currentPage: 5
       },
-
+      textarea3: "",
       multipleSelection: [],
       value1: "",
       tableKey: 0,
@@ -217,44 +221,60 @@ export default {
           riskType: "洗钱",
           statuss: "1"
         }
-      ]
+      ],
+      detailMsg: {},
+      changeMsg: {}
     };
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
+    // 搜索按钮传值回来
+    channelSearch(data) {
       console.log(data);
-      this.$emit("addChain", data);
+      // this.gridData = data;
     },
-
+    //获取商户风险基本列表信息
+    getList() {
+      this.listLoading = true;
+      console.log("商户风险表格基本信息");
+      // MerchantRiskMsg("id").then(res => {
+      //   console.log(res);
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
+    },
     //详情按钮
     handleClick(val) {
       this.multipleSelection = val;
       console.log(val);
       this.dialogTableVisible = true;
     },
-
+    // 暂停服务
+    stopClick(val) {
+      console.log(val);
+      this.dialogTableVisible1 = true;
+    },
+    // 模态框暂停风险的提交按钮
+    submmitBtn() {
+      console.log("你点击了提交按钮");
+    },
+    // 模态框暂停风险的暂停服务按钮
+    stopBtn() {
+      console.log("你点击了暂停服务按钮");
+    },
     // 导出按钮
     daochuJump() {
       console.log("====================================");
       console.log("你点击了导出按钮");
       console.log("====================================");
     },
-    //   获取数据啊
-    getList() {
-      this.listLoading = true;
-      // Just to simulate the time of the request
-      setTimeout(() => {
-        this.listLoading = false;
-      }, 1.5 * 1000);
-    },
+
     //搜索功能
 
     //分页功能选择
@@ -298,12 +318,13 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
+
 .xiaz {
+  font-size: 14px;
   color: #1c3672;
 }
 .shanchu {
+  font-size: 14px;
   color: #f6a623;
 }
 .bigBoxs {
@@ -316,16 +337,13 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {
@@ -349,13 +367,7 @@ export default {
   font-size: 14px;
   color: #d0011b;
 }
-.rightMenu {
-  width: 96%;
-  padding-bottom: 50px;
-  background-color: #fff;
-  display: inline-block;
-  margin-bottom: 40px;
-}
+
 .moneyStyles {
   font-size: 14px;
   color: #1c3672;
@@ -363,6 +375,7 @@ export default {
 /* 下面是模态框的样式*/
 #dalos .el-dialog__wrapper .el-dialog {
   margin: 0 auto 50px !important;
+  padding: 0 20px 0 20px;
 }
 .diaTilte {
   position: relative;
@@ -390,6 +403,20 @@ export default {
   text-align: left;
   margin-top: 10px;
 }
+.item1 {
+  position: relative;
+  padding: 1px 20px 0px 20px;
+  /* background-color: aqua; */
+  min-height: 20px;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666666;
+  line-height: 20px;
+}
+.submit {
+  margin-top: 30px;
+}
 .item span {
   font-size: 14px;
   color: #333333;
@@ -414,5 +441,22 @@ export default {
 }
 .chulz {
   color: #f6a623;
+}
+.submmitBtn {
+  background-image: linear-gradient(-180deg, #d1ddf6 0%, #ebf1fc 100%);
+  border-radius: 4px;
+  font-size: 14px;
+  color: #1c3672;
+  width: 180px;
+  height: 36px;
+}
+.stopBtn {
+  border: 1px solid #d0011b;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #d0011b;
+  width: 180px;
+  height: 36px;
+  margin-left: 30px;
 }
 </style>

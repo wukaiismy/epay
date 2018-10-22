@@ -43,9 +43,11 @@
           <el-date-picker
             v-model="value6"
             type="daterange"
+            value-format="yyyy-MM-dd"
             range-separator="~"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change='submitDate'
             :default-time="['00:00:00', '23:59:59']">
           </el-date-picker>
       </div>
@@ -58,6 +60,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { allMsgList, dateSearch } from "@/api/home";
 import PanelGroup from "./components/PanelGroup";
 import UserOverview from "./components/UserOverview";
 import LineChart from "./components/LineChart";
@@ -92,23 +95,49 @@ export default {
   computed: {
     ...mapGetters(["roles", "device"])
   },
-  created() {
-    if (!this.roles.includes("admin")) {
-      this.currentRole = "editorDashboard";
-    }
+
+  mounted() {
+    this.getMsg();
   },
   methods: {
+    // 获取主页面基本信息
+    getMsg() {
+      // allMsgList(this.listQuery).then(res => {
+      //  console.log(res)
+      // }
+    },
+    //子组件选择的值上传同时改变图标的数据
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type];
     },
     // 选择本月或者本周的数据
     slected(index) {
       this.isSlectd = index;
+      if (index == "1") {
+        console.log("你选择了本周数据");
+      } else if (index == "1") {
+        console.log("你选择了本周数据");
+      }
+      // 查询数据
+      var dateUrl = "incoming/channellist/";
+      dateSearch(dateUrl, index).then(res => {
+        console.log(res);
+        // this.detailMsg = res.data;
+      });
+    },
+    //选择时间进行查询
+    submitDate(val) {
+      console.log(val);
+      // 查询数据
+      var dateUrl = "incoming/channellist/";
+      dateSearch(dateUrl, val).then(res => {
+        console.log(res);
+        // this.detailMsg = res.data;
+      });
     },
     // 查看操作日志
     actBlog() {
       console.log("查看操作日志");
-
       this.$store.dispatch("componentsId", "operationblog");
     }
   }
@@ -146,10 +175,11 @@ export default {
   // padding: 16px 20px 0 20px;
   margin: 32px auto;
   .echarTitle {
-    font-size: 16px;
+    font-size: 18px;
     color: #1c3672;
     margin-top: 10px;
     text-align: center;
+    font-weight: 600;
   }
   .showData {
     font-size: 16px;

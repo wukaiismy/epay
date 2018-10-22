@@ -15,12 +15,12 @@
        <el-button v-waves  class="filter-item searchHandle" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
        <el-button v-waves  class="filter-item searchHandle" type="danger" icon="el-icon-warning" @click="deleted">删除记录</el-button>
        <el-button v-waves  class="filter-item searchHandle backspaces" type="warning" icon="el-icon-close" @click="exitss">退出</el-button>
-    </div>
+    </div> 
 
     <el-table
       v-loading="listLoading"
       :key="tableKey"
-      :data="list"
+      :data="gridData"
       border
       fit
       @selection-change="handleSelectionChange"
@@ -31,35 +31,35 @@
       type="selection"
       width="55">
     </el-table-column>
-      <el-table-column label="序号" align="center" width="100">
-        <template slot-scope="scope">
+      <el-table-column label="序号"  type="index" align="center" width="100%">
+        <!-- <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
-        </template>
+        </template> -->
       </el-table-column>
-      <el-table-column label="登录时间" width="250px" align="center">
+      <el-table-column label="登录时间" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row.date  }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="登录账号" width="350px">
+      <el-table-column label="登录账号"   align="center">
         <template slot-scope="scope">
-          <span class="link-type">{{ scope.row.title }}</span>
+          <span >{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="登录地点" width="350px" align="center">
+      <el-table-column label="登录地点"  align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
       
-      <el-table-column label="IP" width="306px"  align="center">
+      <el-table-column label="IP"  align="center">
         <template slot-scope="scope">
-          <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" class="meta-item__icon"/>
+          <span>{{ scope.row.ip }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作情况" align="center" width="250px">
+      <el-table-column label="操作情况" align="center" >
         <template slot-scope="scope">
-          <span v-if="scope.row.pageviews" class="link-type">{{ scope.row.pageviews }}</span>
+          <span v-if="scope.row.pageviews" >{{ scope.row.pageviews }}</span>
           <span v-else>0</span>
         </template>
       </el-table-column>    
@@ -67,13 +67,13 @@
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination  :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
   </div>
 </template>
 
 <script>
-import { fetchList } from "@/api/article";
+import { fetchList, searchList, deletedList, DownloadList } from "@/api/home";
 import waves from "@/directive/waves"; // 水波纹指令
 import { parseTime } from "@/utils";
 
@@ -82,71 +82,112 @@ export default {
   directives: {
     waves
   },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
-  },
+
   data() {
     return {
+      gridData: [
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        },
+        {
+          id: "111",
+          date: "2018-09-10 10:11：00",
+          title: "100000451920.mch",
+          author: "四川省成都市",
+          ip: "192.168.2.112",
+          pageviews: "回家打卡"
+        }
+      ],
       multipleSelection: [],
       value1: "",
       tableKey: 0,
       list: null,
-      total: null,
+      total: 100,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        page: 5,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
         sort: "+id"
-      },
-      importanceOptions: [1, 2, 3],
-
-      sortOptions: [
-        { label: "ID Ascending", key: "+id" },
-        { label: "ID Descending", key: "-id" }
-      ],
-      statusOptions: ["published", "draft", "deleted"],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        importance: 1,
-        remark: "",
-        timestamp: new Date(),
-        title: "",
-        type: "",
-        status: "published"
-      },
-
-      textMap: {
-        update: "Edit",
-        create: "Create"
-      },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        type: [
-          { required: true, message: "type is required", trigger: "change" }
-        ],
-        timestamp: [
-          {
-            type: "date",
-            required: true,
-            message: "timestamp is required",
-            trigger: "change"
-          }
-        ],
-        title: [
-          { required: true, message: "title is required", trigger: "blur" }
-        ]
       }
     };
   },
@@ -154,57 +195,65 @@ export default {
     this.getList();
   },
   methods: {
-    //全选
+    //选择行
     handleSelectionChange(val) {
       this.multipleSelection = val;
       console.log(val);
+      console.log(111);
     },
-    //   获取数据啊
+    //   获取初始化数据，每当搜索或者点击分页时都会执行一次
     getList() {
       this.listLoading = true;
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items;
-        this.total = response.data.total;
+      // fetchList(this.listQuery).then(response => {
+      //   this.list = response.data.items;
+      //   this.total = response.data.total;
 
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
-      });
+      //   // Just to simulate the time of the request
+
+      // });
+      setTimeout(() => {
+        this.listLoading = false;
+      }, 1.5 * 1000);
     },
     //搜索功能
     handleFilter() {
       this.listQuery.page = 1;
-      this.getList();
+      // ajax请求后,
+      // searchList(this.listQuery).then(res => {
+      //  console.log(res)}
+      // this.getList();
     },
-    //分页功能选择
+    //分页功能选择 ，和搜索api一样
     handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
       this.listQuery.limit = val;
+      // searchList(this.listQuery).then(res => {
+      //  console.log(res)
       this.getList();
     },
-    //分页功能选择
+    //分页功能选择 ，和搜索api一样
     handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
       this.listQuery.page = val;
+      // searchList(this.listQuery).then(res => {
+      //  console.log(res)
       this.getList();
     },
-    // 删除记录
-    handleModifyStatus(row, status) {
-      console.log(status);
-      console.log(row);
 
-      row.status = status;
-    },
     // 导出功能
     handleDownload() {
       console.log("正在导出");
     },
+    //删除功能
+    deleted() {
+      //  删除功能
+      console.log(this.multipleSelection);
+      // deletedList(this.multipleSelection).then(res => {
+      //  console.log(res)
+    },
     // 退出按钮
     exitss() {
       this.$store.dispatch("componentsId", "adminDashboard");
-    },
-    //删除功能
-    deleted() {
-      console.log(this.multipleSelection);
     }
   }
 };
