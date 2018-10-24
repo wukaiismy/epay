@@ -13,10 +13,10 @@
             <img class="lines" :src="lines" alt="">
            <!-- 下面是展示部分 -->
            <div class="showBoxs" v-show="isShow1">
-               <div class="items"><div class="titles">渠道所属银行：</div>
+               <div class="items"><div class="titles">商户所属银行：</div>
                   <span><el-input  size="small"  style="width:19.375%; height:40px;" v-model="msg.bank" placeholder="请输入银行"></el-input></span>
                </div>
-               <div class="items"><div class="titles">渠道名称：</div>
+               <div class="items"><div class="titles">商户名称：</div>
                    <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.name" placeholder="请与营业执照一致，最长100字符"></el-input></span>
                </div>
                <div class="items"><div class="titles">营业执照编号：</div>
@@ -27,9 +27,9 @@
                </div>
                <div class="items"><div class="titles">公司地址：</div>
                  <span>
-                     <el-input  size="small" @change='changeAdress'  style="width:10.4%; height:40px; margin-right: 10px; " v-model="pre" placeholder="省份"></el-input>
-                     <el-input  size="small" @change='changeAdress' style="width:10.4%; height:40px; margin-right: 10px;" v-model="shi" placeholder="市"></el-input>
-                     <el-input  size="small" @change='changeAdress' style="width:10.4%; height:40px;" v-model="qu" placeholder="区"></el-input>
+                     <el-input  size="mini" @change='changeAdress'  style="width:10.4%; height:40px; margin-right: 10px; " v-model="pre" placeholder="省份"></el-input>
+                     <el-input  size="small" @change='changeAdress'  style="width:10.4%; height:40px; margin-right: 10px;" v-model="shi" placeholder="市"></el-input>
+                     <el-input  size="small" @change='changeAdress'  style="width:10.4%; height:40px;" v-model="qu" placeholder="区"></el-input>
                  </span>
                </div>
                <div class="items"><div class="titles">详细地址：</div>
@@ -39,14 +39,13 @@
                <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.business_scope" placeholder="请填写营业范围"></el-input></span>
                </div>
                <div class="items"><div class="titles">营业执照：</div>
-                   <span >
+                   <span>
                      <img class="logoImg" v-show="license_image.length" :src="license_image" alt="">
                      <img class="logoImg"  src="../../../assets/jinjian/business.png" alt="" @click.stop="uploadHeadImg('.hiddenInput')">
                      <input  type="file" accept="image/*" @change="handleFile" class="hiddenInput"/>
                      <br>
                      <span class="shuoM">请上传营业执照或扫描件（图片不得＞1mb,格式为png,jpg,jpge)</span>
                     </span>
-                  
                </div>               
                <div class="items"><div class="titles">法人姓名：</div>
                <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.legal_name" placeholder="请输入法人姓名"></el-input></span>
@@ -56,7 +55,7 @@
                </div>
                <div class="items"><div class="titles">法人身份证扫描件：</div>
                 <span>
-                     <img class="logoImg1"  v-for="(p, index) in legal_id_card_img" :key="index"  @click="deleted(index)" v-show="legal_id_card_img.length" :src="p" alt="">
+                     <img class="logoImg1" @click="deleted(index)"  v-for="(p, index) in legal_id_card_img" :key="index" v-show="legal_id_card_img.length" :src="p" alt="">
                     <img class="logoImg1"  src="../../../assets/jinjian/idcard.png" alt="" @click.stop="uploadHeadImg('.hiddenInput1')">
                     <input  type="file" accept="image/*" @change="handleFile" class="hiddenInput1"/>
                      <br>
@@ -106,7 +105,7 @@
                <div class="items"><div class="titles">补充材料：</div>
                <span class="showImg">
                      <img class="logoImg1 l1"  @click="deleted1(index)"  v-for="(p, index) in supplement" :key="index" v-show="supplement.length" :src="p" alt="">
-                    <img class="logoImg1 l2"  src="../../../assets/jinjian/idcard.png" alt="" @click.stop="uploadHeadImg('.hiddenInput4')">
+                    <img class="logoImg1 l1"  src="../../../assets/jinjian/idcard.png" alt="" @click.stop="uploadHeadImg('.hiddenInput4')">
                     <input  type="file" accept="image/*" @change="handleFile" class="hiddenInput4"/>
                      <br>
                      <div class="shuoM">为了尽快通过审核，请尽可能完善补充材料的上传，最多9张</div>
@@ -121,7 +120,7 @@
                <div class="items"><div class="titles">通道费率：</div>
                   <span><el-input  size="small"  style="width:8.34%; height:40px;" v-model="msg.rate" placeholder=""></el-input><i style="margin-left:10px;">‰</i></span>
                </div> 
-               <div class="items"><div class="titles">结算类型：</div><span class="ssa">
+               <div class="items"><div class="titles">结算类型：</div><span  class="ssa">
                     <el-radio v-model="msg.clear_type" label="1">个人</el-radio>
                     <el-radio v-model="msg.clear_type" label="2">企业</el-radio>
                    </span></div>
@@ -145,20 +144,17 @@
 </template>
 
 <script>
-import { addChannel, imgUp } from "@/api/intomanagement";
+import { addChannel } from "@/api/intomanagement";
 import lines1 from "../../../assets/login/line.png";
 import lines2 from "../../../assets/login/line2.png";
 import lines3 from "../../../assets/login/line3.png";
 // import photos from "../../../assets/wukai.jpg";
 import Back from "@/components/Back";
-import axios from "axios";
 export default {
-  name: "AddChain",
+  name: "AddChain3",
   components: { Back },
   data() {
     return {
-      dialogImageUrl: "",
-      dialogVisible: false,
       dialogImageUrl: "",
       dialogVisible: false,
       lines: lines1,
@@ -205,13 +201,6 @@ export default {
     };
   },
   methods: {
-    // handleRemove(file, fileList) {
-    //   console.log(file, fileList);
-    // },
-    // handlePictureCardPreview(file) {
-    //   this.dialogImageUrl = file.url;
-    //   this.dialogVisible = true;
-    // },
     //返回进件主页面
     backJump() {
       this.$emit("addChain", "Table");
@@ -266,8 +255,8 @@ export default {
     //提交按钮
     submit() {
       console.log(this.msg);
-      alert("渠道商进件添加");
-      let addURL = "incoming/channelup/";
+      alert("连锁商进件添加");
+      var addURL = "incoming/merchantup/";
       addChannel(addURL, this.msg).then(res => {
         console.log(res);
         // 成功后返回渠道商主页面组件
@@ -282,11 +271,9 @@ export default {
     handleFile: function(e) {
       let $target = e.target || e.srcElement;
       let file = $target.files[0];
-      console.log(file);
       var reader = new FileReader();
       reader.onload = data => {
         let res = data.target || data.srcElement;
-        // console.log(res);
         if ($target.className == "hiddenInput") {
           this.license_image = res.result;
           this.msg.license_image = res.result.split(",")[1];
@@ -295,9 +282,9 @@ export default {
           if (this.legal_id_card_img.length >= 2) {
             this.legal_id_card_img.splice(0, 1);
             console.log(++n);
-            // console.log(res.result);
           }
           this.legal_id_card_img.push(res.result);
+          // 将图片保存在msg数组中
           if (this.legal_id_card_img.length == 1) {
             this.msg.legal_id_card_front = res.result.split(",")[1];
           } else if (this.legal_id_card_img.length == 2) {
@@ -322,25 +309,14 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    convertBase64UrlToBlob(urlData, filename) {
-      var bytes = window.atob(urlData.split(",")[1]); //去掉url的头，并转换为byte
-      var mime = urlData.split(",")[0].match(/:(.*?);/)[1];
-      //处理异常,将ascii码小于0的转换为大于0
-      var ab = new ArrayBuffer(bytes.length);
-      var ia = new Uint8Array(ab);
-      for (var i = 0; i < bytes.length; i++) {
-        ia[i] = bytes.charCodeAt(i);
-      }
-      return new File([ia], filename, { type: mime });
-    },
     //删除相应的图片
     deleted(index) {
       console.log(index);
-      this.legal_id_card_img.splice(index, 1);
+      this.msg.img.splice(index, 1);
     },
     deleted1(index) {
       console.log(index);
-      this.supplement.splice(index, 1);
+      this.msg.addImg.splice(index, 1);
     }
   }
 };
@@ -454,20 +430,10 @@ export default {
   height: 90px;
   margin-right: 10px;
 }
-.l1 {
-  width: 30%;
-  margin-bottom: 10px;
-}
-.l2 {
-  width: 30%;
-  position: relative;
-  top: -10px;
-}
 .showImg {
   display: inline-block;
   width: 60%;
 }
-
 .hiddenInput,
 .hiddenInput1,
 .hiddenInput2,
@@ -475,10 +441,16 @@ export default {
 .hiddenInput4 {
   display: none;
 }
+.l1 {
+  width: 30%;
+  margin-bottom: 10px;
+}
 .shuoM {
   font-size: 12px;
   color: #1c3672;
   margin-top: 10px;
+  margin-bottom: 10px;
+  display: inline-block;
 }
 .xiugai {
   background-image: linear-gradient(-180deg, #ebf1fc 0%, #d1ddf6 100%);

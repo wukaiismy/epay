@@ -5,29 +5,30 @@
       <el-row :gutter="20">
         <el-col :span="16"> 
           <div class="bigBoxs">
-            <el-table class="tableBox"  @current-change="handleCurrentpage" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
+            <el-table class="tableBox"  @current-change="handleCurrentpage" v-loading="listLoading" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
                 <el-table-column align="center" type="selection"  width="55"></el-table-column>
-                <el-table-column property="date" label="商户编号"  align="center" ></el-table-column>
-                <el-table-column property="types" label="连锁商户名称"  align="center"></el-table-column>
-                <el-table-column property="sonStore" label="子商户名称"  align="center"></el-table-column>
-                <el-table-column property="qudao" label="所属渠道"  align="center"></el-table-column>
-                <el-table-column property="files" label="银行通道"  align="center"></el-table-column>
+                <el-table-column property="id" label="商户编号"  align="center" ></el-table-column>
+                <el-table-column property="name" label="连锁商户名称"  align="center"></el-table-column>
+                <el-table-column property="name" label="子商户名称"  align="center"></el-table-column>
+                <el-table-column property="head_chain" label="所属渠道"  align="center"></el-table-column>
+                <el-table-column property="bank_name" label="银行通道"  align="center"></el-table-column>
                 <el-table-column  label="审核状态"  align="center" >
                   <template slot-scope="scope">
-                    <span type="text" size="small" class="ppss"  v-if="scope.row.statuss==1" >审核通过</span>
-                    <span type="text" size="small" class="noppss" v-if="scope.row.statuss==2">驳回</span>
+                    <span type="text" size="small" class="ppss"  v-if="scope.row.review=='审核通过'" >审核通过</span>
+                  <span type="text" size="small" class="noppss" v-if="scope.row.review=='待审核'">待审核</span>
+                  <span type="text" size="small" class="noppss" v-if="scope.row.review=='驳回'">驳回</span>
                   </template>
                 </el-table-column>
                 <el-table-column  label="激活状态"  align="center" >
                   <template slot-scope="scope">
-                    <span type="text" size="small" class="ppss"  v-if="scope.row.statu1==1" >已激活</span>
-                    <span type="text" size="small" class="noppss" v-if="scope.row.statu1==2"></span>
+                    <span type="text" size="small" class="ppss"  v-if="scope.row.status=='激活'" >已激活</span>
+                    <span type="text" size="small" class="noppss" v-if="scope.row.status=='未激活'"></span>
                   </template>
                 </el-table-column>
                 <el-table-column  label="操作"   align="center">
                   <template slot-scope="scope" >
-                    <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz">通过</el-button>
-                    <el-button type="text" size="small" class="shanchu" @click="returnsubmit(scope.row)">驳回</el-button>
+                    <el-button @click.stop="passsubmit(scope.row)" type="text" size="small" class="xiaz">通过</el-button>
+                    <el-button type="text" size="small" class="shanchu" @click.stop="returnsubmit(scope.row)">驳回</el-button>
                   </template>
                 </el-table-column>   
           </el-table>
@@ -42,12 +43,12 @@
           </div>
           <!-- 分页功能 -->
           <div class="pagination-container">
-            <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+            <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
           </div>
       </el-col>
       <el-col :span="8">    
     <!-- 下面是每个连锁子商户信息显示部门 -->
-     <div class="rightMenu" v-show="isshow">
+     <div class="rightMenu" v-if="isshow">
        <Details :detailMsg='detailMsg' />
      </div>
      </el-col>
@@ -62,6 +63,7 @@ import waves from "@/directive/waves"; // 水波纹指令
 import {
   channelMsg,
   channelPass,
+  channelSearch,
   channelRejected,
   channelVolumeActivation,
   channelVolumePass,
@@ -78,7 +80,9 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
 
       multipleSelection: [],
@@ -189,7 +193,8 @@ export default {
           statu1: "1"
         }
       ],
-      detailMsg: null
+      detailMsg: null,
+      gridDatas: []
     };
   },
   components: {
@@ -208,15 +213,34 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      var searchURL = "incoming/chainchildlist/";
+      var datas = {
+        channel: data.channels,
+        bank_name: data.banks,
+        name: data.storeName,
+        id: data.storeNums,
+        status: data.channelsStatus,
+        min_time: data.value1[0],
+        max_time: data.value1[1]
+      };
+      console.log(datas);
+      channelSearch(searchURL, datas).then(response => {
+        console.log(response);
+      });
     },
     //  获取连锁子商户进件基本列表信息
     getList() {
       this.listLoading = true;
       console.log("连锁子商户进件表格基本信息");
-      let channelURL = "incoming/chainchildlist/";
+      let channelURL =
+        "incoming/chainchildlist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
       channelMsg(channelURL).then(res => {
-        console.log(res);
+        this.total = res.data.count;
+        this.gridDatas = res.data.results;
+        console.log(this.gridDatas);
       });
       setTimeout(() => {
         this.listLoading = false;
@@ -225,14 +249,13 @@ export default {
     //选择当前行显示具体的信息
     handleCurrentpage(val) {
       console.log(val);
-      let channelDetailURL = "incoming/channelid";
-      channelDetail(channelDetailURL, val.date).then(res => {
-        console.log(res);
-        this.detailMsg = res.data;
+      let channelDetailURL = "incoming/merchantid";
+      channelDetail(channelDetailURL, val.id).then(res => {
+        this.detailMsg = res.data[0];
+        console.log(this.detailMsg);
+        console.log("显示详细信息");
+        this.isshow = true;
       });
-      //显示详细信息
-      console.log("显示详细信息");
-      this.isshow = true;
     },
     //全选
     handleSelectionChange(val) {
@@ -241,76 +264,83 @@ export default {
     },
     // 单个通过按钮按钮
     passsubmit(data) {
-      console.log("你点击了单个通过按钮");
-      console.log(data.types);
-      var channelPassURL = "incoming/channelreview";
-      // channelPass(channelPassURL,data.date).then(res => {
-      //   console.log(res);
-      // });
+      var channelPassURL = "incoming/merchantbatchre/";
+      var datas = { ids: data.id };
+      channelPass(channelPassURL, datas).then(res => {
+        console.log(res);
+      });
     },
     // 单个驳回按钮
     returnsubmit(data) {
       console.log("你点击了单个驳回按钮");
-      var channelRejectedURL = "incoming/channelturndown";
-      // channelRejected(channelRejectedURL,data.date).then(res => {
-      //   console.log(res);
-      // });
+      var channelRejectedURL = "incoming/merchantjection/";
+      var datas = { ids: data.id };
+      channelRejected(channelRejectedURL, datas).then(res => {
+        console.log(res);
+      });
+    },
+    // 批量的数据处理
+    dataDeal() {
+      var dataList = [];
+      this.multipleSelection.forEach(function(v) {
+        dataList.push(v.id);
+      });
+      var datas = { ids: dataList.join(",") };
+      return datas;
     },
     // 批量激活按钮
     jihuoJump() {
-      console.log("你点击了通过激活");
-      var channeljhURL = "incoming/channelact";
-      // channelVolumeActivation(channeljhURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      var channeljhURL = "incoming/merchantact/";
+      channelVolumeActivation(channeljhURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量通过按钮
     passJump() {
-      console.log("你点击了通过激活");
-      var channelAPassURL = "incoming/channelreview";
-      // channelVolumeActivation(channelAPassURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      var channelAPassURL = "incoming/merchantbatchre/";
+      channelVolumeActivation(channelAPassURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量激活和通过按钮
     allJump() {
       console.log("你点击了批量激活和通过");
-      var channelAllURL = "incoming/channelactandrev";
-      // channelALL(channelAllURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      var channelAllURL = "incoming/merchantactandrev/";
+      channelALL(channelAllURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量驳回按钮
     bohuiJump() {
-      var channelRejectedURL = "incoming/channelturndown";
-      // channelVolumeRejected(channelRejectedURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      var channelRejectedURL = "incoming/merchantjection/";
+      channelVolumeRejected(channelRejectedURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 导出按钮
     daochuJump() {
       console.log("你点击了导出按钮");
-      let channelDownloadURL = "incoming/channeltoexcel/";
-      let dataList = [];
-      //导出时后台需要FormData格式的数据
-      var param = new FormData();
-      param.append("ids", [11477723]);
-      var aa = { ids: [11477723] };
-      // this.multipleSelection.forEach(function(v) {
-      //   dataList.push(v.date);
-      // });
-      // console.log(dataList);
-      // channelDownload(channelDownloadURL,param).then(res => {
-      //   console.log(res);
-      // });
+      let channelDownloadURL = "incoming/merchanttoexcle/";
+      channelDownload(channelDownloadURL, this.dataDeal()).then(res => {
+        console.log(res);
+        let url = window.URL.createObjectURL(new Blob([res.data]));
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "连锁子商户.xls");
+        document.body.appendChild(link);
+        link.click();
+      });
     },
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }

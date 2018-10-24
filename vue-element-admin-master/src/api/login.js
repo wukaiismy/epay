@@ -26,7 +26,7 @@ export function logout() {
 
 export function getUserInfo(token) {
   return request({
-    url: "userfile/",
+    url: "admin/userfile/",
     // url: "/user/info",
     method: "get"
     // params: { token }

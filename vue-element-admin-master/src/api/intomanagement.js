@@ -4,7 +4,7 @@ export function channelSearch(URL, datas) {
   return request({
     url: URL,
     method: "get",
-    params: { status: datas.status }
+    params: datas
   });
 }
 // 批量导入渠道商
@@ -33,19 +33,19 @@ export function channelMsg(URL) {
   });
 }
 //渠道单个通过请求
-export function channelPass(URL, id) {
+export function channelPass(URL, data) {
   return request({
     url: URL,
-    method: "get",
-    params: { id }
+    method: "post",
+    data
   });
 }
 //渠道单个驳回请求
-export function channelRejected(URL, id) {
+export function channelRejected(URL, data) {
   return request({
     url: URL,
-    method: "get",
-    params: { id }
+    method: "post",
+    data
   });
 }
 //渠道批量激活请求
@@ -84,8 +84,8 @@ export function channelVolumeRejected(URL, data) {
 export function channelDownload(URL, data) {
   return request({
     url: URL,
-    headers: { "Content-Type": "multipart/form-data" },
     method: "post",
+    responseType: "blob",
     data
   });
 }

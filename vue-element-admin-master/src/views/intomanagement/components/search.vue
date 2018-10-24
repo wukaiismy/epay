@@ -83,8 +83,7 @@ export default {
       listLoading: false,
       dialogTableVisible: false,
       msgList: null,
-      fileList: [],
-      imgURL: ""
+      fileList: []
     };
   },
   mounted() {},
@@ -92,12 +91,7 @@ export default {
     //搜索功能
     handleFilter() {
       console.log(this.searchList);
-      var searchURL = "incoming/channellist/";
-      var datas = { name: "33", status: "1" };
-      channelSearch(searchURL, datas).then(response => {
-        console.log(response);
-        this.$emit("channelSearch", response);
-      });
+      this.$emit("channelSearch", this.searchList);
     },
     // 批量导入模态框
     piliangSubmit() {

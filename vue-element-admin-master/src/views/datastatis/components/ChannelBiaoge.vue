@@ -194,7 +194,8 @@ export default {
           giveMoney: "1000111.09",
           rechargeNum: "1003.59"
         }
-      ]
+      ],
+      filename: "交易统计"
     };
   },
   created() {
@@ -244,6 +245,48 @@ export default {
       //   console.log(res);
       // this.msg=data
       // });
+      if (this.gridData.length) {
+        this.downloadLoading = true;
+        import("@/vendor/Export2Excel").then(excel => {
+          const tHeader = [
+            "日期",
+            "渠道商名字",
+            "商户编号",
+            "所属渠道商",
+            "用户担保交易总数",
+            "用户担保交易总额",
+            "交易笔数",
+            "支付总现金"
+          ];
+          const filterVal = [
+            "date",
+            "storeName",
+            "storeNum",
+            "channelName",
+            "sonSotreName",
+            "sotreQudao",
+            "giveMoney",
+            "rechargeNum"
+          ];
+          const list = this.gridData;
+          const data = this.formatJson(filterVal, list);
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: this.filename
+          });
+          // this.$refs.multipleTable.clearSelection();
+          this.downloadLoading = false;
+        });
+      } else {
+        this.$message({
+          message: "请设置1个表格",
+          type: "warning"
+        });
+      }
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]));
     }
   }
 };

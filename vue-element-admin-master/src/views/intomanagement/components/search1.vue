@@ -4,13 +4,13 @@
             <el-col :span="16">
               <div class="els">
                 <div class="grid-content">商户名称：
-                    <el-input v-model="storeName" clearable class="" style="width: 120px;"></el-input></div>                
+                    <el-input v-model="searchList.storeName" clearable class="" style="width: 120px;"></el-input></div>                
                 <div class="grid-content">商户编号：
-                    <el-input v-model="storeNums" clearable class="" style="width: 120px;"></el-input></div>               
+                    <el-input v-model="searchList.storeNums" clearable class="" style="width: 120px;"></el-input></div>               
                 <div class="grid-content">所属渠道商：
-                    <el-input v-model="channels"  clearable class="" style="width: 120px;"></el-input></div>                            
+                    <el-input v-model="searchList.channels"  clearable class="" style="width: 120px;"></el-input></div>                            
                 <div class="grid-content">所属渠道编号：
-                    <el-input v-model="channelsNum" style="width:  120px;" clearable></el-input></div>
+                    <el-input v-model="searchList.channelsNum" style="width:  120px;" clearable></el-input></div>
                 </div>
               </el-col>
               <el-col :span="8">                 
@@ -22,13 +22,13 @@
          </el-row>
          <div  class="rows">
                 <span class="userSearch"> 创建时间：</span>
-                  <el-date-picker v-model="value1"  type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>                  
+                  <el-date-picker v-model="searchList.value1"  type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>                  
                 <div class="grid-content">激活状态：
-                    <el-input  placeholder="激活状态" v-model="channelsStatus" style="width: 120px;" clearable></el-input></div>                            
+                    <el-input  placeholder="激活状态" v-model="searchList.channelsStatus" style="width: 120px;" clearable></el-input></div>                            
                 <div class="grid-content">审核状态：
-                    <el-input v-model="channelsStatus1" style="width: 120px;" clearable></el-input></div>                           
+                    <el-input v-model="searchList.channelsStatus1" style="width: 120px;" clearable></el-input></div>                           
                 <div class="grid-content">通道银行：
-                    <el-input v-model="banks" style="width: 120px;" clearable></el-input></div>       
+                    <el-input v-model="searchList.banks" style="width: 120px;" clearable></el-input></div>       
                 <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
                 <div class="grid-content bb"></div>
           </div>
@@ -74,14 +74,16 @@ export default {
   },
   data() {
     return {
-      storeName: "",
-      storeNums: "",
-      channels: "",
-      channelsNum: "",
-      value1: "",
-      channelsStatus: "",
-      channelsStatus1: "",
-      banks: "",
+      searchList: {
+        storeName: "",
+        storeNums: "",
+        channels: "",
+        channelsNum: "",
+        value1: "",
+        channelsStatus: "",
+        channelsStatus1: "",
+        banks: ""
+      },
       listLoading: false,
       dialogTableVisible: false,
       fileList: []
@@ -90,10 +92,8 @@ export default {
   methods: {
     //搜索功能,TODO:搜索情况相同，可以用同一个api，只是动态改变URL即可
     handleFilter() {
-      channelSearch(this.msgList).then(response => {
-        console.log(response);
-        this.$emit("channelSearch", response);
-      });
+      console.log(this.searchList);
+      this.$emit("channelSearch", this.searchList);
     },
     // 批量导入模态框
     piliangSubmit() {

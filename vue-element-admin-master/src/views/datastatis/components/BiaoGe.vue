@@ -21,7 +21,7 @@
                 <span type="text" size="small" class="moneyStyles">{{scope.row.sonSotreName | toThousandFilter }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="退款笔数"  align="center">
+            <!-- <el-table-column label="退款笔数"  align="center">
                  <template slot-scope="scope">
                 <span type="text" size="small" class="moneyStyles">{{scope.row.sotreQudao | toThousandFilter }}</span>
               </template>
@@ -35,7 +35,7 @@
                <template slot-scope="scope">
                 <span type="text" size="small" class="moneyStyles">{{scope.row.giveMoney | toThousandFilter}}</span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column  label="渠道分润"  align="center" >
                <template slot-scope="scope">
                  <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum | toThousandFilter}}</span>

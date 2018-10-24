@@ -2,7 +2,7 @@ import axios from "axios";
 import { Message } from "element-ui";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
-
+import Qs from "qs";
 //  创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
@@ -10,16 +10,16 @@ const service = axios.create({
 });
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
-//整理数据
-axios.defaults.transformRequest = function(data) {
-  // data = Qs.stringify(data);
-  data = JSON.stringify(data);
+// //整理数据
+service.defaults.transformRequest = function(data) {
+  data = Qs.stringify(data);
+  // data = JSON.stringify(data);
   return data;
 };
 // request拦截器
 service.interceptors.request.use(
   config => {
-    config.headers["Content-Type"] = "application/json;charset=UTF-8";
+    // config.headers["Content-Type"] = "application/json;charset=UTF-8";
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改

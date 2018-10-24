@@ -30,18 +30,17 @@ export function DownloadList(data) {
 }
 // 主页面的api
 // 获取主页面基本信息
-export function allMsgList(data) {
+export function allMsgList() {
   return request({
-    url: "/article/update",
-    method: "post",
-    data
+    url: "inhome/index/",
+    method: "get"
   });
 }
 // 按时间查询相关数据
-export function dateSearch(URL, date) {
+export function dateSearch(URL, data) {
   return request({
     url: URL,
-    method: "get",
-    params: { date }
+    method: "post",
+    data
   });
 }

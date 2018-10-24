@@ -10,31 +10,36 @@
        <div v-show="isShow=='1'">
        <div class="basicMsgTitle">基本信息</div>
        <div class="boxMsg bm">
-           <div class="mags">子商户编号：{{msg.m1}}</div>
-           <div class="mags">子商户名称：{{msg.m2}}</div>         
+           <div class="mags">子商户编号：{{detailMsg.id}}</div>
+           <div class="mags">子商户名称：{{detailMsg.name}}</div>         
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">运营信息</div>
        <div class="boxMsg">
-           <div class="mags">联系人：{{msg.m3}}</div>
-           <div class="mags">联系电话：{{msg.m4}}</div>
-           <div class="mags">客服电话：{{msg.m5}}</div>
+           <div class="mags">联系人：{{detailMsg.merchantfile.operator_name}}</div>
+           <div class="mags">联系电话：{{detailMsg.merchantfile.operator_mobile}}</div>
+           <div class="mags">客服电话：{{detailMsg.merchantfile.service_tel}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">商户信息</div>
        <div class="boxMsg">
-           <div class="mags">省份城市：{{msg.m6}}</div>
-           <div class="mags">详细地址：{{msg.m7}}</div>         
-           <div class="mags">补充材料： <img class="logoImg"  v-for="(item, index) in msg.m8" :key="index" :src="item" alt=""></div>
+           <div class="mags">省份城市：{{detailMsg.merchantfile.city}}</div>
+           <div class="mags">详细地址：{{detailMsg.location}}</div>         
+           <div class="mags">补充材料： <img class="logoImg"  v-for="(item, index) in detailMsg.supplement" :key="index" :src="item" alt=""></div>
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">结算信息</div>
        <div class="boxMsg">
-            <div class="mags">结算单位：{{msg.m9}}</div>
-            <div class="mags">结算类型：{{msg.m10}}</div>
-            <div class="mags">结算户名：{{msg.m11}}</div>
-            <div class="mags">结算银行：{{msg.m12}}</div>
-            <div class="mags">结算账号：{{msg.m13}}</div>
+            <div class="mags">结算单位：{{detailMsg.name}}</div>
+            <div class="mags">结算类型：
+                <template>
+                  <span v-if="detailMsg.merchantfile.clear_type=='0'">个人</span>
+                  <span v-if="detailMsg.merchantfile.clear_type=='1'">企业</span>            
+                </template>
+            </div>
+            <div class="mags">结算户名：{{detailMsg.merchantfile.admin_user}}</div>
+            <div class="mags">结算银行：{{detailMsg.merchantfile.bankcard_name}}</div>
+            <div class="mags">结算账号：{{detailMsg.merchantfile.bank_credit}}</div>
         </div>
         <div class="gard1"><Gard /></div>
 
@@ -135,6 +140,7 @@ import waves from "@/directive/waves"; // 水波纹指令
 import uRLS from "../../../assets/wukai.jpg";
 export default {
   name: "Details2",
+  props: ["detailMsg"],
   directives: {
     waves
   },
@@ -226,6 +232,12 @@ export default {
     // 激活
     jihuosJump() {
       alert("确定激活？");
+      // alert("确定激活？");
+      var channeljhURL = "incoming/merchantact";
+      var datas = { ids: this.detailMsg.merchantfile.id };
+      channelVolumeActivation(channeljhURL, datas).then(res => {
+        console.log(res);
+      });
     },
     //关闭
     guanbiJump() {

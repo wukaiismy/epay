@@ -60,7 +60,7 @@
                  <count-to :start-val="0"  :decimals='2' :end-val="msg.tradeYRate*1" :duration="2600" class="card-panel-nums"/>  
                  </div> 
                   <div class="items"><span class="titles">累计</span>
-                 <count-to :start-val="300"  :decimals='2' :end-val="msg.tradeRate*1" :duration="2600" class="card-panel-nums"/>  
+                 <count-to :start-val="300"     :decimals='2' :end-val="msg.tradeRate*1" :duration="2600" class="card-panel-nums"/>  
                  </div>  
               </el-col>            
             </el-row>

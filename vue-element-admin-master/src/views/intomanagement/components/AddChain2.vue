@@ -168,10 +168,10 @@ export default {
       this.msg.city = this.pre + this.shi + this.qu;
       console.log(this.msg.city);
     },
-    //   下一步按钮
+    //   提交按钮
     nextGo() {
       alert("你点击了提交提交功能");
-      let addURL = "incoming/channelup2/";
+      let addURL = "incoming/chainchildup/";
       console.log(this.msg);
       addChannel(addURL, this.msg).then(res => {
         console.log(res);

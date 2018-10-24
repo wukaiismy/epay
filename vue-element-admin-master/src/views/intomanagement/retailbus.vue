@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import Table from "./components/Table1";
-import AddChain from "./components/AddChain1";
+import Table from "./components/Table3";
+import AddChain from "./components/AddChain3";
 export default {
   name: "Retailbus",
   data() {

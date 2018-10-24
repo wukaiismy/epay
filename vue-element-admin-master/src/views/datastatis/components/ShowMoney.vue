@@ -7,34 +7,23 @@
               </el-col>
               <div class="gards1"></div>
 
-              <el-col  :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="twosItem"  :class="isShow=='2'?'selceted':''"  @click.native="checked(2,'newVisitis')" >
+              <el-col  :xs="5" :sm="5" :md="5" :lg="5" :xl="5" class="twosItem"  :class="isShow=='2'?'selceted':''"  @click.native="checked(2,'newVisitis')" >
                 <div class="grid-title">交易成功总额</div>
                  <count-to :start-val="190" :end-val="msg.tradeAllMoney*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
                 </el-col>
                 <div class="gards1 g1"></div>
 
-              <el-col  :xs="3" :sm="3" :md="3" :lg="3" :xl="3" class="twosItem"  :class="isShow=='3'?'selceted':''" @click.native="checked(3,'messages')" >
+              <el-col  :xs="5" :sm="5" :md="5" :lg="5" :xl="5" class="twosItem"  :class="isShow=='3'?'selceted':''" @click.native="checked(3,'messages')" >
                 <div class="grid-title">交易成功现金总额</div>
                 <count-to :start-val="0" :end-val="msg.tradeCMoney*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
-              </el-col> 
-                <div class="gards1 g2"></div>
-              <el-col   :xs="3" :sm="3" :md="3" :lg="3" :xl="3"  class="twosItem"  :class="isShow=='4'?'selceted':''"  @click.native="checked(4,'purchases')" >
-                <div class="grid-title">退款总额</div>
-                <count-to :start-val="0" :end-val="msg.tradegiveMoney*1" :duration="2600" :decimals='2' class="card-panel-nums"/>          
-              </el-col>
-              <div class="gards1  g3"></div>
-
-              <el-col   :xs="3" :sm="3" :md="3" :lg="3" :xl="3" class="twosItem"  :class="isShow=='5'?'selceted':''"  @click.native="checked(5,'shoppings')" >
-                <div class="grid-title">退款现金额</div>
-                 <count-to :start-val="0" :end-val="msg.tradeJMoney*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
-                </el-col>
+              </el-col>                
                 <div class="gards1 g4"></div>
-              <el-col   :xs="3" :sm="3" :md="3" :lg="3" :xl="3" class="twosItem"   :class="isShow=='6'?'selceted':''"  @click.native="checked(6,'shoppings')">
+              <el-col   :xs="5" :sm="5" :md="5" :lg="5" :xl="5" class="twosItem"   :class="isShow=='6'?'selceted':''"  @click.native="checked(6,'shoppings')">
                 <div class="grid-title">交易现金总净额</div>
                 <count-to :start-val="0" :end-val="msg.tradexianJMoney*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
               </el-col>
                <div class="gards1 g5"></div>
-              <el-col   :xs="4" :sm="4" :md="4" :lg="4" :xl="4" class="twosItem" :class="isShow=='7'?'selceted':''"  @click.native="checked(7,'shoppings')">
+              <el-col   :xs="5" :sm="5" :md="5" :lg="5" :xl="5" class="twosItem" :class="isShow=='7'?'selceted':''"  @click.native="checked(7,'shoppings')">
                 <div class="grid-title">信条分润</div>
                 <count-to :start-val="0" :end-val="msg.tradeRate*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
               </el-col>                
@@ -90,7 +79,7 @@ export default {
     top: 34px;
   }
   .g1 {
-    left: 33.33%;
+    left: 37.43%;
   }
   .g2 {
     left: 45.88%;
@@ -99,10 +88,10 @@ export default {
     left: 58.33%;
   }
   .g4 {
-    left: 70.78%;
+    left: 58.25%;
   }
   .g5 {
-    left: 83.33%;
+    left: 79.01%;
   }
   .twos {
     margin-top: 20px;

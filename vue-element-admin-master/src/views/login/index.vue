@@ -154,7 +154,7 @@ export default {
     imgYzm() {
       var that = this;
       axios
-        .get("http://192.168.1.28:8001/api/v1/captcha/")
+        .get("http://192.168.1.28:8001/api/v1/admin/captcha/")
         .then(function(res) {
           console.log(res.data.data.timestamp);
           that.loginForm.timestamp = res.data.data.timestamp.toString();

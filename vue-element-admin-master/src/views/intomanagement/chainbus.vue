@@ -1,6 +1,6 @@
 <template>
     <div>
-      <component :is="componentId"  @addChain='addChain'></component>      
+      <component :is="componentId" :searchURL='searchURL'  @addChain='addChain'></component>      
     </div>
 </template>
 
@@ -11,7 +11,8 @@ export default {
   name: "Chainbus",
   data() {
     return {
-      componentId: Table
+      componentId: Table,
+      searchURL: "incoming/chainchildlist/"
     };
   },
   components: {

@@ -111,7 +111,7 @@ export default {
         },
         series: [
           {
-            name: "",
+            name: "交易金额",
             itemStyle: {
               normal: {
                 color: "#FF005A",
@@ -126,6 +126,32 @@ export default {
             data: expectedData,
             animationDuration: 2800,
             animationEasing: "cubicInOut"
+          },
+          ,
+          {
+            name: "交易笔数",
+            smooth: false,
+            symbolSize: 0,
+            type: "line",
+            lineStyle: {
+              width: 0, // 线宽是0
+              color: "rgba(0, 0, 0, 0)" // 线的颜色是透明的
+            },
+            // itemStyle: {
+            //   normal: {
+            //     color: "#3888fa",
+            //     lineStyle: {
+            //       color: "#3888fa",
+            //       width: 2
+            //     },
+            //     areaStyle: {
+            //       color: "#f3f8ff"
+            //     }
+            //   }
+            // },
+            data: actualData,
+            animationDuration: 2800,
+            animationEasing: "quadraticOut"
           }
         ]
       });

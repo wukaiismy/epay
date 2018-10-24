@@ -256,7 +256,7 @@ export default {
     submit() {
       console.log(this.msg);
       alert("连锁商进件添加");
-      var addURL = "incoming/channelup2/";
+      var addURL = "incoming/merchantup/";
       addChannel(addURL, this.msg).then(res => {
         console.log(res);
         // 成功后返回渠道商主页面组件

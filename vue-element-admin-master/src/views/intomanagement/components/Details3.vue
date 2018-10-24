@@ -10,12 +10,11 @@
        <div class="boxMsg bm">
            <div class="mags">渠道编号：{{detailMsg.id}}</div>
            <div class="mags">渠道名称：{{detailMsg.name}}</div>
-           <!-- <div class="mags">所属渠道：{{msg.m3}}</div>
-           <div class="mags">所属渠道商编号：{{msg.m4}}</div> -->
+          
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">运营信息</div>
-         <div class="boxMsg">
+        <div class="boxMsg">
            <div class="mags">联系人：{{detailMsg.merchantfile.operator_name}}</div>
            <div class="mags">联系电话：{{detailMsg.merchantfile.operator_mobile}}</div>
            <div class="mags">电子邮箱：{{detailMsg.merchantfile.operator_email}}</div>
@@ -24,7 +23,7 @@
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">商户信息</div>
-        <div class="boxMsg">
+       <div class="boxMsg">
            <div class="mags">商户名称：{{detailMsg.name}}</div>
            <div class="mags">省份城市：{{detailMsg.merchantfile.city}}</div>
            <div class="mags">详细地址：{{detailMsg.location}}</div>
@@ -56,7 +55,7 @@
                   <span v-if="detailMsg.merchantfile.clear_type=='0'">个人</span>
                   <span v-if="detailMsg.merchantfile.clear_type=='1'">企业</span>            
                 </template>
-                </div>
+            </div>
             <div class="mags">结算户名：{{detailMsg.merchantfile.admin_user}}</div>
             <div class="mags">结算银行：{{detailMsg.merchantfile.bankcard_name}}</div>
             <div class="mags">结算账号：{{detailMsg.merchantfile.bank_credit}}</div>
@@ -104,7 +103,7 @@ import Gard from "./Gard.vue";
 import waves from "@/directive/waves"; // 水波纹指令
 import uRLS from "../../../assets/wukai.jpg";
 export default {
-  name: "Details1",
+  name: "Details3",
   props: ["detailMsg"],
   directives: {
     waves
@@ -117,7 +116,6 @@ export default {
       isShow: true,
       disabled: true,
       uRLS: uRLS,
-
       mataMsg: [
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
@@ -153,7 +151,7 @@ export default {
     // 激活
     jihuosJump() {
       alert("确定激活？");
-
+      // alert("确定激活？");
       var channeljhURL = "incoming/merchantact";
       var datas = { ids: this.detailMsg.merchantfile.id };
       channelVolumeActivation(channeljhURL, datas).then(res => {

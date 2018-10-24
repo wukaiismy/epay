@@ -4,13 +4,13 @@
     <template v-if="device!=='mobile'">      
    <el-row :gutter="10" class="panel-groups"  >
      <el-col :xs="6" :sm="6" :md="5" :lg="3" :xl="3" class="card-panel-cols">
-         <div class="grid-contents">上次登录IP：117.192.3.101</div>
+         <div class="grid-contents">上次登录IP：{{login_last_info.logins_ip}}</div>
       </el-col>
      <el-col :xs="6" :sm="6" :md="5" :lg="3" :xl="3" class="card-panel-cols">
-        <div class="grid-content ">登录地址：四川省成都市</div>
+        <div class="grid-content ">登录地址：{{login_last_info.logins_adress}}</div>
       </el-col>
     <el-col :xs="6" :sm="6" :md="5" :lg="4" :xl="4" class="card-panel-cols">
-      <div class="grid-content">登录时间：2018-12-28 24:10:10</div>
+      <div class="grid-content">登录时间：{{login_last_info.logins_time}}</div>
     </el-col>
     <el-col :xs="3" :sm="3" :md="6" :lg="12" :xl="12" class="card-panel-cols">
       <div class="sss"></div>
@@ -24,16 +24,16 @@
   </el-row>
  </template>
       <!--数据显示区  -->
-      <panel-group @handleSetLineChartData="handleSetLineChartData"/>
+      <panel-group :panelGroup='panelGroup'/>
       <!-- 用户总览 -->
-   <UserOverview @handleSetLineChartData="handleSetLineChartData"/>
+   <UserOverview  :UserOverview="UserOverview"/>
    <!-- eachar图表 -->
    
     <el-row class="echarBox">
       <div class="echarTitle">交易统计</div>
       <div class="showData"> 
-        <div class="tardNum">本周交易笔数：<span>999</span></div>
-         <div class="tardDetails">本周交易总额：<span>99985.11</span></div>
+        <div class="tardNum">本周交易笔数：<span>{{showTard.num}}</span></div>
+         <div class="tardDetails">本周交易总额：<span>{{showTard.amount__sum | toThousandFilter}}</span></div>
 
          <div class="rightMenus">
          <div class="tardChooseed  " :class="isSlectd=='1'?'selected':''" @click="slected(1)">本周</div>
@@ -64,6 +64,7 @@ import { allMsgList, dateSearch } from "@/api/home";
 import PanelGroup from "./components/PanelGroup";
 import UserOverview from "./components/UserOverview";
 import LineChart from "./components/LineChart";
+import CountTo from "vue-count-to";
 const lineChartData = {
   newVisitis: {
     expectedData: [100, 120, 161, 134, 105, 160, 165],
@@ -84,12 +85,38 @@ const lineChartData = {
 };
 export default {
   name: "DashboardAdmin",
-  components: { PanelGroup, UserOverview, LineChart },
+  components: { PanelGroup, UserOverview, LineChart, CountTo },
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
       value6: "",
-      isSlectd: 1
+      isSlectd: 1,
+      login_last_info: {
+        logins_ip: "192.168.2.112",
+        logins_adress: "四川成都",
+        logins_time: "2018-10-22 11:40:02.268"
+      },
+      panelGroup: {
+        today_count: 0,
+        today_sum: 0,
+        count_tomonth: 0,
+        sum_tomonth: 0
+      },
+      UserOverview: {
+        passed_channel: 0,
+        passed_merchant: 0,
+        users_count: 0,
+        Pending_channel: 0,
+        Pending_merchant: 0
+      },
+      toWeek: {
+        toweeks_count: 0,
+        toweeks_sum: 0
+      },
+      showTard: {
+        num: "0",
+        amount__sum: "0"
+      }
     };
   },
   computed: {
@@ -97,14 +124,41 @@ export default {
   },
 
   mounted() {
+    // this.getMsg();
+    // this.slected();
+  },
+  created() {
     this.getMsg();
   },
   methods: {
     // 获取主页面基本信息
     getMsg() {
-      // allMsgList(this.listQuery).then(res => {
-      //  console.log(res)
-      // }
+      allMsgList().then(res => {
+        console.log(res.data);
+        var data = res.data;
+        this.login_last_info.logins_ip = res.data.logins_ip;
+        // 转换时间
+        var times = res.data.logins_time;
+        times = times.split("T").join(" ");
+        this.login_last_info.logins_adress = res.data.logins_adress;
+        this.login_last_info.logins_time = times;
+        // 将panelGroup中的数据取出来
+        this.panelGroup.today_count = data.today_count;
+        this.panelGroup.today_sum = data.today_sum.amount__sum;
+        this.panelGroup.count_tomonth = data.count_tomonth;
+        this.panelGroup.sum_tomonth = data.sum_tomonth.amount__sum;
+        // 将UserOverview中的数据取出来
+        this.UserOverview.Pending_channel = data.Pending_channel;
+        this.UserOverview.Pending_merchant = data.Pending_merchant;
+        this.UserOverview.passed_channel = data.passed_channel;
+        this.UserOverview.passed_merchant = data.passed_merchant;
+        this.UserOverview.users_count = data.users_count;
+        // 将本周的数据取出来
+        this.toWeek.toweeks_count = data.toweeks_count;
+        this.toWeek.toweeks_sum = data.toweeks_sum.amount__sum;
+
+        this.slected();
+      });
     },
     //子组件选择的值上传同时改变图标的数据
     handleSetLineChartData(type) {
@@ -113,24 +167,33 @@ export default {
     // 选择本月或者本周的数据
     slected(index) {
       this.isSlectd = index;
-      if (index == "1") {
-        console.log("你选择了本周数据");
-      } else if (index == "1") {
-        console.log("你选择了本周数据");
+      if (!index || index == "1") {
+        this.isSlectd = 1;
+        console.log("默认本周数据");
+        this.showTard.num = this.toWeek.toweeks_count;
+        this.showTard.amount__sum = this.toWeek.toweeks_sum;
+        console.log(this.showTard);
+      } else if (index == "2") {
+        console.log("你选择了本月数据");
+        this.showTard.num = this.panelGroup.count_tomonth;
+        this.showTard.amount__sum = this.panelGroup.sum_tomonth;
       }
-      // 查询数据
-      var dateUrl = "incoming/channellist/";
-      dateSearch(dateUrl, index).then(res => {
-        console.log(res);
-        // this.detailMsg = res.data;
-      });
+      // // 查询数据
+      // var dateUrl = "incoming/channellist/";
+      // dateSearch(dateUrl, index).then(res => {
+      //   console.log(res);
+      //   // this.detailMsg = res.data;
+      // });
     },
     //选择时间进行查询
     submitDate(val) {
       console.log(val);
+
+      var data = { begin_time: val[0], end_time: val[1] };
+      console.log(data);
       // 查询数据
-      var dateUrl = "incoming/channellist/";
-      dateSearch(dateUrl, val).then(res => {
+      var dateUrl = "inhome/daysrange/";
+      dateSearch(dateUrl, data).then(res => {
         console.log(res);
         // this.detailMsg = res.data;
       });

@@ -125,7 +125,7 @@ export const asyncRouterMap = [
     component: Layout,
     name: "信条账户",
     redirect: "noredirect",
-    meta: { title: "信条账户", icon: "edit", noCache: true },
+    meta: { title: "信条账户", icon: "intoabai", noCache: true },
     // alwaysShow: true, // will always show the root menu
     children: [
       {
@@ -166,7 +166,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "noredirect",
     name: "交易管理",
-    meta: { title: "交易管理", icon: "bug" },
+    meta: { title: "交易管理", icon: "chart" },
     children: [
       {
         path: "merchantTrad",
@@ -194,7 +194,7 @@ export const asyncRouterMap = [
     component: Layout,
     name: "结算管理",
     redirect: "noredirect",
-    meta: { title: "结算管理", icon: "clipboard" },
+    meta: { title: "结算管理", icon: "example" },
     children: [
       {
         path: "merchantSet",
@@ -216,7 +216,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "noredirect",
     name: "对账管理",
-    meta: { title: "对账管理", icon: "clipboard" },
+    meta: { title: "对账管理", icon: "international" },
     children: [
       {
         path: "AbCheck",
@@ -237,7 +237,7 @@ export const asyncRouterMap = [
     path: "/datastatis",
     component: Layout,
     name: "数据统计",
-    meta: { title: "数据统计", icon: "international", roles: ["admin"] },
+    meta: { title: "数据统计", icon: "chart", roles: ["admin"] },
     children: [
       {
         path: "PlatformTrad",
@@ -264,7 +264,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "noredirect",
     name: "运营管理",
-    meta: { title: "运营管理", icon: "shopping" },
+    meta: { title: "运营管理", icon: "nested" },
     children: [
       {
         path: "SMSPush",
@@ -312,7 +312,7 @@ export const asyncRouterMap = [
     component: Layout,
     name: "系统设置",
     redirect: "/systemsetings/RoleAuthorization",
-    meta: { title: "系统设置", icon: "shopping" },
+    meta: { title: "系统设置", icon: "peoples" },
     children: [
       {
         path: "RoleAuthorization",

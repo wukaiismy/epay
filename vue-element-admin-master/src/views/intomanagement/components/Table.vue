@@ -6,27 +6,28 @@
         <el-col :span="16"> 
           <div class="bigBoxs">
             <el-table class="tableBox" v-loading="listLoading"  highlight-current-row
-                     @current-change="handleCurrentpage" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange"  style="width:100%;">
+                     @current-change="handleCurrentpage" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange"  style="width:100%;">
               <el-table-column align="center" type="selection" width="55"></el-table-column>
-              <el-table-column property="date" label="渠道编号"  align="center" ></el-table-column>
-              <el-table-column property="types" label="渠道名称"  align="center"></el-table-column>
-              <el-table-column property="files" label="银行通道"  align="center"></el-table-column>
+              <el-table-column property="id" label="渠道编号"  align="center" ></el-table-column>
+              <el-table-column property="name" label="渠道名称"  align="center"></el-table-column>
+              <el-table-column property="bank_name" label="银行通道"  align="center"></el-table-column>
               <el-table-column  label="审核状态"  align="center" >
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="ppss"  v-if="scope.row.statuss==1" >审核通过</span>
+                  <span type="text" size="small" class="ppss"  v-if="scope.row.review=='审核通过'" >审核通过</span>
+                  <span type="text" size="small" class="noppss" v-if="scope.row.review=='待审核'">待审核</span>
                   <span type="text" size="small" class="noppss" v-if="scope.row.statuss==2">驳回</span>
                 </template>
               </el-table-column>
               <el-table-column  label="激活状态"  align="center" >
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="ppss"  v-if="scope.row.statu1==1" >已激活</span>
-                  <span type="text" size="small" class="noppss" v-if="scope.row.statu1==2"></span>
+                  <span type="text" size="small" class="ppss"  v-if="scope.row.status=='激活'" >已激活</span>
+                  <span type="text" size="small" class="noppss" v-if="scope.row.status=='未激活'">未激活</span>
                 </template>
               </el-table-column>
               <el-table-column  label="操作"   align="center">
                 <template slot-scope="scope" >
-                  <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz">通过</el-button>
-                  <el-button type="text" size="small" class="shanchu" @click="returnsubmit(scope.row)">驳回</el-button>
+                  <el-button @click.stop="passsubmit(scope.row)" type="text" size="small" class="xiaz">通过</el-button>
+                  <el-button type="text" size="small" class="shanchu" @click.stop="returnsubmit(scope.row)">驳回</el-button>
                 </template>
               </el-table-column>               
           </el-table>
@@ -41,12 +42,12 @@
         </div>
         <!-- 分页功能 -->
         <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
         </div>
      </el-col>
       <el-col :span="8">    
           <!-- 下面是每个渠道商信息显示部门 -->
-          <div class="rightMenu" v-show="isshow">
+          <div class="rightMenu" v-if="isshow">
             <Details :detailMsg='detailMsg' />
           </div>
       </el-col>
@@ -58,9 +59,11 @@
 import Search from "./search.vue";
 import Details from "./Details.vue";
 import waves from "@/directive/waves"; // 水波纹指令
+import axios from "axios";
 import {
   channelMsg,
   channelPass,
+  channelSearch,
   channelRejected,
   channelVolumeActivation,
   channelVolumePass,
@@ -77,9 +80,10 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
-
       multipleSelection: [],
       value1: "",
       tableKey: 0,
@@ -87,86 +91,11 @@ export default {
       total: 1,
       listLoading: true,
       isshow: false,
-      gridData: [
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "1"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "2",
-          statu1: "2"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "2"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "2",
-          statu1: "1"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "2",
-          statu1: "2"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "2"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "2",
-          statu1: "1"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "1"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "1"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "1"
-        },
-        {
-          date: "125451251152",
-          types: "成都一股云有限公司",
-          files: "华夏银行",
-          statuss: "1",
-          statu1: "1"
-        }
-      ],
-      detailMsg: null
+
+      detailMsg: null,
+      gridDatas: [],
+      filename: "",
+      autoWidth: true
     };
   },
   components: {
@@ -185,15 +114,31 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
+      var searchURL = "incoming/channellist/";
+      var datas = {
+        channel__name: data.channels,
+        merchant__name: data.channelsNum,
+        status: data.channelsStatus1
+      };
+      console.log(datas);
+      channelSearch(searchURL, datas).then(response => {
+        console.log(response);
+      });
       // this.gridData = data;
     },
     // 获取渠道进件基本列表信息
     getList() {
       this.listLoading = true;
-      let channelURL = "incoming/channellist/";
+      let channelURL =
+        "incoming/channellist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
       channelMsg(channelURL).then(res => {
         console.log("渠道进件表格基本信息");
-        console.log(res);
+        this.total = res.data.count;
+        this.gridDatas = res.data.results;
+        console.log(this.gridDatas);
       });
       setTimeout(() => {
         this.listLoading = false;
@@ -203,13 +148,12 @@ export default {
     handleCurrentpage(val) {
       let channelDetailURL = "incoming/channelid";
       console.log(val);
-      channelDetail(channelDetailURL, "11477723").then(res => {
-        console.log(res);
-        this.detailMsg = res.data;
+      channelDetail(channelDetailURL, val.id).then(res => {
+        console.log(res.data[0]);
+        this.detailMsg = res.data[0];
+        console.log("显示详细信息");
+        this.isshow = true;
       });
-      //显示详细信息
-      console.log("显示详细信息");
-      this.isshow = true;
     },
     //全选
     handleSelectionChange(val) {
@@ -219,76 +163,84 @@ export default {
     // 单个通过按钮按钮
     passsubmit(data) {
       console.log("你点击了单个通过按钮");
-      var channelPassURL = "incoming/channelreview";
-      channelPass(channelPassURL, data.date).then(res => {
+      console.log(data);
+      var channelPassURL = "incoming/channelreview/";
+      var datas = { ids: data.id };
+      console.log(datas);
+      channelPass(channelPassURL, datas).then(res => {
         console.log(res);
       });
-      console.log(data.types);
     },
     // 单个驳回按钮
     returnsubmit(data) {
       console.log("你点击了单个驳回按钮");
-      var channelRejectedURL = "incoming/channelturndown";
-      // channelRejected(channelRejectedURL,data.date).then(res => {
-      //   console.log(res);
-      // });
+      var channelRejectedURL = "incoming/channelturndown/";
+      var datas = { ids: data.id };
+      channelRejected(channelRejectedURL, datas).then(res => {
+        console.log(res);
+      });
+    },
+    // 批量的数据处理
+    dataDeal() {
+      var dataList = [];
+      this.multipleSelection.forEach(function(v) {
+        dataList.push(v.id);
+      });
+      var datas = { ids: dataList.join(",") };
+      return datas;
     },
     // 批量激活按钮
     jihuoJump() {
-      console.log("你点击了批量激活");
       var channeljhURL = "incoming/channelact";
-      // channelVolumeActivation(channeljhURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      channelVolumeActivation(channeljhURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量通过按钮
     passJump() {
-      console.log("你点击了通过激活");
-      var channelAPassURL = "incoming/channelreview";
-      // channelVolumeActivation(channelAPassURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      var channelAPassURL = "incoming/channelreview/";
+      channelVolumeActivation(channelAPassURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量激活和通过按钮
     allJump() {
-      console.log("你点击了批量激活和通过");
-      var channelAllURL = "incoming/channelactandrev";
-      // channelALL(channelAllURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
+      var channelAllURL = "incoming/channelactandrev/";
+      channelALL(channelAllURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量驳回按钮
     bohuiJump() {
       var channelRejectedURL = "incoming/channelturndown";
-      // channelVolumeRejected(channelRejectedURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // });
-      console.log("你点击了批量驳回");
+      channelVolumeRejected(channelRejectedURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 导出按钮
     daochuJump() {
-      console.log("点击了导出按钮");
       let channelDownloadURL = "incoming/channeltoexcel/";
-      let dataList = [];
-      var param = new FormData();
-      param.append("ids", [11477723]);
-      var aa = { ids: [11477723] };
-      this.multipleSelection.forEach(function(v) {
-        dataList.push(v.date);
-      });
-      console.log(dataList);
-      channelDownload(channelDownloadURL, param).then(res => {
+      channelDownload(channelDownloadURL, this.dataDeal()).then(res => {
         console.log(res);
+        let url = window.URL.createObjectURL(new Blob([res.data]));
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "渠道资料.xls");
+        document.body.appendChild(link);
+        link.click();
       });
     },
 
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }

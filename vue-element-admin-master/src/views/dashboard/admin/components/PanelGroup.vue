@@ -1,37 +1,37 @@
 <template>
   <el-row :gutter="20" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+      <div class="card-panel">
        
         <div class="card-panel-description">
           <div class="card-panel-text">今日交易笔数</div>
-          <count-to :start-val="0" :end-val="1024" :duration="2600" class="card-panel-num"/>
+          <count-to :start-val="0" :end-val="panelGroup.today_count" :duration="2600" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('messages')">
+      <div class="card-panel">
         
         <div class="card-panel-description">
           <div class="card-panel-text">今日交易总额</div>
-           ￥<count-to :start-val="0"  :decimals='2' :end-val="81212.22" :duration="3000" class="card-panel-num"/>
+           ￥<count-to :start-val="0"  :decimals='2' :end-val="panelGroup.today_sum*1" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
+      <div class="card-panel">
        
         <div class="card-panel-description">
           <div class="card-panel-text">本月交易笔数</div>
-         <count-to :start-val="0"  :end-val="9280" :duration="3200" class="card-panel-num"/>
+         <count-to :start-val="0"  :end-val="panelGroup.count_tomonth" :duration="3200" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('shoppings')">        
+      <div class="card-panel">        
         <div class="card-panel-description">
           <div class="card-panel-text">本月交易总额</div>
-           ￥<count-to :start-val="0"  :decimals='2' :end-val="47136250.00" :duration="3600" class="card-panel-num"/>
+           ￥<count-to   :start-val="0"  :decimals='2' :end-val="panelGroup.sum_tomonth*1" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -42,12 +42,16 @@
 import CountTo from "vue-count-to";
 
 export default {
+  props: ["panelGroup"],
   components: {
     CountTo
   },
+  mounted() {
+    this.getMsg();
+  },
   methods: {
-    handleSetLineChartData(type) {
-      this.$emit("handleSetLineChartData", type);
+    getMsg() {
+      console.log(this.panelGroup);
     }
   }
 };

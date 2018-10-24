@@ -5,10 +5,9 @@
       <el-row :gutter="20">
         <el-col :span="16"> <div class="bigBoxs">
           <el-table class="tableBox"  @current-change="handleCurrentpage" v-loading="listLoading" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
-              <el-table-column align="center" type="selection" width="55">
-              </el-table-column>
+              <el-table-column align="center" type="selection" width="55"></el-table-column>
               <el-table-column property="id" label="商户编号"  align="center" ></el-table-column>
-              <el-table-column property="name" label="连锁商户名称"  align="center"></el-table-column>
+              <el-table-column property="name" label="商户名称"  align="center"></el-table-column>
               <el-table-column property="" label="所属渠道"  align="center">
                 <template slot-scope="scope">
                   <span type="text" size="small" class="ppss"  v-if="scope.row.head_chain" >{{scope.row.head_chain}}</span>
@@ -62,7 +61,7 @@
 
 <script>
 import Search from "./search1.vue";
-import Details from "./Details1.vue";
+import Details from "./Details3.vue";
 import waves from "@/directive/waves"; // 水波纹指令
 import {
   channelMsg,
@@ -77,7 +76,7 @@ import {
   channelDetail
 } from "@/api/intomanagement";
 export default {
-  name: "Table1",
+  name: "Table3",
   props: ["searchURL"],
   directives: {
     waves
@@ -98,6 +97,7 @@ export default {
       total: 1,
       listLoading: true,
       isshow: false,
+
       detailMsg: null,
       gridDatas: []
     };
@@ -118,15 +118,15 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      var searchURL = "incoming/chainlist/";
+      var searchURL = "incoming/merchantlist/";
       var datas = {
-        channel: data.channels,
-        bank_name: data.banks,
-        name: data.storeName,
-        id: data.storeNums,
-        status: data.channelsStatus,
-        min_time: data.value1[0],
-        max_time: data.value1[1]
+        channel: this.searchList.channels,
+        bank_name: this.searchList.banks,
+        name: this.searchList.storeName,
+        id: this.searchList.storeNums,
+        status: this.searchList.channelsStatus1,
+        min_time: this.searchList.value1[0],
+        max_time: this.searchList.value1[1]
       };
       console.log(datas);
       channelSearch(searchURL, datas).then(response => {
@@ -139,7 +139,7 @@ export default {
       this.listLoading = true;
       console.log("连锁商户进件表格基本信息");
       let channelURL =
-        "incoming/chainlist/?page=" +
+        "incoming/merchantlist/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
@@ -156,10 +156,11 @@ export default {
     //选择当前行显示具体的信息
     handleCurrentpage(val) {
       console.log(val);
+
       let channelDetailURL = "incoming/merchantid";
       channelDetail(channelDetailURL, val.id).then(res => {
         this.detailMsg = res.data[0];
-        // console.log(this.detailMsg);
+        console.log(this.detailMsg);
         console.log("显示详细信息");
         this.isshow = true;
       });
@@ -229,7 +230,6 @@ export default {
     },
     // 导出按钮
     daochuJump() {
-      console.log("你点击了导出按钮");
       // 导出数据后台需要FormData格式的数据
       var channelDownloadURL = "incoming/merchanttoexcle/";
       channelDownload(channelDownloadURL, this.dataDeal()).then(res => {
@@ -238,7 +238,7 @@ export default {
         let link = document.createElement("a");
         link.style.display = "none";
         link.href = url;
-        link.setAttribute("download", "连锁商户.xls");
+        link.setAttribute("download", "直营商户.xls");
         document.body.appendChild(link);
         link.click();
       });
