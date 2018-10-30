@@ -78,10 +78,10 @@ export default {
         this.__resizeHandler();
       }
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ xDatas, expectedData, actualData } = {}) {
       this.chart.setOption({
         xAxis: {
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+          data: xDatas,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -107,11 +107,17 @@ export default {
           }
         },
         legend: {
-          data: ["交易统计"]
+          data: ["交易笔数", "交易金额"],
+          selected: {
+            // 选中'系列1'
+            交易金额: true,
+            // 不选中'系列2'
+            交易笔数: false
+          }
         },
         series: [
           {
-            name: "交易金额",
+            name: "交易笔数",
             itemStyle: {
               normal: {
                 color: "#FF005A",
@@ -127,28 +133,22 @@ export default {
             animationDuration: 2800,
             animationEasing: "cubicInOut"
           },
-          ,
           {
-            name: "交易笔数",
-            smooth: false,
-            symbolSize: 0,
+            name: "交易金额",
+            smooth: true,
             type: "line",
-            lineStyle: {
-              width: 0, // 线宽是0
-              color: "rgba(0, 0, 0, 0)" // 线的颜色是透明的
+            itemStyle: {
+              normal: {
+                color: "#3888fa",
+                lineStyle: {
+                  color: "#3888fa",
+                  width: 2
+                },
+                areaStyle: {
+                  color: "#f3f8ff"
+                }
+              }
             },
-            // itemStyle: {
-            //   normal: {
-            //     color: "#3888fa",
-            //     lineStyle: {
-            //       color: "#3888fa",
-            //       width: 2
-            //     },
-            //     areaStyle: {
-            //       color: "#f3f8ff"
-            //     }
-            //   }
-            // },
             data: actualData,
             animationDuration: 2800,
             animationEasing: "quadraticOut"

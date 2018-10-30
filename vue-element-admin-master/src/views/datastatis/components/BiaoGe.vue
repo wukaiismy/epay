@@ -51,7 +51,7 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
     </div>
@@ -62,13 +62,16 @@ import waves from "@/directive/waves"; // 水波纹指令
 import { tebleMsg } from "@/api/datastatis";
 export default {
   name: "BiaoGe",
+  props: ["datemsg"],
   directives: {
     waves
   },
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
       multipleSelection: [],
       value1: "",
@@ -76,6 +79,10 @@ export default {
       list: null,
       total: 1,
       listLoading: true,
+      detailMsg: null,
+      gridDatas: [],
+      filename: "",
+      autoWidth: true,
       gridData: [
         {
           date: "2018-09-10 10:11：00",
@@ -201,17 +208,40 @@ export default {
       ]
     };
   },
-  created() {
-    this.getList();
+  mounted() {
+    this.getListbase();
+  },
+  watch: {
+    datemsg: {
+      deep: true,
+      handler(val) {
+        this.getList(val);
+      }
+    }
   },
   methods: {
     // 获取基本列表信息
-    getList() {
+    getListbase() {
+      var val = [];
+      val.push(this.getMonthStartDate());
+      val.push(this.getNowFormatDate());
+      this.getList(val);
+    },
+
+    getList(val) {
       this.listLoading = true;
+      console.log(11111111111111111111);
+      console.log(val);
       console.log("表格基本信息");
-      // tebleMsg("id").then(res => {
-      //   console.log(res);
-      // });
+      var data = {
+        page: this.pages.page,
+        size: this.pages.size,
+        begin_time: val[0],
+        end_time: val[1]
+      };
+      tebleMsg(data).then(res => {
+        console.log(res);
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
@@ -236,12 +266,52 @@ export default {
 
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
+    },
+    //格式化日期：yyyy-MM-dd
+    formatDate(date) {
+      var myyear = date.getFullYear();
+      var mymonth = date.getMonth() + 1;
+      var myweekday = date.getDate();
+
+      if (mymonth < 10) {
+        mymonth = "0" + mymonth;
+      }
+      if (myweekday < 10) {
+        myweekday = "0" + myweekday;
+      }
+      return myyear + "-" + mymonth + "-" + myweekday;
+    },
+    getNowFormatDate() {
+      var date = new Date();
+      var seperator1 = "-";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      var currentdate = year + seperator1 + month + seperator1 + strDate;
+      return currentdate;
+    },
+    //获得本月的开始日期
+    getMonthStartDate() {
+      var now = new Date(); //当前日期
+      var nowMonth = now.getMonth(); //当前月
+      var nowYear = now.getYear(); //当前年
+      nowYear += nowYear < 2000 ? 1900 : 0; //
+      var monthStartDate = new Date(nowYear, nowMonth, 1);
+      return this.formatDate(monthStartDate);
     }
   }
 };

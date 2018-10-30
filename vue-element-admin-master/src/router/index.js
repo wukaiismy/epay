@@ -87,7 +87,7 @@ export const asyncRouterMap = [
   {
     path: "/intomanagement",
     component: Layout,
-    redirect: "noredirect",
+    redirect: "/intomanagement/channels",
     name: "进件管理",
     meta: { title: "进件管理", icon: "list", roles: ["admin", "super_editor"] },
     // roles: ['admin','super_editor'] 这是权限管理需要的东西，之后要加上
@@ -124,7 +124,7 @@ export const asyncRouterMap = [
     path: "/vi",
     component: Layout,
     name: "信条账户",
-    redirect: "noredirect",
+    redirect: "/vi/merchantsTrad",
     meta: { title: "信条账户", icon: "intoabai", noCache: true },
     // alwaysShow: true, // will always show the root menu
     children: [
@@ -164,7 +164,7 @@ export const asyncRouterMap = [
   {
     path: "/trade",
     component: Layout,
-    redirect: "noredirect",
+    redirect: "/trade/merchantTrad",
     name: "交易管理",
     meta: { title: "交易管理", icon: "chart" },
     children: [
@@ -193,7 +193,7 @@ export const asyncRouterMap = [
     path: "/cleared",
     component: Layout,
     name: "结算管理",
-    redirect: "noredirect",
+    redirect: "/cleared/merchantSet",
     meta: { title: "结算管理", icon: "example" },
     children: [
       {
@@ -214,7 +214,7 @@ export const asyncRouterMap = [
   {
     path: "/reconciliation",
     component: Layout,
-    redirect: "noredirect",
+    redirect: "/reconciliation/AbCheck",
     name: "对账管理",
     meta: { title: "对账管理", icon: "international" },
     children: [
@@ -236,7 +236,7 @@ export const asyncRouterMap = [
   {
     path: "/datastatis",
     component: Layout,
-    name: "数据统计",
+    name: "/datastatis/PlatformTrad",
     meta: { title: "数据统计", icon: "chart", roles: ["admin"] },
     children: [
       {
@@ -262,7 +262,7 @@ export const asyncRouterMap = [
   {
     path: "/operation",
     component: Layout,
-    redirect: "noredirect",
+    redirect: "/operation/SMSPush",
     name: "运营管理",
     meta: { title: "运营管理", icon: "nested" },
     children: [
@@ -283,7 +283,7 @@ export const asyncRouterMap = [
   {
     path: "/monitorCenter",
     component: Layout,
-    redirect: "noredirect",
+    redirect: "/monitorCenter/MerchantRisk",
     name: "监控中心",
     meta: { title: "监控中心", icon: "star" },
     children: [

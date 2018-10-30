@@ -1,26 +1,25 @@
 import request from "@/utils/request";
 // 数据统计中交易概况基本数据
-export function dataMsg(query) {
+export function dataMsg() {
   return request({
-    url: "/article/list",
-    method: "get",
-    params: query
+    url: "/statistics/showdatasum/",
+    method: "get"
   });
 }
 //按日查询搜索
-export function searchDay(data) {
+export function searchDay(URL, data) {
   return request({
-    url: "/article/update",
-    method: "post",
-    data
+    url: URL,
+    method: "get",
+    params: data
   });
 }
 // 表格的基本信息获取
 export function tebleMsg(data) {
   return request({
-    url: "/article/update",
-    method: "post",
-    data
+    url: "/statistics/somedaylist/",
+    method: "get",
+    params: data 
   });
 }
 // 渠道搜索请求

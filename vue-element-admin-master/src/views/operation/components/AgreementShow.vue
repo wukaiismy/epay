@@ -1,8 +1,8 @@
 <template>
     <div class="agreeBox">
          <el-table class="tableBox" :header-cell-style="{background:'#F0F0F0'}"  :data="gridData" border fit highlight-current-row style="width:100%;">                            
-            <el-table-column property="agreeTitle" label="协议标题"  align="center"></el-table-column>
-            <el-table-column property="agreeType" label="协议类型"   align="center"></el-table-column>                                                                        
+            <el-table-column property="title" label="协议标题"  align="center"></el-table-column>
+            <el-table-column property="title" label="协议类型"   align="center"></el-table-column>                                                                        
             <el-table-column  label="操作"   align="center" >
               <template slot-scope="scope" >
                 <el-button @click="passsubmit(scope.row)" type="text" size="small" class="moneyStyles" >查看</el-button>                
@@ -47,9 +47,10 @@ export default {
     getList() {
       this.listLoading = true;
       console.log("协议表格基本信息");
-      // AgreemenMsg("id").then(res => {
-      //   console.log(res);
-      // });
+      AgreemenMsg().then(res => {
+        console.log(res);
+        this.gridData = res.data.results;
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);

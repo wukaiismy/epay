@@ -245,6 +245,7 @@ export default {
       //   console.log(res);
       // this.msg=data
       // });
+      // 直接本地导出
       if (this.gridData.length) {
         this.downloadLoading = true;
         import("@/vendor/Export2Excel").then(excel => {

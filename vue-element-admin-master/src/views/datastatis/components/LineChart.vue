@@ -114,7 +114,7 @@ export default {
         },
         series: [
           {
-            name: "",
+            name: "交易统计",
             itemStyle: {
               normal: {
                 color: "#FF005A",

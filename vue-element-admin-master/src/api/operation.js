@@ -24,20 +24,19 @@ export function deleted(data) {
   });
 }
 // 协议获取基本信息
-export function AgreemenMsg(data) {
+export function AgreemenMsg() {
   return request({
-    url: "/article/update",
-    method: "post",
-    data
+    url: "/protocol/arg-list/",
+    method: "get"
   });
 }
 
 // 具体协议信息
-export function AgreemenDetail(data) {
+export function AgreemenDetail(id) {
   return request({
-    url: "/article/update",
-    method: "post",
-    data
+    url: "/protocol/arg-down/",
+    method: "get",
+    params: { id } 
   });
 }
 // 编辑协议信息

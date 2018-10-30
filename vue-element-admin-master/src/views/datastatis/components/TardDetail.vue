@@ -16,8 +16,8 @@
                      <el-date-picker width='140px' value-format="yyyy-MM"  @change='change(2)'  v-model="date1" type="month" ></el-date-picker>                     
                        </div>
                      </div>      
-                   <el-button @click="searchDay(1)" type="primary" plain  class="searchMonth">按月查询</el-button>
-                   <el-button @click="searchDay(2)" type="primary" plain class="searchDay">按日查询</el-button>              
+                   <el-button @click="searchChoose(1)" type="primary" plain  class="searchMonth">按月查询</el-button>
+                   <el-button @click="searchChoose(2)" type="primary" plain class="searchDay">按日查询</el-button>              
             </div>
             <div class="showMoney">
                <ShowMoney  @handleSetLineChartData="handleSetLineChartData"  :searchMsg='searchMsg'/>
@@ -29,7 +29,7 @@
               <div class="Gard1"></div>
              <!-- 下面是具体的表格展示部分 -->
                   <div>
-                      <BiaoGe />
+                      <BiaoGe :datemsg='table_msg' />
                   </div>
                  
     </div>
@@ -66,10 +66,17 @@ export default {
     return {
       date: "",
       date1: "",
-      dateMsg: "",
+      table_msg: "",
+      datemsg: "",
       lineChartData: lineChartData.newVisitis,
-      searchMsg: null,
-      dateType: true
+      searchMsg: {
+        count_range: 0,
+        sum_all_range: "",
+        sum_amount_range: "",
+        sum_gift_range: ""
+      },
+      dateType: true,
+      lineChartDataList: {}
     };
   },
   components: {
@@ -79,20 +86,39 @@ export default {
     LineChart,
     BiaoGe
   },
-  mounted() {
+  mounted() {},
+  created() {
     //  获取初始化数据
     this.getMsgs();
   },
   methods: {
     //获取初始数据
-    getMsgs() {
-      // searchDay().then(res => {
-      //   console.log(res);
-      // this.searchMsg=res.data
-      // });
+    getMsgs(data) {
+      var searchUrl = "/statistics/rangeplat/";
+      console.log(data);
+      searchDay(searchUrl, data).then(res => {
+        console.log("查询结果");
+        console.log(res);
+        this.searchMsg = res.data.all_order_someone;
+        //截取每天的数据列表
+        // this.lineChartDataList = res.data.all_order_someone.sum_list;
+        var echarList = {};
+        var lineChartData = {};
+        echarList = res.data.all_order_someone.sum_list;
+        console.log(echarList);
+        //    lineChartData.xDatas = dataLsit.map(function(item) {
+        //     return item[0];
+        //   });
+        //   lineChartData.expectedData = dataLsit.map(function(item) {
+        //     return item[1];
+        //   });
+        //   lineChartData.actualData = dataLsit.map(function(item) {
+        //     return item[2];
+        //   });
+      });
     },
     //按日、月查询
-    searchDay(index) {
+    searchChoose(index) {
       if (index == "1") {
         this.dateType = false;
         this.datemsg = this.date1;
@@ -116,11 +142,15 @@ export default {
     // 搜索按钮提交
     searchDate() {
       console.log(this.datemsg);
-
+      this.table_msg = this.datemsg;
+      var data = {};
+      var data = { begin_time: this.datemsg[0], end_time: this.datemsg[1] };
+      console.log(data);
       // searchDay(this.date).then(res => {
       //   console.log(res);
       // this.searchMsg=res.data
       // });
+      this.getMsgs(data);
     },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type];

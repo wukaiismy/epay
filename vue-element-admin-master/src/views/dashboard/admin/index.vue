@@ -24,17 +24,18 @@
   </el-row>
  </template>
       <!--数据显示区  -->
-      <panel-group :panelGroup='panelGroup'/>
+      <panel-group :panelGroup='panelGroup' />
       <!-- 用户总览 -->
    <UserOverview  :UserOverview="UserOverview"/>
    <!-- eachar图表 -->
    
     <el-row class="echarBox">
-      <div class="echarTitle">交易统计</div>
+      <div class="echarTitle" >交易统计</div>
       <div class="showData"> 
-        <div class="tardNum">本周交易笔数：<span>{{showTard.num}}</span></div>
-         <div class="tardDetails">本周交易总额：<span>{{showTard.amount__sum | toThousandFilter}}</span></div>
-
+                  <div class="tardNum" v-if="isSlectd=='1'">本周交易笔数：<span>{{showTard.num}}</span></div>
+                  <div class="tardDetails"  v-if="isSlectd=='1'">本周交易总额：<span>{{showTard.amount__sum | toThousandFilter}}</span></div>
+                  <div class="tardNum" v-if="isSlectd=='2'">本月交易笔数：<span>{{showTard.num}}</span></div>
+                  <div class="tardDetails"  v-if="isSlectd=='2'">本月交易总额：<span>{{showTard.amount__sum | toThousandFilter}}</span></div>
          <div class="rightMenus">
          <div class="tardChooseed  " :class="isSlectd=='1'?'selected':''" @click="slected(1)">本周</div>
          <div class="choose2" :class="isSlectd=='2'?'selected':''" @click="slected(2)">本月</div>
@@ -65,30 +66,18 @@ import PanelGroup from "./components/PanelGroup";
 import UserOverview from "./components/UserOverview";
 import LineChart from "./components/LineChart";
 import CountTo from "vue-count-to";
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-};
+
 export default {
   name: "DashboardAdmin",
   components: { PanelGroup, UserOverview, LineChart, CountTo },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis,
+      lineChartDatas: {
+        xDatas: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        expectedData: [],
+        actualData: []
+      },
+      lineChartData: {},
       value6: "",
       isSlectd: 1,
       login_last_info: {
@@ -129,10 +118,12 @@ export default {
   },
   created() {
     this.getMsg();
+    // this.slected(1);
   },
   methods: {
     // 获取主页面基本信息
     getMsg() {
+      this.lineChartData = this.lineChartDatas;
       allMsgList().then(res => {
         console.log(res.data);
         var data = res.data;
@@ -156,14 +147,10 @@ export default {
         // 将本周的数据取出来
         this.toWeek.toweeks_count = data.toweeks_count;
         this.toWeek.toweeks_sum = data.toweeks_sum.amount__sum;
-
-        this.slected();
+        this.slected(1);
       });
     },
-    //子组件选择的值上传同时改变图标的数据
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type];
-    },
+
     // 选择本月或者本周的数据
     slected(index) {
       this.isSlectd = index;
@@ -173,28 +160,101 @@ export default {
         this.showTard.num = this.toWeek.toweeks_count;
         this.showTard.amount__sum = this.toWeek.toweeks_sum;
         console.log(this.showTard);
+        var data = {};
+        var data = { begin_time: "", end_time: "" };
+        var dateUrl = "inhome/daysrange/";
+        dateSearch(dateUrl, data).then(res => {
+          console.log(res);
+          const dataLsit = res.data.sum_list;
+
+          this.lineChartDatas.expectedData = dataLsit.map(function(item) {
+            return item[1];
+          });
+          this.lineChartDatas.actualData = dataLsit.map(function(item) {
+            return item[2];
+          });
+          this.lineChartData = this.lineChartDatas;
+        });
       } else if (index == "2") {
         console.log("你选择了本月数据");
         this.showTard.num = this.panelGroup.count_tomonth;
         this.showTard.amount__sum = this.panelGroup.sum_tomonth;
+
+        // console.log(this.getNowFormatDate());
+        // console.log(this.getMonthStartDate());
+        if (this.getMonthStartDate() && this.getNowFormatDate()) {
+          var val = [];
+          val.push(this.getMonthStartDate());
+          val.push(this.getNowFormatDate());
+          // console.log(val);
+          this.submitDate(val);
+        }
       }
-      // // 查询数据
-      // var dateUrl = "incoming/channellist/";
-      // dateSearch(dateUrl, index).then(res => {
-      //   console.log(res);
-      //   // this.detailMsg = res.data;
-      // });
+     
     },
+    //格式化日期：yyyy-MM-dd
+    formatDate(date) {
+      var myyear = date.getFullYear();
+      var mymonth = date.getMonth() + 1;
+      var myweekday = date.getDate();
+
+      if (mymonth < 10) {
+        mymonth = "0" + mymonth;
+      }
+      if (myweekday < 10) {
+        myweekday = "0" + myweekday;
+      }
+      return myyear + "-" + mymonth + "-" + myweekday;
+    },
+    getNowFormatDate() {
+      var date = new Date();
+      var seperator1 = "-";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      var currentdate = year + seperator1 + month + seperator1 + strDate;
+      return currentdate;
+    },
+    //获得本月的开始日期
+    getMonthStartDate() {
+      var now = new Date(); //当前日期
+      var nowMonth = now.getMonth(); //当前月
+      var nowYear = now.getYear(); //当前年
+      nowYear += nowYear < 2000 ? 1900 : 0; //
+      var monthStartDate = new Date(nowYear, nowMonth, 1);
+      return this.formatDate(monthStartDate);
+    },
+
     //选择时间进行查询
     submitDate(val) {
+      var that = this;
       console.log(val);
-
       var data = { begin_time: val[0], end_time: val[1] };
       console.log(data);
       // 查询数据
       var dateUrl = "inhome/daysrange/";
       dateSearch(dateUrl, data).then(res => {
-        console.log(res);
+        console.log(res.data.sum_list);
+        const dataLsit = res.data.sum_list;
+        // 获取相应的数据
+        var lineChartData = {};
+        lineChartData.xDatas = dataLsit.map(function(item) {
+          return item[0];
+        });
+        lineChartData.expectedData = dataLsit.map(function(item) {
+          return item[1];
+        });
+        lineChartData.actualData = dataLsit.map(function(item) {
+          return item[2];
+        });
+        that.lineChartData = lineChartData;
+        console.log(that.lineChartData);
         // this.detailMsg = res.data;
       });
     },
