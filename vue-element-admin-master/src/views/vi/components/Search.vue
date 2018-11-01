@@ -19,7 +19,6 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
-import { accountSearch } from "@/api/vi";
 export default {
   name: "Search",
   directives: {
@@ -43,11 +42,7 @@ export default {
     //搜索功能
     handleFilter() {
       console.log(this.searchList);
-      var searchURL = "incoming/channellist/";
-      accountSearch(searchURL, this.searchList).then(response => {
-        console.log(response);
-        this.$emit("channelSearch", response);
-      });
+      this.$emit("channelSearch", this.searchList);
     }
   }
 };

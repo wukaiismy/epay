@@ -32,11 +32,11 @@ export function RoleAuthorAdd(URL, data) {
   });
 }
 //账户权限基本数据
-export function userMsg(URL, id) {
+export function userMsg(URL, data) {
   return request({
     url: URL,
     method: "get",
-    params: { id }
+    params: data
   });
 }
 //账户权限详情

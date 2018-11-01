@@ -3,26 +3,31 @@
          <Search  @channelSearch='channelSearch' />
          <!-- 我是表格组件 -->
         <div class="bigBoxs">
-          <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit highlight-current-row style="width:100%;">     
-              <el-table-column property="date" label="交易日期" align="center" width="95%"></el-table-column>
-              <el-table-column property="tardNum" label="交易编号"  align="center"   ></el-table-column>
-              <el-table-column property="userName" label="用户姓名"  width="80%"  align="center"></el-table-column>
-              <el-table-column property="sotreName" label="商户名称"  align="center"></el-table-column>
-              <el-table-column property="sotreType" label="商户类型"  align="center"></el-table-column>
-              <el-table-column property="lsStoreName" label="连锁商户名称"  align="center"></el-table-column>
-              <el-table-column property="qdName" label="渠道商名称"  align="center"></el-table-column>
+          <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridDatas"  @selection-change="handleSelectionChange" border fit highlight-current-row style="width:100%;">     
+               <el-table-column  align="center" type="selection" width="55"></el-table-column>
+              <el-table-column property="create_at" label="交易日期" align="center" width="95%"></el-table-column>
+              <el-table-column property="id" label="交易编号"  align="center"   ></el-table-column>
+              <el-table-column property="username" label="用户姓名"  width="80%"  align="center"></el-table-column>
+              <el-table-column property="merchent__name" label="商户名称"  align="center"></el-table-column>
+              <el-table-column property="merchent__mechant_type" label="商户类型"  align="center"></el-table-column>
+              <!-- <el-table-column property="lsStoreName" label="连锁商户名称"  align="center"></el-table-column> -->
+              <el-table-column property="merchent__channel__name" label="渠道商名称"  align="center"></el-table-column>
               <el-table-column  label="交易金额" width="85%"  align="center">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
+                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.amount| toThousandFilter}}</span>
                 </template>
               </el-table-column>
-              <el-table-column property="payFcu" label="支付方式"  align="center"></el-table-column>
+              <el-table-column  label="支付方式"  align="center">
+                 <template slot-scope="scope">
+                  <span type="text" size="small" class="moneyStyles">担保账户+信条支付</span>
+                </template>
+              </el-table-column>
               <el-table-column property="payAccont" label="退款账户"  align="center"></el-table-column>
               <el-table-column label="状态"  align="center"  width="95%">
                 <template slot-scope="scope">
-                  <span type="text" size="small" class="noppss"  v-if="scope.row.statuss==1" >线下已处理</span>
-                  <span type="text" size="small" class="shangjia" v-if="scope.row.statuss==2">退款成功</span>
-                  <span type="text" size="small" class="xiaz" v-if="scope.row.statuss==3">退款失败</span>
+                  <span type="text" size="small" class="noppss"  v-if="scope.row.status==1" >线下已处理</span>
+                  <span type="text" size="small" class="shangjia" v-if="scope.row.status==2">退款成功</span>
+                  <span type="text" size="small" class="xiaz" v-if="scope.row.status==3">退款失败</span>
                 </template>
               </el-table-column>              
               <el-table-column  label="操作"   align="center" width="90%">
@@ -38,7 +43,7 @@
         </div>
         <!-- 分页功能 -->
         <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
         </div>
         <!-- 主体内容结束 -->
 
@@ -52,7 +57,7 @@
                 <div class="item"><div class="abs">担保账户支付：</div><span>￥2000.00</span></div>
                 <div class="item"><div class="abs">担保账号：</div><span>2001215487965221</span></div>
                 <div class="item"><div class="abs">信条支付：</div><span>￥1000.00</span></div>
-                <div class="item"><div class="abs">信条账户：</div><span>90215487965221</span></div>
+                <!-- <div class="item"><div class="abs">信条账户：</div><span>90215487965221</span></div> -->
                 <div class="item"><div class="abs">支付状态：</div><span class="ppss">支付成功</span></div>
             </div>
 
@@ -89,9 +94,10 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
-
       multipleSelection: [],
       value1: "",
       tableKey: 0,
@@ -99,7 +105,6 @@ export default {
       total: 1,
       listLoading: true,
       dialogTableVisible: false,
-
       msg: {
         storeName: "",
         date: "",
@@ -114,151 +119,10 @@ export default {
         storeNames: "",
         checkList: []
       },
-      gridData: [
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴集团",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "3"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "3"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          payAccont: "200 1120 11122 002",
-          statuss: "1"
-        }
-      ]
+
+      detailMsg: {},
+      changeMsg: {},
+      gridDatas: []
     };
   },
   components: {
@@ -271,26 +135,64 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      this.pages.page = 1;
+      this.pages.size = 10;
+      var datas = {
+        merchant_name: data.storeName,
+        merchantid: data.storeNums,
+        id1: data.tardNum,
+        channelid: data.channelsNum,
+        channel_name: data.channels,
+        begin_time: data.date[0],
+        end_time: data.date[1],
+        status: data.statuss
+      };
+      // console.log(datas);
+      this.getList(datas);
     },
     //   获取数据啊
-    getList() {
+    getList(data) {
       this.listLoading = true;
       console.log("用户退款表格基本信息");
-      var basicURL = "incoming/channellist/";
-      // merchantMsg(basicURL,"1").then(res => {
-      //   console.log(res);
-      // });
+      var basicURL =
+        "record/expenselist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
+      merchantMsg(basicURL, data).then(res => {
+        console.log(res);
+        var dataList = res.data.data.ret;
+        console.log(dataList);
+        for (var i = 0; i < dataList.length; i++) {
+          dataList[i].create_at = dataList[i].create_at.split("T").join(" ");
+        }
+        this.total = res.data.data.count;
+        this.gridDatas = dataList;
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
+    },
+    // 全选
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      // console.log(val);
+    },
+    // 批量的数据处理
+    dataDeal() {
+      var dataList = [];
+      this.multipleSelection.forEach(function(v) {
+        dataList.push(v.id);
+      });
+      var datas = { ids: dataList.join(",") };
+      return datas;
     },
     // 详情按钮
     passsubmit(data) {
       this.dialogTableVisible = true;
       console.log(data);
-      var detailURL = "incoming/channellist/";
-      // merchantDetail(detailURL,data.tardNum).then(res => {
+      var detailURL = "record/expenseid/";
+      // merchantDetail(detailURL,data.id).then(res => {
       //   console.log(res);
       // this.detailMsg=data
       // });
@@ -299,20 +201,29 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "incoming/channellist/";
-      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // this.msg=data
-      // });
+      var DownloadURL = "record/expensetoexcel/";
+      merchantDownload(DownloadURL, this.dataDeal()).then(res => {
+        console.log(res);
+        let url = window.URL.createObjectURL(new Blob([res.data]));
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "商户交易.xls");
+        document.body.appendChild(link);
+        link.click();
+      });
     },
 
     //分页功能选择
     handleSizeChange(val) {
+      console.log("选择个数");
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }

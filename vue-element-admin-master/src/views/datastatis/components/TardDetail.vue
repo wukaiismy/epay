@@ -42,24 +42,7 @@ import Show1 from "./Show1";
 import ShowMoney from "./ShowMoney";
 import LineChart from "./LineChart";
 import BiaoGe from "./BiaoGe";
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-};
+
 export default {
   name: "TardDetail",
   data() {
@@ -68,7 +51,11 @@ export default {
       date1: "",
       table_msg: "",
       datemsg: "",
-      lineChartData: lineChartData.newVisitis,
+      lineChartData: {
+        expectedData: [],
+        xDatas: [],
+        legendData: "交易成功现金总额"
+      },
       searchMsg: {
         count_range: 0,
         sum_all_range: "",
@@ -76,7 +63,8 @@ export default {
         sum_gift_range: ""
       },
       dateType: true,
-      lineChartDataList: {}
+      lineChartDataList: {},
+      types: "sum_amount_range"
     };
   },
   components: {
@@ -103,18 +91,48 @@ export default {
         //截取每天的数据列表
         // this.lineChartDataList = res.data.all_order_someone.sum_list;
         var echarList = {};
-        var lineChartData = {};
+        var lineChartData = {
+          count_range: {},
+          sum_all_range: {},
+          sum_amount_range: {},
+          sum_gift_range: {}
+        };
         echarList = res.data.all_order_someone.sum_list;
         console.log(echarList);
-        //    lineChartData.xDatas = dataLsit.map(function(item) {
-        //     return item[0];
-        //   });
-        //   lineChartData.expectedData = dataLsit.map(function(item) {
-        //     return item[1];
-        //   });
-        //   lineChartData.actualData = dataLsit.map(function(item) {
-        //     return item[2];
-        //   });
+        lineChartData.count_range.xDatas = echarList.map(function(item) {
+          return item[0];
+        });
+        lineChartData.sum_all_range.xDatas = echarList.map(function(item) {
+          return item[0];
+        });
+        lineChartData.sum_amount_range.xDatas = echarList.map(function(item) {
+          return item[0];
+        });
+        lineChartData.sum_gift_range.xDatas = echarList.map(function(item) {
+          return item[0];
+        });
+        lineChartData.count_range.expectedData = echarList.map(function(item) {
+          return item[1];
+        });
+        lineChartData.sum_all_range.expectedData = echarList.map(function(
+          item
+        ) {
+          return item[2];
+        });
+        lineChartData.sum_amount_range.expectedData = echarList.map(function(
+          item
+        ) {
+          return item[3];
+        });
+        lineChartData.sum_gift_range.expectedData = echarList.map(function(
+          item
+        ) {
+          return item[4];
+        });
+
+        this.lineChartDataList = lineChartData;
+        // console.log(this.lineChartDataList);
+        this.lineChartData = this.lineChartDataList[this.types];
       });
     },
     //按日、月查询
@@ -152,8 +170,10 @@ export default {
       // });
       this.getMsgs(data);
     },
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type];
+    handleSetLineChartData(type, title) {
+      this.types = type;
+      this.lineChartData = this.lineChartDataList[type];
+      this.lineChartData.legendData = title;
     }
   }
 };

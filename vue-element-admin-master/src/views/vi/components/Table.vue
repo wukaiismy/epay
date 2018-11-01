@@ -3,25 +3,25 @@
        <Search  @channelSearch='channelSearch' />
        <!-- 我是表格组件 -->
       <div class="bigBoxs">
-          <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData" border fit @selection-change="handleSelectionChange"  highlight-current-row style="width:100%;">
+          <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridDatas" border fit @selection-change="handleSelectionChange"  highlight-current-row style="width:100%;">
             <el-table-column  align="center" type="selection" width="55"></el-table-column>
-            <el-table-column property="date" label="创建日期"  align="center" ></el-table-column>
-            <el-table-column property="danbaoNum" label="担保账户编号"  align="center"></el-table-column>
-            <el-table-column property="danbaoName" label="担保账户名称"  align="center"></el-table-column>
-            <el-table-column property="sotreName" label="连锁/直营商户名称"  align="center"></el-table-column>
-            <el-table-column property="sonSotreName" label="子商户"  align="center"></el-table-column>
-            <el-table-column property="sotreQudao" label="所属渠道商"  align="center"></el-table-column>
+            <el-table-column property="prepaid_card__create_at" label="创建日期"  align="center" ></el-table-column>
+            <el-table-column property="prepaid_card_id" label="担保账户编号"  align="center"></el-table-column>
+            <el-table-column property="prepaid_card__name" label="担保账户名称"  align="center"></el-table-column>
+            <el-table-column property="prepaid_card__merchant_name" label="商户名称"  align="center"></el-table-column>
+            <!-- <el-table-column property="sonSotreName" label="子商户"  align="center"></el-table-column> -->
+            <el-table-column property="prepaid_card__merchant__channel__name" label="所属渠道商"  align="center"></el-table-column>
             <el-table-column label="充值金额"  align="center"  width="95%">
               <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.prepaid_card__amount| toThousandFilter}}</span>
               </template>
             </el-table-column>
             <el-table-column label="赠送金额"  align="center"  width="90%">
                <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.giveMoney| toThousandFilter}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.prepaid_card__gift| toThousandFilter}}</span>
               </template>
             </el-table-column>
-            <el-table-column  label="充值数量"  align="center"  width="80%">
+            <!-- <el-table-column  label="充值数量"  align="center"  width="80%">
                <template slot-scope="scope">
                  <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum| toThousandFilter}}</span>
                </template>
@@ -35,18 +35,18 @@
                 <template slot-scope="scope">
                   <span type="text" size="small" class="moneyStyles">￥{{scope.row.giveAllMoney| toThousandFilter}}</span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column  label="状态"  align="center" width="80%" >
               <template slot-scope="scope">
-                <span type="text" size="small" class="ppss"  v-if="scope.row.statuss==1" >上架中</span>
-                <span type="text" size="small" class="noppss" v-if="scope.row.statuss==2">已下架</span>
-                <span type="text" size="small" class="stopServer" v-if="scope.row.statuss==3">暂停服务</span>
+                <span type="text" size="small" class="ppss"  v-if="scope.row.prepaid_card__status==0" >上架中</span>
+                <span type="text" size="small" class="noppss" v-if="scope.row.prepaid_card__status==1">已下架</span>
+                <span type="text" size="small" class="stopServer" v-if="scope.row.prepaid_card__status==2">暂停服务</span>
               </template>
             </el-table-column>         
             <el-table-column  label="操作"   align="center" width="90%">
               <template slot-scope="scope" >
                 <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz" >详情</el-button>
-                <el-button type="text" size="small" class="shanchu" @click="returnsubmit(scope.row)">修改</el-button>
+                <!-- <el-button type="text" size="small" class="shanchu">修改</el-button> -->
               </template>
             </el-table-column>       
     </el-table>
@@ -61,7 +61,7 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -75,8 +75,8 @@
               <div class="item"><div class="abs">充值金额：</div><span>￥9000</span></div>
               <div class="item"><div class="abs">赠送金额：</div><span>￥1000</span></div>
               <div class="item"><div class="abs">违约赔付比例：</div><span>41%</span></div>
-              <div class="item"><div class="abs">优惠是否自动翻倍：</div><span>是</span></div>
-              <div class="item"><div class="abs">到期是否自动下架：</div><span>是</span></div>
+              <!-- <div class="item"><div class="abs">优惠是否自动翻倍：</div><span>是</span></div>
+              <div class="item"><div class="abs">到期是否自动下架：</div><span>是</span></div> -->
           </div>
 
           <div class="diaTilte title2"><div class="titleMotai">账户状态</div>
@@ -101,7 +101,7 @@
       <!-- 下面是添加模态框 -->
       <el-dialog :visible.sync="dialogTableVisible1"    width="680px" >
           <div class="diaTilte d1"><div class="titleMotai">账户信息</div>
-              <div class="item"><div class="abs abs1">账户名称：</div> <span class="addSpan">
+              <div class="item"><div class="abs abs1">担保账户名称：</div> <span class="addSpan">
                  <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeName" placeholder="请输入账户名称"></el-input>
               </span></div>
               <div class="item"><div class="abs abs1">有效日期：</div><span class="addSpan">
@@ -120,7 +120,8 @@
               </div>
               <div class="item">
                   <div class="abs abs1">违约赔付比例：</div>
-                  <span class="addSpan"><el-input  size="small"  style="width:8.8%; height:40px;" v-model="msg.rates" placeholder=""></el-input> &nbsp;％<i class="ratess">违约赔付比例在21％～41％之间</i>
+                  <span class="addSpan">
+                   35% <!-- <el-input  size="small"  style="width:8.8%; height:40px;" v-model="msg.rates" placeholder=""></el-input> &nbsp;％<i class="ratess">违约赔付比例在21％～41％之间</i> -->
               </span></div>
               <!-- <div class="item"><div class="abs abs1">优惠是否自动翻倍：</div><span class="addSpan">
                     <el-radio v-model="msg.fanbei" label="1">是</el-radio>
@@ -131,7 +132,10 @@
                     <el-radio v-model="msg.xiajia" label="2">否</el-radio>
               </span></div> -->
                <div class="item"><div class="abs abs1">商家类型：</div><span class="addSpan">
-                 <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeType" placeholder="请输入商家类型"></el-input>
+                 <select v-model="msg.storeType" class="selectBox"  @click="ss()" >
+                      <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+                    </select>  
+                 <!-- <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeType" placeholder="请输入商家类型"></el-input> -->
               </span></div>
               <div class="item"><div class="abs abs1">商家名称：</div><span class="addSpan">
                   <el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.storeNames" placeholder="请输入商家名称"></el-input>
@@ -141,7 +145,7 @@
                         <el-checkbox class="firstChild" label="科华北路店"></el-checkbox>
                         <el-checkbox label="科华北路店B"></el-checkbox>
                         <el-checkbox label="科华北路店C"></el-checkbox>
-                        <el-checkbox label="科华北路店"></el-checkbox>
+                        <el-checkbox label="科华北路店a"></el-checkbox>
                         <el-checkbox label="科华北路店 B"></el-checkbox>
                         <el-checkbox label="科华北路店 C"></el-checkbox>
                     </el-checkbox-group>
@@ -170,6 +174,7 @@ import {
   merchantSoldOut,
   merchantStop,
   merchantAdd,
+  accountSearch,
   merchantDownload,
   merchantChangeSubmit
 } from "@/api/vi";
@@ -181,7 +186,9 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
 
       multipleSelection: [],
@@ -200,168 +207,28 @@ export default {
         giveMoney: "",
         rate: "",
         rates: "",
-        storeType: "",
+        storeType: "dis",
         storeNames: "",
         checkList: []
       },
-      gridData: [
+      options: [
         {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "1"
+          value: "dis",
+          label: "请选择商家类型",
+          disabled: ""
         },
         {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "2"
+          value: "连锁总商户",
+          label: "连锁总商户"
         },
         {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "3"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "3"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "125451251152",
-          danbaoName: "成都一股云有限公司",
-          sotreName: "金桔联盟",
-          sonSotreName: "万达集团",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100",
-          rechargeAllMoney: "900000",
-          giveAllMoney: "100000",
-          statuss: "2"
+          value: "连锁子商户",
+          label: "连锁子商户"
         }
       ],
       detailMsg: {},
-      changeMsg: {}
+      changeMsg: {},
+      gridDatas: []
     };
   },
   components: {
@@ -381,16 +248,44 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      var searchURL = "prepaid/merchantprepa/";
+      var datas = {
+        merchant_name: data.storeName,
+        merchantid: data.storeNums,
+        prepaid: data.danbao,
+        channelid: data.channelsNum,
+        channel_name: data.channels,
+        begin_time: data.date[0],
+        end_time: data.date[1]
+      };
+      console.log(datas);
+      this.getList(datas);
     },
     // 获取商户交易基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
-      var basicURL = "incoming/channellist/";
-      console.log("商户交易表格基本信息");
-      // merchantMsg(basicURL,'1').then(res => {
-      //   console.log(res);
-      // });
+      var basicURL =
+        "prepaid/merchantprepa/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
+
+      merchantMsg(basicURL, data).then(res => {
+        console.log("商户交易表格基本信息");
+        console.log(res);
+        var dataList = res.data.data.ret;
+        console.log(dataList);
+        for (var i = 0; i < dataList.length; i++) {
+          dataList[i].prepaid_card__create_at = dataList[
+            i
+          ].prepaid_card__create_at
+            .split("T")
+            .join(" ");
+        }
+        this.total = res.data.data.count;
+        this.gridDatas = dataList;
+        // console.log(this.gridDatas);
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
@@ -405,15 +300,15 @@ export default {
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
       console.log(data);
-      var detailURL = "incoming/channellist/";
-      // merchantDetail(detailURL,data.danbaoNum).then(res => {
+      var detailURL = "prepaid/merchantid/";
+      // merchantDetail(detailURL,data.id).then(res => {
       //   console.log(res);
       // this.detailMsg=data
       // });
     },
     // 修改按钮
     returnsubmit(data) {
-      console.log("你点击了修改按钮");
+      console.log("修改功能暂时不提供");
       this.dialogTableVisible2 = true;
       // merchantChange(data.danbaoNum).then(res => {
       //   console.log(res);
@@ -421,32 +316,39 @@ export default {
       // });
       console.log(data);
     },
+    // 批量的数据处理
+    dataDeal() {
+      var dataList = [];
+      this.multipleSelection.forEach(function(v) {
+        dataList.push(v.prepaid_card_id);
+      });
+      var datas = { ids: dataList.join(",") };
+      return datas;
+    },
     // 批量上架按钮
     jihuoJump() {
       console.log("批量上架");
-      var PutawayURL = "incoming/channelact";
-      // merchantPutaway(PutawayURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // this.msg=data
-      // });
+      console.log(this.dataDeal());
+      var PutawayURL = "prepaid/cardshelf/";
+      merchantPutaway(PutawayURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 批量下架按钮
     passJump() {
       console.log("批量下架");
-      var SoldOutURL = "incoming/channelact";
-      // merchantSoldOut(SoldOutURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // this.msg=data
-      // });
+      var SoldOutURL = "prepaid/cardobtained/";
+      merchantSoldOut(SoldOutURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 暂停服务按钮
     stopServes() {
       console.log("暂停服务");
-      var StopURL = "incoming/channelact";
-      // merchantStop(StopURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // this.msg=data
-      // });
+      var StopURL = "prepaid/cardout/";
+      merchantStop(StopURL, this.dataDeal()).then(res => {
+        console.log(res);
+      });
     },
     // 添加按钮
     AddJump() {
@@ -456,31 +358,40 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "incoming/channelact";
-      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // this.msg=data
-      // });
+      var DownloadURL = "prepaid/prepaidtoexcel/";
+      merchantDownload(DownloadURL, this.dataDeal()).then(res => {
+        console.log(res);
+        let url = window.URL.createObjectURL(new Blob([res.data]));
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "商户交易.xls");
+        document.body.appendChild(link);
+        link.click();
+      });
     },
 
     //分页功能选择
     handleSizeChange(val) {
+      console.log("选择个数");
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     },
 
     // 下面是添加模态框的方法
     submitAdd() {
       alert("添加成功");
-      var AddURL = "incoming/channelreview";
-      // merchantAdd(AddURL,this.msg).then(res => {
-      //   console.log(res);
-      //
-      // });
+      console.log(this.msg);
+      var AddURL = "prepaid/creprepa/";
+      merchantAdd(AddURL, this.msg).then(res => {
+        console.log(res);
+      });
     },
     // 取消按钮
     quxiao() {
@@ -493,6 +404,11 @@ export default {
       // merchantChangeSubmit(this.msg).then(res => {
       //   console.log(res);
       // });
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
+      // this.options1[0].disabled = "disabled";
+      // this.options2[0].disabled = "disabled";
     }
   }
 };
@@ -631,7 +547,7 @@ export default {
   width: 46.17%;
 }
 .firstChild {
-  margin-left: 35px;
+  margin-left: 33px;
 }
 .btnBox {
   position: relative;
@@ -655,5 +571,10 @@ export default {
   border-radius: 4px;
   font-size: 14px;
   color: #1c3672;
+}
+.selectBox {
+  width: 46.17%;
+  height: 35px;
+  border: 1px solid #dcdfe6;
 }
 </style>

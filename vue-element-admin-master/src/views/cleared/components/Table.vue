@@ -3,12 +3,13 @@
      <Search  @channelSearch='channelSearch'/>
       <!-- 我是表格组件 -->
      <div class="bigBoxs">
-       <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  border fit highlight-current-row style="width:100%;">      
+       <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  @selection-change="handleSelectionChange"  border fit highlight-current-row style="width:100%;">      
+             <el-table-column  align="center" type="selection" width="55"></el-table-column>
             <el-table-column property="startDate" label="创建日期"  align="center"  width="95%"  ></el-table-column>
             <el-table-column property="tardDate" label="交易日期"  align="center" width="95%"  ></el-table-column>
             <el-table-column property="payTardNum" label="信条交易号"   align="center"></el-table-column>
             <el-table-column property="sotreName" label="商户名称"     align="center"></el-table-column>
-            <el-table-column property="sotreJC" label="商户简称"  align="center"></el-table-column>
+            <!-- <el-table-column property="sotreJC" label="商户简称"  align="center"></el-table-column> -->
             <el-table-column property="channelName" label="所属渠道商"  align="center"></el-table-column>
             <el-table-column property="JSName" label="结算户名"  align="center"></el-table-column>
             <el-table-column property="JSNum" label="结算账户"  align="center"></el-table-column>
@@ -36,7 +37,7 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -73,7 +74,12 @@
 <script>
 import Search from "./Search.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { merchantMsg, merchantDetail, merchantDownload } from "@/api/vi";
+import {
+  clearedSearch,
+  merchantMsg,
+  merchantDetail,
+  merchantDownload
+} from "@/api/vi";
 
 export default {
   name: "Table",
@@ -83,7 +89,9 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
 
       multipleSelection: [],
@@ -228,7 +236,10 @@ export default {
           rechargeMoney: "9000",
           statuss: "1"
         }
-      ]
+      ],
+      detailMsg: {},
+      changeMsg: {},
+      gridDatas: []
     };
   },
   components: {
@@ -241,26 +252,65 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      this.pages.page = 1;
+      this.pages.size = 10;
+      // var datas = {
+      //   merchant_name: data.storeName,
+      //   merchantid: data.storeNums,
+      //   id1: data.tardNum,
+      //   channelid: data.channelsNum,
+      //   channel_name: data.channels,
+      //   begin_time: data.date[0],
+      //   end_time: data.date[1],
+      //   status: data.statuss
+      // };
+      // console.log(datas);
+      // this.getList(datas);
     },
     // 获取商户结算基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
       console.log("商户结算表格基本信息");
-      // merchantMsg("id").then(res => {
+      var basicURL =
+        "record/expenselist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
+      // merchantMsg(basicURL, data).then(res => {
       //   console.log(res);
+      //   var dataList = res.data.data.ret;
+      //   console.log(dataList);
+      //   for (var i = 0; i < dataList.length; i++) {
+      //     dataList[i].create_at = dataList[i].create_at.split("T").join(" ");
+      //   }
+      //   this.total = res.data.data.count;
+      //   this.gridDatas = dataList;
       // });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
     },
+    // 全选
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      // console.log(val);
+    },
+    // 批量的数据处理
+    dataDeal() {
+      var dataList = [];
+      this.multipleSelection.forEach(function(v) {
+        dataList.push(v.id);
+      });
+      var datas = { ids: dataList.join(",") };
+      return datas;
+    },
     //详情按钮
     handleClick(val) {
-      this.multipleSelection = val;
       console.log(val);
       this.dialogTableVisible = true;
+      var detailURL = "record/expenseid/";
       console.log("你点击了详情按钮");
-      // merchantDetail(data.payTardNum).then(res => {
+      // merchantDetail(detailURL,val.id).then(res => {
       //   console.log(res);
       // this.detailMsg=data
       // });
@@ -269,19 +319,29 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      // merchantDownload(this.multipleSelection).then(res => {
+      // var DownloadURL = "record/expensetoexcel/";
+      // merchantDownload(DownloadURL, this.dataDeal()).then(res => {
       //   console.log(res);
-      // this.msg=data
+      //   let url = window.URL.createObjectURL(new Blob([res.data]));
+      //   let link = document.createElement("a");
+      //   link.style.display = "none";
+      //   link.href = url;
+      //   link.setAttribute("download", "商户交易.xls");
+      //   document.body.appendChild(link);
+      //   link.click();
       // });
     },
 
     //分页功能选择
     handleSizeChange(val) {
+      console.log("选择个数");
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }

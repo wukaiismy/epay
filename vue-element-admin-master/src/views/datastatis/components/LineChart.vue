@@ -39,6 +39,7 @@ export default {
     chartData: {
       deep: true,
       handler(val) {
+        this.chart.showLoading();
         this.setOptions(val);
       }
     }
@@ -78,13 +79,14 @@ export default {
         this.__resizeHandler();
       }
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ expectedData, xDatas, legendData } = {}) {
+      this.chart.hideLoading();
       this.chart.setOption({
         title: {
-          text: "单位：万元"
+          // text: "单位：万元"
         },
         xAxis: {
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+          data: xDatas,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -110,11 +112,11 @@ export default {
           }
         },
         legend: {
-          data: ["交易统计"]
+          data: [legendData]
         },
         series: [
           {
-            name: "交易统计",
+            name: legendData,
             itemStyle: {
               normal: {
                 color: "#FF005A",

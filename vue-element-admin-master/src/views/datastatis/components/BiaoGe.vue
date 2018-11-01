@@ -2,23 +2,19 @@
     <div>
        <!-- 我是表格组件 -->
       <div class="bigBoxs">
-          <el-table class="tableBox"  v-loading="listLoading"  :key="tableKey"  :data="gridData" border fit highlight-current-row style="width:100%;">
+          <el-table class="tableBox"  v-loading="listLoading"  :key="tableKey"  :data="gridDatas" border fit highlight-current-row style="width:100%;">
            
-            <el-table-column property="date" label="日期"  align="center" ></el-table-column>
-            <el-table-column property="danbaoNum" label="交易总笔数"  align="center"></el-table-column>
-            <el-table-column  label="交易成功笔数"  align="center">
-                 <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.danbaoName | toThousandFilter }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column property="day" label="日期"  align="center" ></el-table-column>
+            <el-table-column property="oneday_count" label="交易总笔数"  align="center"></el-table-column>
+            <el-table-column property="oneday_count"   label="交易成功笔数"  align="center"></el-table-column>
             <el-table-column label="交易成功总额"  align="center">
                  <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.sotreName | toThousandFilter }}</span>
+                <span type="text" size="small" class="moneyStyles">{{scope.row.all_oneday_sum*1 | toThousandFilter }}</span>
               </template>
             </el-table-column>
             <el-table-column  label="交易成功现金额"  align="center">
                 <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.sonSotreName | toThousandFilter }}</span>
+                <span type="text" size="small" class="moneyStyles">{{scope.row.day_oper*1 | toThousandFilter }}</span>
               </template>
             </el-table-column>
             <!-- <el-table-column label="退款笔数"  align="center">
@@ -38,7 +34,7 @@
             </el-table-column> -->
             <el-table-column  label="渠道分润"  align="center" >
                <template slot-scope="scope">
-                 <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum | toThousandFilter}}</span>
+                 <span type="text" size="small" class="moneyStyles">{{scope.row.day_gift*1 | toThousandFilter}}</span>
                </template>
             </el-table-column>              
             <el-table-column  label="操作"   align="center">
@@ -69,7 +65,7 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 2,
+        currentPage: 1,
         page: 1,
         size: 10
       },
@@ -83,129 +79,8 @@ export default {
       gridDatas: [],
       filename: "",
       autoWidth: true,
-      gridData: [
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000.01",
-          danbaoName: "900000.09",
-          sotreName: "900000.91",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          danbaoNum: "1000",
-          danbaoName: "900000",
-          sotreName: "900000",
-          sonSotreName: "900000",
-          sotreQudao: "900000",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeNum: "100"
-        }
-      ]
+      gridDatas: [],
+      times: []
     };
   },
   mounted() {
@@ -225,22 +100,28 @@ export default {
       var val = [];
       val.push(this.getMonthStartDate());
       val.push(this.getNowFormatDate());
+      this.times = val;
       this.getList(val);
     },
 
     getList(val) {
+      if (!val) {
+        val = this.times;
+      }
       this.listLoading = true;
-      console.log(11111111111111111111);
       console.log(val);
-      console.log("表格基本信息");
       var data = {
-        page: this.pages.page,
+        pg: this.pages.page,
         size: this.pages.size,
         begin_time: val[0],
         end_time: val[1]
       };
       tebleMsg(data).then(res => {
-        console.log(res);
+        console.log("表格基本信息");
+        // console.log(res);
+        this.gridDatas = res.data.data.ret;
+        this.total = res.data.data.count;
+        // console.log(this.gridDatas);
       });
       setTimeout(() => {
         this.listLoading = false;
@@ -261,17 +142,25 @@ export default {
       this.dialogTableVisible2 = true;
       console.log(data);
       //跳转到退款详情页面
-      this.$router.push({ path: "/trade/userRefund" });
+      this.$router.push({
+        path: "/trade/userRefund",
+        query: {
+          date: data.day
+        }
+      });
     },
 
     //分页功能选择
     handleSizeChange(val) {
+      console.log("选择个数");
+      console.log(val);
       this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
-      console.log("选择分页");
+      console.log("选择第几页");
+      console.log(val);
       this.pages.page = val;
       this.getList();
     },

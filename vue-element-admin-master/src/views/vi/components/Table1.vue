@@ -3,36 +3,36 @@
       <Search   @channelSearch='channelSearch'/>
       <!-- 我是表格组件 -->
       <div class="bigBoxs">
-        <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
+        <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">
           <el-table-column align="center" type="selection" width="55"></el-table-column>
-          <el-table-column property="date" label="创建日期"  align="center"  width="95%"  ></el-table-column>
-          <el-table-column property="NewDate" label="更新日期"  align="center"  width="95%"  ></el-table-column>
-          <el-table-column property="userName" label="用户姓名"  width="80%"  align="center"></el-table-column>
+          <el-table-column property="create_time" label="创建日期"  align="center"  width="95%"  ></el-table-column>
+          <!-- <el-table-column property="NewDate" label="更新日期"  align="center"  width="95%"  ></el-table-column> -->
+          <el-table-column property="user_name" label="用户姓名"  width="80%"  align="center"></el-table-column>
           <el-table-column property="userTel" label="电话"     align="center"></el-table-column>
-          <el-table-column property="userAccount" label="用户账号"  align="center"></el-table-column>
-          <el-table-column property="yufuAccount" label="预付卡账号"  align="center"></el-table-column>
-          <el-table-column property="sotreName" label="商品名称"  align="center"></el-table-column>
-          <el-table-column property="sotreJC" label="商户简称" width="85%"  align="center"></el-table-column>
-          <el-table-column property="sotreQudao" label="所属渠道商"  align="center"></el-table-column>
+          <!-- <el-table-column property="userAccount" label="用户账号"  align="center"></el-table-column> -->
+          <el-table-column property="prepaid_card_id" label="预付卡账号"  align="center"></el-table-column>
+          <el-table-column property="prepaid_card__merchant_name" label="商户名称"  align="center"></el-table-column>
+          <!-- <el-table-column property="sotreJC" label="商户简称" width="85%"  align="center"></el-table-column> -->
+          <el-table-column property="prepaid_card__merchant__channel__name" label="所属渠道商"  align="center"></el-table-column>
           <el-table-column label="充值金额"  align="center"  width="95%">
             <template slot-scope="scope">
-              <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeMoney| toThousandFilter}}</span>
+              <span type="text" size="small" class="moneyStyles">{{scope.row.prepaid_card__amount| toThousandFilter}}</span>
             </template>
           </el-table-column>
           <el-table-column label="会员机制"  align="center" >
             <template slot-scope="scope">
-              <span type="text" size="small" class="moneyStyles">赠送￥{{scope.row.giveMoney| toThousandFilter}}</span>
+              <span type="text" size="small" class="moneyStyles">赠送￥{{scope.row.prepaid_card__gift| toThousandFilter}}</span>
             </template>
           </el-table-column>       
-          <el-table-column label="剩余金额"  align="center"  width="95%">
+          <!-- <el-table-column label="剩余金额"  align="center"  width="95%">
             <template slot-scope="scope">
               <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeAllMoney| toThousandFilter}}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column  label="状态"  align="center" width="80%" >
             <template slot-scope="scope">
-              <span type="text" size="small" class="ppss"  v-if="scope.row.statuss==1" >激活</span>
-              <span type="text" size="small" class="stopServer" v-if="scope.row.statuss==2">锁卡</span>
+              <span type="text" size="small" class="ppss"  v-if="scope.row.status==1" >激活</span>
+              <span type="text" size="small" class="stopServer" v-if="scope.row.status==2">锁卡</span>
             </template>
           </el-table-column>
           <el-table-column  label="操作"   align="center" width="90%">
@@ -50,7 +50,7 @@
   </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -94,6 +94,7 @@ import {
   merchantDetail,
   userActivation,
   userLockCard,
+  accountSearch,
   merchantDownload
 } from "@/api/vi";
 export default {
@@ -105,7 +106,9 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
 
       multipleSelection: [],
@@ -131,175 +134,10 @@ export default {
         storeNames: "",
         checkList: []
       },
-      gridData: [
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10 10:11：00",
-          NewDate: "2018-09-10 10:11：00",
-          userName: "吴奇隆",
-          userTel: "19902565214",
-          userAccount: "158854855255545",
-          yufuAccount: "200 1122 55522 110",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳光海岸",
-          sotreQudao: "成都一股云有限公司",
-          rechargeMoney: "9000",
-          giveMoney: "1000",
-          rechargeAllMoney: "900000",
-          statuss: "2"
-        }
-      ],
+
       detailMsg: {},
-      changeMsg: {}
+      changeMsg: {},
+      gridDatas: []
     };
   },
   components: {
@@ -312,16 +150,40 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      var searchURL = "prepaid/merchantprepa/";
+      var datas = {
+        merchant_name: data.storeName,
+        merchantid: data.storeNums,
+        prepaid: data.danbao,
+        channelid: data.channelsNum,
+        channel_name: data.channels,
+        begin_time: data.date[0],
+        end_time: data.date[1]
+      };
+      console.log(datas);
+      this.getList(datas);
     },
     // 获取用户交易基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
-      var basicURL = "incoming/channellist/";
+      var basicURL =
+        "prepaid/userprepa/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
       console.log("用户交易表格基本信息");
-      // merchantMsg(basicURL,"1").then(res => {
-      //   console.log(res);
-      // });
+      merchantMsg(basicURL).then(res => {
+        console.log(res);
+        var dataList = res.data.data.ret;
+        console.log(dataList);
+        for (var i = 0; i < dataList.length; i++) {
+          dataList[i].create_time = dataList[i].create_time
+            .split("T")
+            .join(" ");
+        }
+        this.total = res.data.data.count;
+        this.gridDatas = dataList;
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
@@ -375,11 +237,13 @@ export default {
     //分页功能选择
     handleSizeChange(val) {
       this.getList();
+      this.pages.size = val;
       console.log(val);
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       console.log(val);
       this.getList();
     }

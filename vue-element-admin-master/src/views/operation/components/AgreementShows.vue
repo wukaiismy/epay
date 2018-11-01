@@ -2,19 +2,20 @@
     <div class="bigBox">
      <div class="agreeTitle">协议标题：<span>{{datalist.title}}</span></div>
      <div class="agreeTitle">协议类型：<span>{{datalist.title}}</span></div>
-     <div class="agreeTitle">协议附件：<span><a class="jumps" href="#" @click="downLoad">用户认证协议.pdf</a></span></div>
-     <div class="agreeTitle"> <div class="titles">协议内容：</div><div class="showcontent"  v-html="'<P>11scsdcdcdcvsdvssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssdvsdvdfvfvbf111111</P><P>11111111</P><P>11111111</P><P>11111111</P><P>11scsdcdcdcvsdvdvsdvdfvfvbf111111</P><P>11111111</P><P>11111111</P><P>11111111</P>'"></div></div>
+     <div class="agreeTitle">协议附件：<span><a class="jumps" href="#"  title="点击下载" @click="downLoad">用户认证协议.pdf</a></span></div>
+     <div class="agreeTitle"> <div class="titles">协议内容：</div><div class="showcontent"  v-html="content"></div></div>
     </div>
 </template>
 
 <script>
-import { AgreemenDetail } from "@/api/operation";
+import { AgreemenDetail, AgreemenDownload } from "@/api/operation";
 export default {
   name: "AgreementShows",
   props: ["datalist"],
   data() {
     return {
-      msgList: {}
+      msgList: {},
+      content: `<h1 style="text-align: center;">用户协议编辑</h1>`
     };
   },
   mounted() {
@@ -23,15 +24,23 @@ export default {
   methods: {
     //获取具体协议
     getMsg() {
-      console.log("获取具体协议信息");
-      console.log(this.datalist);
-      AgreemenDetail(1).then(res => {
+      console.log("获取具体协议基本信息信息");
+      AgreemenDownload(1).then(res => {
         console.log(res);
-        // this.msgList=res.data
       });
     },
     downLoad() {
       alert("您点击了下载查看");
+      AgreemenDownload(1).then(res => {
+        console.log(res);
+        let url = window.URL.createObjectURL(new Blob([res.data]));
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "协议.xls");
+        document.body.appendChild(link);
+        link.click();
+      });
     }
   }
 };
@@ -59,8 +68,8 @@ export default {
 }
 .showcontent {
   display: inline-block;
-  background-color: aquamarine;
   margin-left: 5%;
+  width: 95%;
 }
 .titles {
   display: inline-block;

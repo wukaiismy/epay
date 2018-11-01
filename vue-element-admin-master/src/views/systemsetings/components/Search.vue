@@ -1,7 +1,7 @@
 <template>
     <div class="filter-container" >                
            <div class="els">
-                <div class="grid-content">员工账户：<el-input v-model="searchList.emAccount" style="width: 120px;" clearable></el-input></div>
+                <div class="grid-content">员工编号：<el-input v-model="searchList.emAccount" style="width: 120px;" clearable></el-input></div>
                 <div class="grid-content">员工姓名：<el-input v-model="searchList.emName" style="width: 120px;" clearable></el-input></div>
                 <div class="grid-content">角色权限：<el-input v-model="searchList.roleAuthor" style="width: 130px;" clearable></el-input></div>
                 <div class="grid-content">状态：<el-input v-model="searchList.status" style="width: 130px;" clearable></el-input></div>
@@ -14,7 +14,6 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
-import { RoleSearch } from "@/api/systemsetings";
 export default {
   name: "Search",
   directives: {
@@ -30,17 +29,13 @@ export default {
         date: ""
       },
 
-      listLoading: false,
-      listQuery: []
+      listLoading: false
     };
   },
   methods: {
     //搜索功能
     handleFilter() {
-      RoleSearch(this.searchList).then(response => {
-        console.log(response);
-        this.$emit("channelSearch", response);
-      });
+      this.$emit("channelSearch", this.searchList);
     }
   }
 };

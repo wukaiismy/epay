@@ -1,6 +1,6 @@
 <template>
     <div id="dalos">
-     <Search @addChain='addChain' />
+     <Search @channelSearch='channelSearch' />
       <!-- 我是表格组件 -->
      <div class="bigBoxs">
        <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  border fit highlight-current-row style="width:100%;">      
@@ -32,7 +32,7 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -61,13 +61,20 @@
                <div class="items"><div class="abs abs1">员工姓名：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.userName" placeholder="请输入员工姓名"></el-input></span></div>
                <div class="items"><div class="abs abs1">手机号码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.tel" placeholder="请输入电话"></el-input></span></div>          
                <div class="items"><div class="abs abs1">登录密码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.loginPswd" placeholder="请输入密码"></el-input></span></div>
-               <div class="items"><div class="abs abs1">是否启用：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.qQY" placeholder="请输入启用/禁用 "></el-input></span></div> 
-               <div class="items"><div class="abs abs1">角色权限：</div><span >
+               <div class="items"><div class="abs abs1">是否启用：</div><span>
+                  
+                 <el-radio v-model="msg.qQY" label="1">启用</el-radio>
+                 <el-radio v-model="msg.qQY" label="2">禁用</el-radio>
+                 </span></div> 
+               <div class="items"><div class="abs abs1">角色权限：</div><span class="checked" >
                  <el-radio v-model="msg.status" label="1">财务</el-radio>
                  <el-radio v-model="msg.status" label="2">运营</el-radio>
+                <el-radio v-model="msg1.status" label="1">财务</el-radio>
+                 <el-radio v-model="msg1.status" label="2">运营</el-radio>
+                 <el-radio v-model="msg1.status" label="3">运维</el-radio>                 
                </span></div>
               <!-- 下面是按钮 -->
-               <div class="btnBox">
+               <div class="btnBoxs">
                   <el-button class="submmitBtn"   @click="submitAdd">确定</el-button>
                 </div>             
             </div>         
@@ -82,13 +89,22 @@
                <div class="items"><div class="abs abs1">员工电话：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.tel" ></el-input></span></div>
                <div class="items"><div class="abs abs1">员工账户：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.loginNum" ></el-input></span></div>          
                <div class="items"><div class="abs abs1">账号密码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.loginPswd"></el-input></span></div>
-               <div class="items"><div class="abs abs1">是否启用：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.qQY" ></el-input></span></div> 
-               <div class="items"><div class="abs abs1">角色权限：</div><span >
-                 <el-radio v-model="msg.status" label="1">财务</el-radio>
-                 <el-radio v-model="msg.status" label="2">运营</el-radio>
+               <div class="items"><div class="abs abs1">是否启用：</div><span>
+                 
+                 <el-radio v-model="msg1.qQY" label="1">启用</el-radio>
+                 <el-radio v-model="msg1.qQY" label="2">禁用</el-radio>
+                   </span></div> 
+               <div class="items"><div class="abs abs1">角色权限：</div><span class="checked">
+                 <el-radio v-model="msg1.status" label="1">财务</el-radio>
+                 <el-radio v-model="msg1.status" label="2">运营</el-radio>
+                 <el-radio v-model="msg1.status" label="3">运维</el-radio>
+                   <el-radio v-model="msg1.status" label="1">财务</el-radio>
+                 <el-radio v-model="msg1.status" label="2">运营</el-radio>
+                 <el-radio v-model="msg1.status" label="3">运维</el-radio>
+                  
                </span></div>
               <!-- 下面是按钮 -->
-               <div class="btnBox">
+               <div class="btnBoxs">
                   <el-button class="submmitBtn"   @click="submitAdd">确定</el-button>
                 </div>             
             </div>         
@@ -117,7 +133,9 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
       textarea3: "",
       multipleSelection: [],
@@ -135,7 +153,7 @@ export default {
         userName: "",
         tel: "",
         loginPswd: "",
-        qQY: "启用"
+        qQY: "1"
       },
       msg1: {
         date: "2018-09-10 10:10:10",
@@ -145,7 +163,7 @@ export default {
         tel: "1588548545",
         userNum: "128987365299@qq.com",
         loginPswd: "sdscfsc3333",
-        qQY: "启用"
+        qQY: "1"
       },
 
       gridData: [
@@ -260,17 +278,31 @@ export default {
   },
   methods: {
     // 搜索按钮传值回来
-    addChain(data) {
+    channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      this.pages.page = 1;
+      this.pages.size = 10;
+      var datas = {
+        merchant_name: data.storeName,
+        merchantid: data.storeNums,
+        id1: data.tardNum,
+        channelid: data.channelsNum,
+        channel_name: data.channels,
+        begin_time: data.date[0],
+        end_time: data.date[1],
+        status: data.statuss
+      };
+      // console.log(datas);
+      this.getList(datas);
     },
     // 获取角色权限基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
-      var basicURL = "incoming/channellist/";
-      // userMsg(basicURL,"1").then(res => {
-      //   console.log(res);
-      // });
+      var basicURL =
+        "admin/adminlist/?page=" + this.pages.page + "&size=" + this.pages.size;
+      userMsg(basicURL, data).then(res => {
+        console.log(res);
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
@@ -374,7 +406,6 @@ export default {
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {
@@ -405,9 +436,10 @@ export default {
 }
 /* 下面是模态框的样式*/
 #dalos .el-dialog__wrapper .el-dialog {
-  margin: 0 auto 50px !important;
+  margin: 0 auto 20px !important;
   padding: 0 20px 0 20px;
 }
+
 .diaTilte {
   position: relative;
   text-align: center;
@@ -416,6 +448,7 @@ export default {
   color: #1c3672;
   width: 498px;
   margin-bottom: 10px;
+
   left: -4%;
   top: -60px;
 }
@@ -481,7 +514,7 @@ export default {
   color: #1c3672;
   width: 180px;
   height: 36px;
-  margin-top: 30px;
+  /* margin-top: 30px; */
 }
 .stopBtn {
   border: 1px solid #d0011b;
@@ -503,17 +536,32 @@ export default {
 .items {
   position: relative;
   padding: 1px 0 1px 0;
-  height: 20px;
+  min-height: 20px;
   text-align: left;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 .items span {
   font-size: 14px;
   color: #333333;
   margin-left: 37%;
 }
+.items .checked {
+  display: inline-block;
+
+  width: 60%;
+}
+.el-radio,
+.el-radio + .el-radio {
+  margin-left: 0px;
+  margin-right: 30px;
+}
 .dd {
   margin-left: 5px;
   font-style: normal;
+}
+.btnBoxs {
+  position: relative;
+  top: 30px;
+  margin-bottom: -40px;
 }
 </style>

@@ -1,7 +1,12 @@
 <template>
     <div>
       <div class="bigBox">      
-        <div class="items">用户类型：<el-input placeholder="请输入用户类型" v-model="dataList.userType" clearable></el-input></div>
+        <div class="items">用户类型：
+           <select v-model="dataList.userType" class="selectBox"  @click="ss()" >
+                <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+           </select>  
+          <!-- <el-input placeholder="请输入用户类型" v-model="dataList.userType" clearable></el-input> -->
+          </div>
         <div  class="items">商户名称：<el-input placeholder="请输入商户名称" v-model="dataList.userName" clearable></el-input></div>
         <div  class="items">交易日期：<el-date-picker v-model="dataList.date" value-format="yyyy-MM-dd" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
           </div> 
@@ -24,18 +29,41 @@ export default {
   data() {
     return {
       dataList: {
-        userType: "",
+        userType: "dis",
         userName: "",
         date: ""
       },
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      options: [
+        {
+          value: "dis",
+          label: "请选择用户类型",
+          disabled: ""
+        },
+        {
+          value: "普通用户",
+          label: "普通用户"
+        },
+        {
+          value: "超级VIP",
+          label: "超级VIP"
+        }
+      ]
     };
   },
   methods: {
     //下载对账单
     sumbit() {
-      // reconDownload(this.dataList).then(res => {
+      var DownloadURL = "prepaid/prepaidtoexcel/";
+      // reconDownload(DownloadURL,this.dataList).then(res => {
       //   console.log(res);
+      //  let url = window.URL.createObjectURL(new Blob([res.data]));
+      //   let link = document.createElement("a");
+      //   link.style.display = "none";
+      //   link.href = url;
+      //   link.setAttribute("download", "商户交易.xls");
+      //   document.body.appendChild(link);
+      //   link.click();
       // if(res.data.code='202'){
       this.dialogTableVisible = true;
       // }
@@ -45,6 +73,9 @@ export default {
     //模态框确定按钮
     qued() {
       this.dialogTableVisible = false;
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
     }
   }
 };
@@ -123,5 +154,10 @@ export default {
   color: #1c3672;
   width: 160px;
   height: 36px;
+}
+.selectBox {
+  width: 311px;
+  height: 36px;
+  border: 1px solid #dcdfe6;
 }
 </style>

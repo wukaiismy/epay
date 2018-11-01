@@ -1,6 +1,6 @@
 <template>
     <div>
-       <component :is="componentId" :datalist='datalist' :dataEdit='dataEdit' @showAgree='showAgree' @editAgree='editAgree'></component> 
+       <component :is="componentId" :datalist='datalist' :dataEdit='dataEdit' @showAgree='showAgree' @AgreementShow='AgreementShow' @editAgree='editAgree'></component> 
     </div>
 </template>
 
@@ -34,6 +34,9 @@ export default {
       console.log(data);
       this.dataEdit = data;
       this.componentId = EditAgree;
+    },
+    AgreementShow() {
+      this.componentId = AgreementShow;
     }
   }
 };

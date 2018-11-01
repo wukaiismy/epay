@@ -3,7 +3,8 @@
          <Search  @channelSearch='channelSearch' />
          <!-- 我是表格组件 -->
          <div class="bigBoxs">
-            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData" border fit highlight-current-row style="width:100%;">      
+            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData"  @selection-change="handleSelectionChange" border fit highlight-current-row style="width:100%;">      
+                <el-table-column  align="center" type="selection" width="55"></el-table-column>
                 <el-table-column property="date" label="交易日期"  align="center"  width="95%"  ></el-table-column>
                 <el-table-column property="tardNum" label="交易编号"  align="center"   ></el-table-column>
                 <el-table-column property="userName" label="用户姓名"  width="80%"  align="center"></el-table-column>
@@ -263,27 +264,53 @@ export default {
     this.getList();
   },
   methods: {
-    //search组件新增渠道商按钮传值
-    addChain(data) {
-      console.log(data);
-      this.$emit("addChain", data);
-    },
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      // var datas = {
+      //   merchant_name: data.storeName,
+      //   merchantid: data.storeNums,
+      //   prepaid: data.danbao,
+      //   channelid: data.channelsNum,
+      //   channel_name: data.channels,
+      //   begin_time: data.date[0],
+      //   end_time: data.date[1]
+      // };
+      // console.log(datas);
+      // this.getList(datas);
     },
     //获取异常订单基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
       console.log("异常订单表格基本信息");
-      var basicURL = "incoming/channellist/";
-      // merchantMsg(basicURL,"1").then(res => {
+      var basicURL =
+        "incoming/channellist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
+      // merchantMsg(basicURL,data).then(res => {
       //   console.log(res);
+      //  var dataList = res.data.data.ret;
+      //   console.log(dataList);
+      //   for (var i = 0; i < dataList.length; i++) {
+      //     dataList[i].prepaid_card__create_at = dataList[
+      //       i
+      //     ].prepaid_card__create_at
+      //       .split("T")
+      //       .join(" ");
+      //   }
+      //   this.total = res.data.data.count;
+      //   this.gridDatas = dataList;
       // });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
+    },
+    //全选
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+
+      console.log(val);
     },
     //详情按钮
     handleClick(val) {
@@ -291,8 +318,8 @@ export default {
       console.log(val);
       this.dialogTableVisible = true;
       console.log("你点击了详情按钮");
-      var detailURL = "incoming/channellist/";
-      // merchantDetail(detailURL,data.tardNum).then(res => {
+      var detailURL = "prepaid/merchantid/";
+      // merchantDetail(detailURL,val.id).then(res => {
       //   console.log(res);
       // this.detailMsg=data
       // });
@@ -300,7 +327,6 @@ export default {
     //    异常订单处理
     abOrder(val) {
       console.log(val);
-
       this.dialogTableVisible1 = true;
       this.msg.keyId = val.tardNum;
     },

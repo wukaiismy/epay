@@ -3,17 +3,17 @@ import request from "@/utils/request";
 export function accountSearch(URL, data) {
   return request({
     url: URL,
-    method: "post",
-    data
+    method: "get",
+    params: data
   });
 }
 
 // 商户交易账户基本信息获取
-export function merchantMsg(URL, page) {
+export function merchantMsg(URL, data) {
   return request({
     url: URL,
     method: "get",
-    params: { page }
+    params: data
   });
 }
 //信条账户详情请求
@@ -37,7 +37,7 @@ export function merchantChangeSubmit(data) {
   return request({
     url: "/article/list",
     method: "get",
-    data
+    params: data
   });
 }
 //批量上架请求
@@ -67,7 +67,7 @@ export function merchantStop(URL, data) {
 //添加请求
 export function merchantAdd(URL, data) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "post",
     data
   });
@@ -77,6 +77,7 @@ export function merchantDownload(URL, data) {
   return request({
     url: URL,
     method: "post",
+    responseType: "blob",
     data
   });
 }

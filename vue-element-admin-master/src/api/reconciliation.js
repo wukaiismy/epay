@@ -45,13 +45,14 @@ export function merchantDownload(data) {
   return request({
     url: "/article/list",
     method: "post",
+    responseType: "blob",
     data
   });
 }
 //下载对账单提交
-export function reconDownload(data) {
+export function reconDownload(URL, data) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "post",
     data
   });

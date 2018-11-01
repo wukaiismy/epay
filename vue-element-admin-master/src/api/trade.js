@@ -1,10 +1,10 @@
 import request from "@/utils/request";
 // 信条交易搜索功能
-export function tradeSearch(data) {
+export function tradeSearch(URL, data) {
   return request({
-    url: "incoming/channellist/",
-    method: "post",
-    data
+    url: URL,
+    method: "get",
+    params: data
   });
 }
 
@@ -12,16 +12,16 @@ export function tradeSearch(data) {
 export function merchantMsg(URL, data) {
   return request({
     url: URL,
-    method: "POST",
-    data
+    method: "get",
+    params: data
   });
 }
 //交易详情请求
-export function merchantDetail(URL, id) {
+export function merchantDetail(URL, id1) {
   return request({
     url: URL,
     method: "get",
-    params: { id }
+    params: { id1 }
   });
 }
 //导出请求
@@ -29,6 +29,7 @@ export function merchantDownload(URL, data) {
   return request({
     url: URL,
     method: "post",
+    responseType: "blob",
     data
   });
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="filter-container" >
        <div class="els">
-             <div class="grid-content">用户账号：<el-input v-model="searchList.userAccount" clearable class="" style="width: 120px;"></el-input></div>
+             <div class="grid-content">用户姓名：<el-input v-model="searchList.userAccount" clearable class="" style="width: 120px;"></el-input></div>
              <div class="grid-content">用户电话：<el-input v-model="searchList.userTel" clearable class="" style="width: 120px;"></el-input></div>              
              <div class="grid-content">商户名称：<el-input v-model="searchList.storeName" clearable class="" style="width: 120px;"></el-input></div>     
              <div class="grid-content">商户编号：<el-input v-model="searchList.storeNums" clearable class="" style="width: 120px;"></el-input></div>      
@@ -19,7 +19,7 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
-import { accountSearch } from "@/api/vi";
+
 export default {
   name: "Search1",
   directives: {
@@ -45,11 +45,7 @@ export default {
     //搜索功能
     handleFilter() {
       console.log(this.searchList);
-      var searchURL = "incoming/channellist/";
-      accountSearch(searchURL, this.searchList).then(response => {
-        console.log(response);
-        this.$emit("channelSearch", response);
-      });
+      this.$emit("channelSearch", this.searchList);
     }
   }
 };

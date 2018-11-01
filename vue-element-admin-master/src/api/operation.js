@@ -36,7 +36,16 @@ export function AgreemenDetail(id) {
   return request({
     url: "/protocol/arg-down/",
     method: "get",
-    params: { id } 
+    params: { id }
+  });
+}
+// 下载协议
+export function AgreemenDownload(id) {
+  return request({
+    url: "/protocol/arg-down/",
+    method: "get",
+    responseType: "blob",
+    params: { id }
   });
 }
 // 编辑协议信息

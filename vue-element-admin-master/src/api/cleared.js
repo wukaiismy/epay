@@ -1,41 +1,42 @@
 import request from "@/utils/request";
 // 信条交易搜索功能
-export function clearedSearch(data) {
+export function clearedSearch(URL, data) {
   return request({
-    url: "/article/list",
-    method: "post",
-    data
+    url: URL,
+    method: "get",
+    params: data
   });
 }
 
 // 交易账户基本信息获取
-export function merchantMsg(id) {
+export function merchantMsg(URL, id) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "get",
-    params: { id }
+    params: id
   });
 }
 //交易详情请求
-export function merchantDetail(id) {
+export function merchantDetail(URL, id) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "get",
-    params: { id }
+    params: id
   });
 }
 //导出请求
-export function merchantDownload(data) {
+export function merchantDownload(URL, data) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "post",
+    responseType: "blob",
     data
   });
 }
 //异常订单处理提交
-export function abOrderSubmit(data) {
+export function abOrderSubmit(URL, data) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "post",
     data
   });
