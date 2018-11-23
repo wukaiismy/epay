@@ -7,7 +7,7 @@
   class="upload-demo"
   ref="upload"
 
-  action="https://jsonplaceholder.typicode.com/posts/"
+  action="http://192.168.1.28:8002/api/v1/protocol/arg-up/"
   :on-preview="handlePreview"
   :on-remove="handleRemove"
   :file-list="fileList"
@@ -56,6 +56,12 @@ export default {
     submit() {
       console.log(this.content);
       console.log("你点击了提交按钮");
+      var EditDetailURL = "protocol/arg-up/";
+      // EditDetail(EditDetailURL,data).then(res => {
+      //   console.log(res);
+      // this.msg=data.msg
+      // this.gridData=data.gridData
+      // });
     },
     cancel() {
       console.log("你点击了取消");

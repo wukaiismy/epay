@@ -4,22 +4,31 @@
       <!-- 我是表格组件 -->
      <div class="bigBoxs">
        <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridData"  border fit highlight-current-row style="width:100%;">      
-            <el-table-column property="emAccount" label="员工编号"  align="center"  ></el-table-column>
-            <el-table-column property="emName" label="员工姓名"  width="120%"  align="center"  ></el-table-column>
-            <el-table-column property="tel" label="电话号码"   align="center"></el-table-column>
-            <el-table-column property="loginNum" label="登录账号"     align="center"></el-table-column>
-            <el-table-column property="roleAuthor" label="角色权限"  width="100%" align="center"></el-table-column>
-            <el-table-column property="setDate" label="创建时间"    align="center"></el-table-column>                           
+            <el-table-column property="create_at" label="创建时间"    align="center"></el-table-column>                                       
+            <el-table-column property="company_number" label="企业编号"  align="center"  ></el-table-column>
+            <el-table-column property="company_type" label="企业类型"     align="center"  ></el-table-column>
+            <el-table-column property="company_name" label="企业名称"   align="center"></el-table-column>            
+            <el-table-column property="mobile" label="电话号码"   align="center"></el-table-column>           
+            <el-table-column property="login_id" label="登录账号"     align="center"></el-table-column>
+            <el-table-column property="login_name" label="用户姓名" width="100%"  align="center"></el-table-column>
+           
             <el-table-column label="状态"  align="center"   width="100%">
                 <template slot-scope="scope">
-                    <span type="text" size="small" class="shangjia"  v-if="scope.row.statuss==1">启用</span>
-                    <span type="text" size="small" class="shanchu" v-if="scope.row.statuss==2">禁用</span>                   
+                    <span type="text" size="small" class="shangjia"  v-if="scope.row.status==1">启用</span>
+                    <span type="text" size="small" class="shanchu" v-if="scope.row.status==2">禁用</span>                   
                 </template>
             </el-table-column>     
             <el-table-column  label="操作"   align="center" >
                 <template slot-scope="scope" >
-                    <el-button  type="text" size="small" class="xiaz" @click="handleClick(scope.row)">查看</el-button>
-                    <el-button  type="text" size="small" class="chulz" @click="edits(scope.row)">编辑</el-button>
+                    <!-- <el-button  type="text" size="small" class="xiaz" @click="addSumbit(scope.row)">添加</el-button> -->
+                    
+                    <el-button  type="text" size="small" class="xiaz"  @click="edits(scope.row)">编辑</el-button>
+                    <el-button  type="text" size="small" class="chulz"  @click="handover(scope.row)">
+                     
+                    <span type="text" size="small" class="shangjia"  v-if="scope.row.status==2">启用</span>
+                    <span type="text" size="small" class="shanchu" v-if="scope.row.status==1">禁用</span>                   
+              
+                      </el-button>
                     <el-button  type="text" size="small" class="stopServer" @click="deleted(scope.row)">删除</el-button>                   
                 </template>
             </el-table-column>        
@@ -27,12 +36,12 @@
        <!-- 下面的选择按钮 -->
        <div class="allChose">  
             <el-button v-waves class="adds"   icon="el-icon-plus"  @click="addSumbit">新增员工</el-button>    
-          <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button>
+          <!-- <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button> -->
        </div> 
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -57,11 +66,11 @@
         <!-- 下面是新增员工模态框 -->
      <el-dialog :visible.sync="dialogTableVisible1" custom-class='sssss' top="20vh"   width="500px" >       
          <div class="diaTilte"><div class="titleMotai">新增员工账户</div>
-               <div class="items"><div class="abs abs1">登录账号：</div><span><el-input  size="small"  style="width:29.17%; height:40px;" v-model="msg.loginNum" placeholder="自定义部分"></el-input><i class="dd"> @epayapp.com</i></span></div>
-               <div class="items"><div class="abs abs1">员工姓名：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.userName" placeholder="请输入员工姓名"></el-input></span></div>
-               <div class="items"><div class="abs abs1">手机号码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.tel" placeholder="请输入电话"></el-input></span></div>          
-               <div class="items"><div class="abs abs1">登录密码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.loginPswd" placeholder="请输入密码"></el-input></span></div>
-               <div class="items"><div class="abs abs1">是否启用：</div><span>
+               <!-- <div class="items"><div class="abs abs1">登录账号：</div><span><el-input  size="small"  style="width:29.17%; height:40px;" v-model="msg.loginNum" placeholder="自定义部分"></el-input><i class="dd"> @epayapp.com</i></span></div> -->
+               <div class="items"><div class="abs abs1">员工姓名：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.name" placeholder="请输入员工姓名"></el-input></span></div>
+               <div class="items"><div class="abs abs1">手机号码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.mobile" placeholder="请输入电话"></el-input></span></div>          
+               <div class="items"><div class="abs abs1">登录密码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.password" placeholder="请输入密码"></el-input></span></div>
+               <!-- <div class="items"><div class="abs abs1">是否启用：</div><span>
                   
                  <el-radio v-model="msg.qQY" label="1">启用</el-radio>
                  <el-radio v-model="msg.qQY" label="2">禁用</el-radio>
@@ -72,7 +81,7 @@
                 <el-radio v-model="msg1.status" label="1">财务</el-radio>
                  <el-radio v-model="msg1.status" label="2">运营</el-radio>
                  <el-radio v-model="msg1.status" label="3">运维</el-radio>                 
-               </span></div>
+               </span></div> -->
               <!-- 下面是按钮 -->
                <div class="btnBoxs">
                   <el-button class="submmitBtn"   @click="submitAdd">确定</el-button>
@@ -83,14 +92,13 @@
        <!-- 下面是编辑模态框 -->
      <el-dialog :visible.sync="dialogTableVisible2" custom-class='sssss' top="20vh"   width="500px" >       
          <div class="diaTilte"><div class="titleMotai">修改员工账户</div>
-               <div class="items"><div class="abs abs1">创建时间：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.date"></el-input></span></div>
-               <div class="items"><div class="abs abs1">员工编号：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.userNum" ></el-input></span></div> 
-               <div class="items"><div class="abs abs1">员工姓名：</div><span><el-input  size="small"  style="width:29.17%; height:40px;" v-model="msg1.userName" ></el-input></span></div>
-               <div class="items"><div class="abs abs1">员工电话：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.tel" ></el-input></span></div>
-               <div class="items"><div class="abs abs1">员工账户：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.loginNum" ></el-input></span></div>          
-               <div class="items"><div class="abs abs1">账号密码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg1.loginPswd"></el-input></span></div>
-               <div class="items"><div class="abs abs1">是否启用：</div><span>
-                 
+               <div class="items"><div class="abs abs1">创建时间：</div><span><el-input  :disabled="true"  size="small"  style="width:46.17%; height:40px;" v-model="msg1.create_at"></el-input></span></div>
+               <!-- <div class="items"><div class="abs abs1">员工编号：</div><span><el-input  :disabled="true" size="small"  style="width:46.17%; height:40px;" v-model="msg1.id" ></el-input></span></div>  -->
+               <div class="items"><div class="abs abs1">员工姓名：</div><span><el-input  :disabled="true" size="small"  style="width:29.17%; height:40px;" v-model="msg1.login_name" ></el-input></span></div>
+               <div class="items"><div class="abs abs1">员工电话：</div><span><el-input  :disabled="true" size="small"  style="width:46.17%; height:40px;" v-model="msg1.mobile" ></el-input></span></div>
+               <div class="items"><div class="abs abs1">员工账户：</div><span><el-input   :disabled="true" size="small"  style="width:46.17%; height:40px;" v-model="msg1.login_id" ></el-input></span></div>          
+               <div class="items"><div class="abs abs1">账号密码：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="password"></el-input></span></div>
+               <!-- <div class="items"><div class="abs abs1">是否启用：</div><span>                 
                  <el-radio v-model="msg1.qQY" label="1">启用</el-radio>
                  <el-radio v-model="msg1.qQY" label="2">禁用</el-radio>
                    </span></div> 
@@ -100,12 +108,11 @@
                  <el-radio v-model="msg1.status" label="3">运维</el-radio>
                    <el-radio v-model="msg1.status" label="1">财务</el-radio>
                  <el-radio v-model="msg1.status" label="2">运营</el-radio>
-                 <el-radio v-model="msg1.status" label="3">运维</el-radio>
-                  
-               </span></div>
+                 <el-radio v-model="msg1.status" label="3">运维</el-radio>                  
+               </span></div> -->
               <!-- 下面是按钮 -->
                <div class="btnBoxs">
-                  <el-button class="submmitBtn"   @click="submitAdd">确定</el-button>
+                  <el-button class="submmitBtn"   @click="submitChange">确定</el-button>
                 </div>             
             </div>         
       </el-dialog> 
@@ -115,15 +122,9 @@
 
 <script>
 import Search from "./components/Search.vue";
-// import Details from "./Details.vue";
+
 import waves from "@/directive/waves"; // 水波纹指令
-import {
-  userMsg,
-  userDetialMsg,
-  userDelete,
-  userAdd,
-  userDownload
-} from "@/api/systemsetings";
+import { userMsg, changeStyle, userDelete, userAdd } from "@/api/systemsetings";
 export default {
   name: "UserAuthorization",
   directives: {
@@ -133,7 +134,6 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 2,
         page: 1,
         size: 10
       },
@@ -148,130 +148,17 @@ export default {
       dialogTableVisible1: false,
       dialogTableVisible2: false,
       msg: {
-        loginNum: "",
-        status: "1",
-        userName: "",
-        tel: "",
-        loginPswd: "",
-        qQY: "1"
+        name: "",
+        mobile: "",
+        password: ""
       },
-      msg1: {
-        date: "2018-09-10 10:10:10",
-        loginNum: "200854855255545",
-        status: "1",
-        userName: "刘德华",
-        tel: "1588548545",
-        userNum: "128987365299@qq.com",
-        loginPswd: "sdscfsc3333",
-        qQY: "1"
-      },
-
-      gridData: [
-        {
-          emAccount: "200854855255545",
-          emName: "刘德华",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "2"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "1"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "彭于晏",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "运维",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "1"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "周杰伦",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "前台",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "2"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "2"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "1"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "2"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "1"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "2"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "1"
-        },
-        {
-          emAccount: "200854855255545",
-          emName: "张学友",
-          tel: "1588548545",
-          loginNum: "128987365299@qq.com",
-          roleAuthor: "财务",
-          setDate: "2018-09-10 10:10:10",
-          statuss: "2"
-        }
-      ]
+      msg1: {},
+      password: "",
+      gridData: []
     };
   },
   components: {
     Search
-    // Details
   },
   created() {
     this.getList();
@@ -283,56 +170,79 @@ export default {
       this.pages.page = 1;
       this.pages.size = 10;
       var datas = {
-        merchant_name: data.storeName,
-        merchantid: data.storeNums,
-        id1: data.tardNum,
-        channelid: data.channelsNum,
-        channel_name: data.channels,
-        begin_time: data.date[0],
-        end_time: data.date[1],
-        status: data.statuss
+        name: data.emName,
+        id: data.emAccount,
+        is_delete: data.status
       };
-      // console.log(datas);
+      console.log(datas);
       this.getList(datas);
     },
     // 获取角色权限基本列表信息
     getList(data) {
       this.listLoading = true;
       var basicURL =
-        "admin/adminlist/?page=" + this.pages.page + "&size=" + this.pages.size;
+        "/backend/api/v1/admin/adminlist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
       userMsg(basicURL, data).then(res => {
         console.log(res);
+        var dataList = res.data.ret;
+        console.log(dataList);
+        for (var i = 0; i < dataList.length; i++) {
+          dataList[i].create_at = dataList[i].create_at.split("T").join(" ");
+        }
+        this.total = res.data.count;
+        this.gridData = dataList;
       });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
     },
-    //详情按钮
-    handleClick(val) {
-      this.multipleSelection = val;
-      console.log(val);
-      this.dialogTableVisible = true;
-      console.log("你点击了详情按钮");
-      var detailURL = "incoming/channellist/";
-      // userDetialMsg(detailURL,data.tardNum).then(res => {
-      //   console.log(res);
-      // this.detailMsg=data
-      // });
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
     },
     // 编辑按钮
     edits(val) {
       console.log(val);
       this.dialogTableVisible2 = true;
+      this.msg1 = val;
     },
+    // 启用切换
+    handover(val) {
+      console.log("启用切换");
+      console.log(val);
+      var detailURL = "";
+      if (val.status == "1") {
+        detailURL = "/backend/api/v1/admin/disableadmin/";
+      } else if (val.status == "2") {
+        detailURL = "/backend/api/v1/admin/enableadmin/";
+      }
+      changeStyle(detailURL, val.login_id).then(res => {
+        console.log(res);
+        this.message(res.data.msg, res.data.code);
+      });
+    },
+
     //删除功能
     deleted(val) {
       console.log(val);
-      alert("您点击了删除");
-      var detailURL = "incoming/channellist/";
-      // userDelete(detailURL,data.tardNum).then(res => {
-      //   console.log(res);
-      // this.detailMsg=data
-      // });
+      console.log("您点击了删除");
+      var detailURL = "/backend/api/v1/admin/deleteadmin/";
+      userDelete(detailURL, val.login_id).then(res => {
+        console.log(res);
+        this.message(res.data.msg, res.data.code);
+      });
     },
     // 新增员工
     addSumbit(val) {
@@ -341,30 +251,37 @@ export default {
     },
     // 下面是新增员工权限提交按钮
     submitAdd() {
-      alert("新增员工权限成功");
-      var detailURL = "incoming/channellist/";
-      // userAdd(detailURL,data.tardNum).then(res => {
-      //   console.log(res);
-      // this.detailMsg=data
-      // });
+      var detailURL = "/backend/api/v1/admin/createadmin/";
+      userAdd(detailURL, this.msg).then(res => {
+        console.log(res);
+        this.dialogTableVisible1 = false;
+        this.message(res.data.msg, res.data.code);
+      });
     },
-    // 导出按钮
-    daochuJump() {
-      console.log("导出按钮");
-      var DownloadURL = "incoming/channellist/";
-      // userDownload(DownloadURL,this.multipleSelection).then(res => {
-      //   console.log(res);
-      // this.msg=data
-      // });
+    // 修改
+    submitChange() {
+      var detailURL = "/backend/api/v1/admin/editadmin/";
+      var data = {
+        psssword: this.password,
+        login_id: this.msg1.login_id
+      };
+      console.log(data);
+      userAdd(detailURL, data).then(res => {
+        console.log(res);
+        this.message(res.data.msg, res.data.code);
+        this.dialogTableVisible2 = false;
+      });
     },
-
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.page = 1;
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }
@@ -458,6 +375,7 @@ export default {
 }
 .titleMotai {
   background: #f0f0f0;
+  margin-bottom: 10px;
 }
 .item {
   position: relative;

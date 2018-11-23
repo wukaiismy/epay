@@ -22,7 +22,7 @@ export function navbarPswdChange(password, newpassword) {
 // 请求用户详细信息ajax请求
 export function navbarUserInfo() {
   return request({
-    url: "/article/list",
+    url: "/backend/api/v1/admin/userdetailed/",
     method: "get"
   });
 }

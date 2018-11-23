@@ -8,18 +8,22 @@
     <breadcrumb class="breadcrumb-container"/>
     <div class="right-menu">  
       <!-- 头部导航栏的相应部分 -->
-      <template  v-if="device!=='mobile'" >        
+      <template class="showmune"  v-if="device!=='mobile'" >        
       <div @click="downLoads" class="downloadBox  downLoads"><img class="downLoad" src="../../../assets/login/download.png" alt=""><span>下载</span></div>
       <div class="downloadBox kaifa"><img class="downLoad" src="../../../assets/login/developmentofthedocument.png" alt=""><span>开发文档</span></div>
       <div class="downloadBox caozuo"><img class="downLoad" src="../../../assets/login/operationmanual.png" alt=""><span>操作手册</span></div> 
       <div class="gards"></div>
-      <div class="downloadBox companyName" @click='userinfoShow'>{{name}}</div>
-      <div class="downloadBox numberId" @click="actBlog">{{ids}}</div>
+      <div :title='name' class="downloadBox companyName" @click='userinfoShow'>{{name}}</div>
+      <div  :title='ids' class="downloadBox numberId" @click="actBlog">{{ids}}</div>
       <div class="gard1"></div>
       </template>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+         <template>
+           <img v-if="roles=='admin'" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+           <img v-else :src="'/backend/media/'+avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+         </template>
+          
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -125,7 +129,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["sidebar", "name", "ids", "tel", "avatar", "device"])
+    ...mapGetters([
+      "roles",
+      "sidebar",
+      "name",
+      "ids",
+      "tel",
+      "avatar",
+      "device"
+    ])
   },
   mounted() {},
   methods: {
@@ -140,6 +152,8 @@ export default {
     },
     // 点击下载按钮
     downLoads() {
+      console.log("暂时不提供");
+      return;
       this.dialogTableVisible = true;
       // 进行ajax请求、
       TODO: navbarDownLoads().then(response => {
@@ -185,6 +199,10 @@ export default {
   position: relative;
   top: 3px;
 }
+.showmune {
+  position: relative;
+  background-color: palegoldenrod;
+}
 .downloadBox {
   font-size: 12px;
   color: #666666;
@@ -218,11 +236,22 @@ export default {
 .companyName {
   color: #333333;
   left: -261px;
+  overflow: hidden;
+  width: 180%;
+  // background-color: #d0011b;
+  text-overflow: ellipsis;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 .numberId {
   font-size: 12px;
   color: #1c3672;
   left: -101px;
+  width: 120%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 .gard1 {
   width: 1px;
@@ -271,6 +300,7 @@ export default {
     float: right;
     height: 100%;
     position: relative;
+
     &:focus {
       outline: none;
     }

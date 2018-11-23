@@ -1,17 +1,17 @@
 <template>
     <div id="dalos">
-        <Search   @channelSearch='channelSearch' />
+        <Search   @channelSearch='channelSearch'  />
       <!-- 我是表格组件 -->
         <div class="bigBoxs">
            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">                
               <el-table-column  align="center" type="selection" width="55"></el-table-column>
               <el-table-column property="create_at" label="交易日期"  align="center"   ></el-table-column>
               <el-table-column property="id" label="交易编号"  align="center" ></el-table-column>
-              <el-table-column property="username" label="用户姓名"  width="80%" align="center"></el-table-column>
-              <el-table-column property="merchent__name" label="商户名称"  align="center"></el-table-column>
-              <el-table-column property="merchent__mechant_type" label="商户类型"  align="center"></el-table-column>
+              <el-table-column property="user_name" label="用户姓名"  width="80%" align="center"></el-table-column>
+              <el-table-column property="merchant__name" label="商户名称"  align="center"></el-table-column>
+              <el-table-column property="merchant_type" label="商户类型"  align="center"></el-table-column>
               <!-- <el-table-column property="lsStoreName" label="连锁商户名称"  align="center"></el-table-column> -->
-              <el-table-column property="merchent__channel__name" label="渠道商名称" align="center"></el-table-column>
+              <el-table-column property="channel_name" label="渠道商名称" align="center"></el-table-column>
               <el-table-column  label="交易金额" width="85%" align="center">
                 <template slot-scope="scope">
                   <span type="text" size="small" class="moneyStyles">￥{{scope.row.amount| toThousandFilter}}</span>
@@ -41,7 +41,7 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -52,7 +52,7 @@
               <div class="item"><div class="abs">交易编号：</div><span>{{detailMsg.id}}</span></div>
               <div class="item"><div class="abs">交易金额：</div><span>￥{{detailMsg.amount| toThousandFilter}}</span></div>
               <div class="item"><div class="abs">支付方式：</div><span>担保账户支付</span></div>
-              <div class="item"><div class="abs">担保账户支付：</div><span>￥2000.00</span></div>
+              <!-- <div class="item"><div class="abs">担保账户支付：</div><span>￥2000.00</span></div> -->
               <div class="item"><div class="abs">担保账号：</div><span>{{detailMsg.userprepaidcard_id}}</span></div>
               <!-- <div class="item"><div class="abs">信条支付：</div><span>￥1000.00</span></div> -->
               <!-- <div class="item"><div class="abs">信条账户：</div><span>90215487965221</span></div> -->
@@ -103,7 +103,6 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 2,
         page: 1,
         size: 10
       },
@@ -140,16 +139,20 @@ export default {
     Search
   },
   created() {
-    this.getList();
-  },
-  mounted() {
-    console.log(this.$route.query.date);
     if (this.$route.query.date) {
+      var datas = {
+        begin_time: this.$route.query.date,
+        end_time: "2018-11-09"
+      };
       console.log("====================================");
-      console.log("进行数据请求");
+      console.log(datas);
       console.log("====================================");
+      this.getList(datas);
+    } else {
+      this.getList();
     }
   },
+  mounted() {},
   methods: {
     // 搜索按钮传值回来
     channelSearch(data) {
@@ -169,12 +172,19 @@ export default {
       // console.log(datas);
       this.getList(datas);
     },
+    // 提示框函数
+    message(msg, status) {
+      this.$message({
+        message: msg,
+        type: status
+      });
+    },
     // 获取商户交易基本列表信息
     getList(data) {
       this.listLoading = true;
       console.log("商户交易表格基本信息");
       var basicURL =
-        "record/expenselist/?page=" +
+        "/backend/api/v1/record/expenselist/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
@@ -196,10 +206,8 @@ export default {
     //详情按钮
     showDetail(val) {
       this.dialogTableVisible = true;
-      // console.log(222222222);
-      // console.log(val.id);
-      // console.log(222222222);
-      var detailURL = "record/expenseid/";
+
+      var detailURL = "/backend/api/v1/record/expenseid/";
       merchantDetail(detailURL, val.id).then(res => {
         console.log("你点击了详情按钮");
         console.log(res);
@@ -228,7 +236,7 @@ export default {
     daochuJump() {
       console.log("导出按钮");
       // console.log(this.dataDeal());
-      var DownloadURL = "record/expensetoexcel/";
+      var DownloadURL = "/backend/api/v1/record/expensetoexcel/";
       merchantDownload(DownloadURL, this.dataDeal()).then(res => {
         console.log(res);
         let url = window.URL.createObjectURL(new Blob([res.data]));
@@ -243,7 +251,7 @@ export default {
 
     //分页功能选择
     handleSizeChange(val) {
-      console.log("选择个数");
+      this.pages.page = 1;
       this.pages.size = val;
       this.getList();
     },
@@ -267,8 +275,7 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-.backspaces {
-}
+
 .xiaz {
   color: #f6a623;
 }
@@ -285,16 +292,13 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-.el-table-column {
-  /* height: 43px; */
-}
+
 .pagination-container {
   margin: 22px 0 60px 30%;
 }
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {
@@ -331,6 +335,14 @@ export default {
 /* 下面是模态框的样式*/
 #dalos .el-dialog__wrapper .el-dialog {
   margin: 0 auto 50px !important;
+}
+.sssss {
+  margin: 0 auto 20px;
+}
+.sssss >>> .el-dialog__body {
+  padding: 30px 20px 0;
+  color: #606266;
+  font-size: 14px;
 }
 .diaTilte {
   position: relative;

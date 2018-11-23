@@ -1,12 +1,16 @@
 <template>
     <div class="filter-container" >                
            <div class="els">
-                <div class="grid-content">员工编号：<el-input v-model="searchList.emAccount" style="width: 120px;" clearable></el-input></div>
+                <div class="grid-content">员工账号：<el-input v-model="searchList.emAccount" style="width: 120px;" clearable></el-input></div>
                 <div class="grid-content">员工姓名：<el-input v-model="searchList.emName" style="width: 120px;" clearable></el-input></div>
-                <div class="grid-content">角色权限：<el-input v-model="searchList.roleAuthor" style="width: 130px;" clearable></el-input></div>
-                <div class="grid-content">状态：<el-input v-model="searchList.status" style="width: 130px;" clearable></el-input></div>
-                <span class="userSearch"> 交易日期：</span> 
-                <el-date-picker v-model="searchList.date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
+                <!-- <div class="grid-content">用户权限：<el-input v-model="searchList.roleAuthor" style="width: 130px;" clearable></el-input></div> -->
+                <div class="grid-content">状态：
+                   <select v-model="searchList.status" class="selectBox"  @click="ss()" >
+                    <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+                   </select>  
+                </div>
+                <!-- <span class="userSearch"> 交易日期：</span> 
+                <el-date-picker v-model="searchList.date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker> -->
                <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
           </div>
     </div>
@@ -21,12 +25,26 @@ export default {
   },
   data() {
     return {
+      options: [
+        {
+          value: "dis",
+          label: "选择状态",
+          disabled: ""
+        },
+        {
+          value: "1",
+          label: "启用"
+        },
+        {
+          value: "2",
+          label: "禁用"
+        }
+      ],
       searchList: {
         emAccount: "",
         emName: "",
-        roleAuthor: "",
-        status: "",
-        date: ""
+        status: "dis"
+        // date: ""
       },
 
       listLoading: false
@@ -36,6 +54,9 @@ export default {
     //搜索功能
     handleFilter() {
       this.$emit("channelSearch", this.searchList);
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
     }
   }
 };
@@ -71,5 +92,10 @@ export default {
   font-size: 14px;
   color: #666666;
   margin-left: 10px;
+}
+.selectBox {
+  width: 120px;
+  height: 36px;
+  border: 1px solid #dcdfe6;
 }
 </style>

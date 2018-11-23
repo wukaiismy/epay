@@ -1,5 +1,5 @@
 {
-  "name": "e_pay",
+  "name": "e_pay_admin",
   "version": "1.0.0",
   "description": "A magical vue admin.yifuyun",
   "author": "815407128@qq.com",
@@ -54,6 +54,7 @@
     "showdown": "1.8.6",
     "simplemde": "1.11.2",
     "sortablejs": "1.7.0",
+    "v-distpicker": "^1.0.20",
     "vue": "2.5.17",
     "vue-count-to": "1.0.13",
     "vue-i18n": "7.3.2",

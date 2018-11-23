@@ -46,7 +46,7 @@
        </div> 
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
     </div>
@@ -57,14 +57,15 @@ import waves from "@/directive/waves"; // 水波纹指令
 import { channelMsgList, channelDownload } from "@/api/datastatis";
 export default {
   name: "ChannelBiaoge",
-  props: ["dataList"],
+
   directives: {
     waves
   },
   data() {
     return {
       pages: {
-        currentPage: 5
+        page: 1,
+        size: 10
       },
       multipleSelection: [],
       value1: "",
@@ -75,7 +76,7 @@ export default {
       gridData: [
         {
           date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
+          storeName: "暴雪联盟",
           storeNum: "100000000030",
           channelName: "金桔联盟",
           sonSotreName: "9000009.99",
@@ -95,94 +96,7 @@ export default {
           giveMoney: "1000111.09",
           rechargeNum: "1003.59"
         },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
-        {
-          date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
-        },
+
         {
           date: "2018-09-10 10:11:00",
           storeName: "网易集团",
@@ -195,20 +109,30 @@ export default {
           rechargeNum: "1003.59"
         }
       ],
-      filename: "交易统计"
+      filename: "交易统计",
+      detailMsg: null,
+      gridDatas: [],
+
+      autoWidth: true
     };
   },
   created() {
     this.getList();
   },
   methods: {
-    //担保交易表格基本信息
-    getList() {
+    //渠道交易表格基本信息
+    getList(data) {
       this.listLoading = true;
-      console.log("担保交易表格基本信息");
-      // channelMsgList("id").then(res => {
-      //   console.log(res);
-      // });
+      console.log("渠道交易表格基本信息");
+      console.log(data);
+      var Urls =
+        "/backend/api/v1/statistics/channelsumdata/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
+      channelMsgList(Urls, data).then(res => {
+        console.log(res);
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
@@ -221,20 +145,17 @@ export default {
       console.log(data);
       console.log("====================================");
     },
-    // 修改按钮
-    returnsubmit(data) {
-      console.log("你点击了修改按钮");
-      this.dialogTableVisible2 = true;
-      console.log(data);
-    },
 
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.size = val;
+      this.pages.page = 1;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     },
 
@@ -305,6 +226,8 @@ export default {
 }
 .pagination-container {
   margin: 22px 0 60px 30%;
+  min-height: 30px;
+  min-width: 300px;
 }
 .allChose {
   width: 100%;

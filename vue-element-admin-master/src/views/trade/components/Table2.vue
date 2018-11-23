@@ -38,7 +38,7 @@
         </div>
         <!-- 分页功能 -->
         <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
         </div>
         <!-- 主体内容结束 -->
 
@@ -91,7 +91,9 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        currentPage: 2,
+        page: 1,
+        size: 10
       },
       multipleSelection: [],
       value1: "",
@@ -188,73 +190,11 @@ export default {
           payFcu: "担保账户+信条支付",
           sotreQudao: "成都一股云有限公司",
           statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          sotreQudao: "成都一股云有限公司",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          sotreQudao: "成都一股云有限公司",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          sotreQudao: "成都一股云有限公司",
-          statuss: "2"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          sotreQudao: "成都一股云有限公司",
-          statuss: "1"
-        },
-        {
-          date: "2018-09-10",
-          tardNum: "158854855255545",
-          userName: "吴奇隆",
-          sotreName: "阳关海岸会所",
-          sotreType: "连锁子商户",
-          lsStoreName: "成都一股云有限公司",
-          qdName: "阿里巴巴",
-          rechargeMoney: "9000",
-          payFcu: "担保账户+信条支付",
-          sotreQudao: "成都一股云有限公司",
-          statuss: "1"
         }
-      ]
+      ],
+      detailMsg: {},
+      changeMsg: {},
+      gridDatas: []
     };
   },
   components: {
@@ -284,7 +224,7 @@ export default {
       this.listLoading = true;
       console.log("异常订单表格基本信息");
       var basicURL =
-        "incoming/channellist/?page=" +
+        "/backend/api/v1/incoming/channellist/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
@@ -312,13 +252,22 @@ export default {
 
       console.log(val);
     },
+    // 批量的数据处理
+    dataDeal() {
+      var dataList = [];
+      this.multipleSelection.forEach(function(v) {
+        dataList.push(v.id);
+      });
+      var datas = { ids: dataList.join(",") };
+      return datas;
+    },
     //详情按钮
     handleClick(val) {
       this.multipleSelection = val;
       console.log(val);
       this.dialogTableVisible = true;
       console.log("你点击了详情按钮");
-      var detailURL = "prepaid/merchantid/";
+      var detailURL = "/backend/api/v1/prepaid/merchantid/";
       // merchantDetail(detailURL,val.id).then(res => {
       //   console.log(res);
       // this.detailMsg=data
@@ -334,7 +283,7 @@ export default {
     submitAdd() {
       console.log(this.msg);
       alert("添加成功");
-      var abOrderURL = "incoming/channellist/";
+      var abOrderURL = "/backend/api/v1/incoming/channellist/";
       // abOrderSubmit(abOrderURL,this.msg).then(res => {
       //   console.log(res);
 
@@ -343,10 +292,16 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "incoming/channellist/";
-      // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
+      var DownloadURL = "/backend/api/v1/incoming/channellist/";
+      // merchantDownload(DownloadURL,this.dataDeal()).then(res => {
       //   console.log(res);
-      // this.msg=data
+      //  let url = window.URL.createObjectURL(new Blob([res.data]));
+      //   let link = document.createElement("a");
+      //   link.style.display = "none";
+      //   link.href = url;
+      //   link.setAttribute("download", "商户交易.xls");
+      //   document.body.appendChild(link);
+      //   link.click();
       // });
     },
 
@@ -354,11 +309,13 @@ export default {
 
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.size = val;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }
@@ -375,7 +332,6 @@ export default {
   margin-left: 30px;
   margin-top: 5px;
 }
-
 .xiaz {
   color: #f6a623;
 }
@@ -392,14 +348,12 @@ export default {
 .tableBox {
   margin-bottom: 10px;
 }
-
 .pagination-container {
   margin: 22px 0 60px 30%;
 }
 .allChose {
   width: 100%;
   min-height: 34px;
-
   text-align: right;
 }
 .searchs {

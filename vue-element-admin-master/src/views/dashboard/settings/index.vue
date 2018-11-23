@@ -2,7 +2,7 @@
     <div class="bigBox">
       <img @click="backJump" class="backLogo" src="../../../assets/login/shut.png" alt="">
      <div class="zhanghao">系统账户：{{ids}}</div>
-     <div>手机号码：{{tel}}</div>
+     <!-- <div>手机号码：{{tel}}</div> -->
      <div> &nbsp;&nbsp;&nbsp;旧密码：
      <el-input
         placeholder="请输入旧密码"

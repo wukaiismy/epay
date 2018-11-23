@@ -14,7 +14,12 @@
                 <div class="grid-content">连锁商户编号：<el-input v-model="searchList.bigStoreNum" style="width: 120px;" clearable></el-input></div>                        -->
                 <div class="grid-content">所属渠道商名称：<el-input v-model="searchList.channels" style="width: 130px;" clearable></el-input></div>                         
                 <div class="grid-content">所属渠道商编号：<el-input v-model="searchList.channelsNum" style="width: 130px;" clearable></el-input></div>         
-                <div class="grid-content">状态：<el-input v-model="searchList.statuss" clearable  style="width: 120px;"></el-input></div>        
+                <div class="grid-content">状态：
+                   <select v-model="searchList.statuss" class="selectBox"  @click="ss()" >
+                      <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+                   </select> 
+                  
+                </div>        
                 <div class="grid-content">支付方式：<el-input v-model="searchList.payMoney" clearable  style="width: 120px;"></el-input></div>
                
               <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>         
@@ -35,14 +40,29 @@ export default {
         storeName: "",
         storeNums: "",
         tardNum: "",
-        date: "",
+        date: [],
         channels: "",
         channelsNum: "",
         statuss: "",
         payMoney: ""
       },
 
-      listLoading: false
+      listLoading: false,
+      options: [
+        {
+          value: "",
+          label: "选择支付状态",
+          disabled: ""
+        },
+        {
+          value: "1",
+          label: "支付成功"
+        },
+        {
+          value: "2",
+          label: "支付失败"
+        }
+      ]
     };
   },
   methods: {
@@ -50,6 +70,12 @@ export default {
     handleFilter() {
       console.log(this.searchList);
       this.$emit("channelSearch", this.searchList);
+    },
+    changess(dates) {
+      console.log(3333);
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
     }
   }
 };
@@ -82,5 +108,10 @@ export default {
   font-size: 14px;
   color: #666666;
   margin-left: 20px;
+}
+.selectBox {
+  width: 120px;
+  height: 35px;
+  border: 1px solid #dcdfe6;
 }
 </style>

@@ -58,8 +58,9 @@
          <img class="yzmImg" @click="imgYzm"  :src="imgmsg"  alt="">
 
       <el-button :loading="loading" type="primary" style="width:400px;height:48px;margin-left:40px;" @click.native.prevent="handleLogin">登录</el-button>
+      <div class="loginExplain" >登录名变更说明 >></div>
 
-      <div class="loginExplain" @click="showDialog=true">登录名变更说明 >></div>
+      <!-- <div class="loginExplain" @click="showDialog=true">登录名变更说明 >></div> -->
     </div>
     </el-form>
      <!-- 模态框弹出 -->
@@ -87,6 +88,7 @@
 <script>
 import { isvalidUsername } from "@/utils/validate";
 import axios from "axios";
+import { getUserCaptcha } from "@/api/login";
 export default {
   name: "Login",
   components: {},
@@ -153,17 +155,13 @@ export default {
     // 图片验证码
     imgYzm() {
       var that = this;
-      axios
-        .get("http://192.168.1.28:8001/api/v1/admin/captcha/")
-        .then(function(res) {
-          console.log(res.data.data.timestamp);
-          that.loginForm.timestamp = res.data.data.timestamp.toString();
-          that.imgmsg = res.data.data.captcha;
-          that.imgmsg = "data:image/jpg;base64," + that.imgmsg;
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
+      getUserCaptcha().then(res => {
+        console.log(res);
+        console.log(res.data.data.timestamp);
+        that.loginForm.timestamp = res.data.data.timestamp.toString();
+        that.imgmsg = res.data.data.captcha;
+        that.imgmsg = "data:image/jpg;base64," + that.imgmsg;
+      });
     },
     showPwd() {
       if (this.passwordType === "password") {

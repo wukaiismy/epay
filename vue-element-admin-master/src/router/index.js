@@ -89,7 +89,11 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "/intomanagement/channels",
     name: "进件管理",
-    meta: { title: "进件管理", icon: "list", roles: ["admin", "super_editor"] },
+    meta: {
+      title: "进件管理",
+      icon: "list",
+      roles: ["admin", "bankadmin", "channeladmin", "chainadmin"]
+    },
     // roles: ['admin','super_editor'] 这是权限管理需要的东西，之后要加上
     // alwaysShow: true, // will always show the root menu
     children: [
@@ -97,25 +101,41 @@ export const asyncRouterMap = [
         path: "channels",
         component: () => import("@/views/intomanagement/channels"),
         name: "渠道进件",
-        meta: { title: "渠道进件", noCache: true }
+        meta: {
+          title: "渠道进件",
+          noCache: true,
+          roles: ["admin", "bankadmin"]
+        }
       },
       {
         path: "chainbus",
         component: () => import("@/views/intomanagement/chainbus"),
         name: "连锁商户进件",
-        meta: { title: "连锁商户进件", noCache: true }
+        meta: {
+          title: "连锁商户进件",
+          noCache: true,
+          roles: ["admin", "bankadmin", "channeladmin"]
+        }
       },
       {
         path: "chainSonbus",
         component: () => import("@/views/intomanagement/chainSonbus"),
         name: "连锁子商户进件",
-        meta: { title: "连锁子商户进件", noCache: true }
+        meta: {
+          title: "连锁子商户进件",
+          noCache: true,
+          roles: ["admin", "bankadmin", "channeladmin", "chainadmin"]
+        }
       },
       {
         path: "retailbus",
         component: () => import("@/views/intomanagement/retailbus"),
         name: "直营商户进件",
-        meta: { title: "直营商户进件", noCache: true }
+        meta: {
+          title: "直营商户进件",
+          noCache: true,
+          roles: ["admin", "bankadmin", "channeladmin"]
+        }
       }
     ]
   },
@@ -174,12 +194,12 @@ export const asyncRouterMap = [
         name: "商户交易",
         meta: { title: "商户交易", noCache: true }
       },
-      {
-        path: "userRefund",
-        component: () => import("@/views/trade/userRefund"),
-        name: "用户退款",
-        meta: { title: "用户退款", noCache: true }
-      },
+      // {
+      //   path: "userRefund",
+      //   component: () => import("@/views/trade/userRefund"),
+      //   name: "用户退款",
+      //   meta: { title: "用户退款", noCache: true }
+      // },
       {
         path: "abOrder",
         component: () => import("@/views/trade/abOrder"),
@@ -206,38 +226,42 @@ export const asyncRouterMap = [
         path: "channelSet",
         component: () => import("@/views/cleared/channelSet"),
         name: "渠道结算",
-        meta: { title: "渠道结算", noCache: true }
+        meta: {
+          title: "渠道结算",
+          noCache: true,
+          roles: ["admin", "bankadmin", "channeladmin"]
+        }
       }
     ]
   },
 
-  {
-    path: "/reconciliation",
-    component: Layout,
-    redirect: "/reconciliation/AbCheck",
-    name: "对账管理",
-    meta: { title: "对账管理", icon: "international" },
-    children: [
-      {
-        path: "AbCheck",
-        component: () => import("@/views/reconciliation/AbCheck"),
-        name: "交易对账异常",
-        meta: { title: "交易对账异常", noCache: true }
-      },
-      {
-        path: "MerchantStatement",
-        component: () => import("@/views/reconciliation/MerchantStatement"),
-        name: "商户对账单",
-        meta: { title: "商户对账单", noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: "/reconciliation",
+  //   component: Layout,
+  //   redirect: "/reconciliation/AbCheck",
+  //   name: "对账管理",
+  //   meta: { title: "对账管理", icon: "international" },
+  //   children: [
+  //     {
+  //       path: "AbCheck",
+  //       component: () => import("@/views/reconciliation/AbCheck"),
+  //       name: "交易对账异常",
+  //       meta: { title: "交易对账异常", noCache: true }
+  //     },
+  //     {
+  //       path: "MerchantStatement",
+  //       component: () => import("@/views/reconciliation/MerchantStatement"),
+  //       name: "商户对账单",
+  //       meta: { title: "商户对账单", noCache: true }
+  //     }
+  //   ]
+  // },
 
   {
     path: "/datastatis",
     component: Layout,
     name: "/datastatis/PlatformTrad",
-    meta: { title: "数据统计", icon: "chart", roles: ["admin"] },
+    meta: { title: "数据统计", icon: "chart" },
     children: [
       {
         path: "PlatformTrad",
@@ -249,13 +273,17 @@ export const asyncRouterMap = [
         path: "ChanelTrad",
         component: () => import("@/views/datastatis/ChanelTrad"),
         name: "渠道交易统计",
-        meta: { title: "渠道交易统计", noCache: true, roles: ["admin"] }
+        meta: {
+          title: "渠道交易统计",
+          noCache: true,
+          roles: ["admin", "bankadmin", "channeladmin"]
+        }
       },
       {
         path: "StoreTrad",
         component: () => import("@/views/datastatis/StoreTrad"),
         name: "商户交易统计",
-        meta: { title: "商户交易统计", noCache: true, roles: ["admin"] }
+        meta: { title: "商户交易统计", noCache: true }
       }
     ]
   },
@@ -264,7 +292,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "/operation/SMSPush",
     name: "运营管理",
-    meta: { title: "运营管理", icon: "nested" },
+    meta: { title: "运营管理", icon: "nested", roles: ["admin"] },
     children: [
       {
         path: "SMSPush",
@@ -285,7 +313,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: "/monitorCenter/MerchantRisk",
     name: "监控中心",
-    meta: { title: "监控中心", icon: "star" },
+    meta: { title: "监控中心", icon: "star", roles: ["admin"] },
     children: [
       {
         path: "MerchantRisk",
@@ -311,20 +339,21 @@ export const asyncRouterMap = [
     path: "/systemsetings",
     component: Layout,
     name: "系统设置",
-    redirect: "/systemsetings/RoleAuthorization",
+    alwaysShow: true,
+    redirect: "/systemsetings/UserAuthorization",
     meta: { title: "系统设置", icon: "peoples" },
     children: [
-      {
-        path: "RoleAuthorization",
-        component: () => import("@/views/systemsetings/RoleAuthorization"),
-        name: "角色权限",
-        meta: { title: "角色权限", noCache: true }
-      },
+      // {
+      //   path: "ChangePswd",
+      //   component: () => import("@/views/systemsetings/ChangePswd"),
+      //   name: "角色权限",
+      //   meta: { title: "角色权限", noCache: true }
+      // },
       {
         path: "UserAuthorization",
         component: () => import("@/views/systemsetings/UserAuthorization"),
-        name: "用户权限管理",
-        meta: { title: "用户权限管理", noCache: true }
+        name: "用户管理",
+        meta: { title: "用户管理", noCache: true }
       }
     ]
   },

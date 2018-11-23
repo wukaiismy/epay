@@ -1,6 +1,6 @@
 import { loginByUsername, logout, getUserInfo } from "@/api/login";
 import { getToken, setToken, removeToken } from "@/utils/auth";
-
+import Cookies from "js-cookie";
 const user = {
   state: {
     user: "",
@@ -86,22 +86,30 @@ const user = {
               reject("error");
             }
             const data = response.data;
+            console.log("-------获取用户信息开始--------------");
+            console.log(data);
+            console.log("--------获取用户信息结束-------------");
             if (data.roles && data.roles.length > 0) {
               // 验证返回的roles是否是一个非空数组
               commit("SET_ROLES", data.roles);
             } else {
-              reject("getInfo: roles must be a non-null array !");
+              reject("用户信息: roles必须是一个数组!");
             }
 
             // commit("SET_NAME", data.name);
-            commit("SET_NAME", "成都易付云金融科技公司");
-            commit("SET_ID", "1000000003562.dt");
+            commit("SET_NAME", data.enterprise_name);
+            commit("SET_ID", data.personal_id);
             commit("SET_TEL", "13540020385");
-            commit(
-              "SET_AVATAR",
-              "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
-            );
-            // commit("SET_AVATAR", data.avatar);
+
+            if (data.logo && data.logo == "暂时没有") {
+              commit(
+                "SET_AVATAR",
+                "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+              );
+            } else {
+              commit("SET_AVATAR", data.logo);
+            }
+
             // commit("SET_INTRODUCTION", data.introduction);
             resolve(response);
           })
@@ -154,9 +162,11 @@ const user = {
     ChangeRoles({ commit, dispatch }, role) {
       return new Promise(resolve => {
         commit("SET_TOKEN", role);
-        setToken(role);
+        Cookies.set("Admin-Token", role);
         getUserInfo(role).then(response => {
           const data = response.data;
+          console.log(data);
+          console.log("看看------");
           commit("SET_ROLES", data.roles);
           commit("SET_NAME", data.name);
           commit("SET_AVATAR", data.avatar);

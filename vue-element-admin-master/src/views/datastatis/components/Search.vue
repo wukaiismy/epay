@@ -12,7 +12,7 @@
 
 <script>
 import waves from "@/directive/waves"; // 水波纹指令
-import { searchDataMsg } from "@/api/datastatis";
+// import { searchDataMsg } from "@/api/datastatis";
 export default {
   name: "Search",
   directives: {
@@ -25,19 +25,14 @@ export default {
         channelNum: "",
         date: ""
       },
-
-      listLoading: false,
-      listQuery: []
+      listLoading: false
     };
   },
   methods: {
     //搜索功能
     handleFilter() {
       console.log(this.searchList);
-      searchDataMsg(this.searchList).then(response => {
-        console.log(response);
-        this.$emit("channelSearch", response);
-      });
+      this.$emit("channelSearch", this.searchList);
     }
   }
 };

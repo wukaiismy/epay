@@ -3,16 +3,16 @@
     <!--首页的Ip显示区域 -->
     <template v-if="device!=='mobile'">      
    <el-row :gutter="10" class="panel-groups"  >
-     <el-col :xs="6" :sm="6" :md="5" :lg="3" :xl="3" class="card-panel-cols">
+     <el-col :xs="8" :sm="8" :md="8" :lg="5" :xl="3" class="card-panel-cols">
          <div class="grid-contents">上次登录IP：{{login_last_info.logins_ip}}</div>
       </el-col>
      <el-col :xs="6" :sm="6" :md="5" :lg="3" :xl="3" class="card-panel-cols">
         <div class="grid-content ">登录地址：{{login_last_info.logins_adress}}</div>
       </el-col>
-    <el-col :xs="6" :sm="6" :md="5" :lg="4" :xl="4" class="card-panel-cols">
+    <el-col :xs="6" :sm="6" :md="7" :lg="7" :xl="4" class="card-panel-cols">
       <div class="grid-content">登录时间：{{login_last_info.logins_time}}</div>
     </el-col>
-    <el-col :xs="3" :sm="3" :md="6" :lg="12" :xl="12" class="card-panel-cols">
+    <el-col :xs="1" :sm="1" :md="1" :lg="7" :xl="12" class="card-panel-cols">
       <div class="sss"></div>
     </el-col>
     <el-col :xs="3" :sm="3" :md="3" :lg="2" :xl="2" class="card-panel-cols">
@@ -23,12 +23,13 @@
     </el-col>
   </el-row>
  </template>
-      <!--数据显示区  -->
+  <!--数据显示区  -->
       <panel-group :panelGroup='panelGroup' />
+ <div v-if="roles=='admin'||roles=='bankadmin'" >  
       <!-- 用户总览 -->
    <UserOverview  :UserOverview="UserOverview"/>
    <!-- eachar图表 -->
-   
+   </div>
     <el-row class="echarBox">
       <div class="echarTitle" >交易统计</div>
       <div class="showData"> 
@@ -162,7 +163,7 @@ export default {
         console.log(this.showTard);
         var data = {};
         var data = { begin_time: "", end_time: "" };
-        var dateUrl = "inhome/daysrange/";
+        var dateUrl = "/backend/api/v1/inhome/daysrange/";
         dateSearch(dateUrl, data).then(res => {
           console.log(res);
           const dataLsit = res.data.sum_list;
@@ -190,7 +191,6 @@ export default {
           this.submitDate(val);
         }
       }
-     
     },
     //格式化日期：yyyy-MM-dd
     formatDate(date) {
@@ -238,7 +238,7 @@ export default {
       var data = { begin_time: val[0], end_time: val[1] };
       console.log(data);
       // 查询数据
-      var dateUrl = "inhome/daysrange/";
+      var dateUrl = "/backend/api/v1/inhome/daysrange/";
       dateSearch(dateUrl, data).then(res => {
         console.log(res.data.sum_list);
         const dataLsit = res.data.sum_list;
@@ -260,7 +260,8 @@ export default {
     },
     // 查看操作日志
     actBlog() {
-      console.log("查看操作日志");
+      console.log("查看操作日志,暂不提供");
+      return;
       this.$store.dispatch("componentsId", "operationblog");
     }
   }
@@ -286,6 +287,7 @@ export default {
     float: left;
   }
   .lastc {
+    cursor: pointer;
     span {
       margin-left: 10px;
     }

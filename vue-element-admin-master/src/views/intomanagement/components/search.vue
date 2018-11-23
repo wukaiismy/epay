@@ -22,10 +22,14 @@
             <span class="userSearch"> 创建时间：</span>
             <el-date-picker v-model="searchList.value1" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>                               
             <div class="grid-content">激活状态：
-              <el-input placeholder="激活状态" v-model="searchList.channelsStatus" style="width: 160px;" clearable></el-input>
+               <select v-model="searchList.channelsStatus" class="selectBox"  @click="ss()" >
+                   <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+               </select>             
             </div>               
             <div class="grid-content">审核状态：
-               <el-input placeholder="审核状态" v-model="searchList.channelsStatus1" style="width: 160px;" clearable></el-input>
+              <select v-model="searchList.channelsStatus1" class="selectBox"  @click="ss()" >
+                   <option v-for="(a,index) in options1" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+               </select>              
             </div>             
               <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
               <div class="grid-content bb"></div>
@@ -72,6 +76,40 @@ export default {
   },
   data() {
     return {
+      options: [
+        {
+          value: "",
+          label: "选择激活状态",
+          disabled: ""
+        },
+        {
+          value: "0",
+          label: "未激活"
+        },
+        {
+          value: "1",
+          label: "已激活"
+        }
+      ],
+      options1: [
+        {
+          value: "",
+          label: "选择审核状态",
+          disabled: ""
+        },
+        {
+          value: "0",
+          label: "驳回"
+        },
+        {
+          value: "1",
+          label: "待审核"
+        },
+        {
+          value: "2",
+          label: "已审核"
+        }
+      ],
       searchList: {
         channels: "",
         channelsNum: "",
@@ -118,6 +156,11 @@ export default {
     },
     handlePreview(file) {
       console.log(file);
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
+      this.options1[0].disabled = "disabled";
+      // this.options2[0].disabled = "disabled";
     }
   }
 };
@@ -126,6 +169,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .els {
   text-align: center;
+  padding-left: 70px;
   .grid-content {
     height: 30px;
     display: inline-block;
@@ -139,6 +183,7 @@ export default {
 }
 .rows {
   text-align: center;
+  padding-right: 140px;
   .grid-content {
     height: 30px;
     display: inline-block;
@@ -231,5 +276,10 @@ export default {
   color: #666666;
   text-indent: 25px;
   line-height: 17px;
+}
+.selectBox {
+  width: 120px;
+  height: 35px;
+  border: 1px solid #dcdfe6;
 }
 </style>

@@ -10,13 +10,21 @@
               </template>
             </el-table-column>       
     </el-table>
+     <!-- 下面的选择按钮 -->
+       <div class="allChose">  
+            <el-button v-waves class="adds"   icon="el-icon-plus"  @click="addSumbit">新增协议</el-button>    
+       </div> 
     </div>
 </template>
 
 <script>
 import { AgreemenMsg } from "@/api/operation";
+import waves from "@/directive/waves";
 export default {
   name: "AgreementShow",
+  directives: {
+    waves
+  },
   data() {
     return {
       gridData: [
@@ -65,6 +73,12 @@ export default {
     edits(data) {
       console.log(data);
       this.$emit("editAgree", data.agreeType);
+    },
+    // 新增
+
+    addSumbit(val) {
+      console.log(val);
+      this.$emit("editAgree");
     }
   }
 };
@@ -122,5 +136,18 @@ export default {
   font-size: 14px;
   color: #d0011b;
   margin-left: 30px;
+}
+.allChose {
+  width: 100%;
+  min-height: 34px;
+  text-align: right;
+}
+.adds {
+  border: 1px solid #1c3672;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #1c3672;
+  width: 160px;
+  height: 34px;
 }
 </style>

@@ -24,10 +24,18 @@ export function merchantDetail(URL, id) {
     params: { id }
   });
 }
+//用户预付卡详情列表
+export function prepaDetail(URL, data) {
+  return request({
+    url: URL,
+    method: "get",
+    params: data
+  });
+}
 //信条账户修改请求
 export function merchantChange(id) {
   return request({
-    url: "/article/list",
+    url: "/backend/api/v1/article/list",
     method: "get",
     params: { id }
   });
@@ -35,7 +43,7 @@ export function merchantChange(id) {
 //确认修改请求
 export function merchantChangeSubmit(data) {
   return request({
-    url: "/article/list",
+    url: "/backend/api/v1/article/list",
     method: "get",
     params: data
   });

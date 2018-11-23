@@ -49,7 +49,7 @@
         </div>
         <!-- 分页功能 -->
         <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="100" :total="100" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+          <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
         </div>
      </el-col>
       <el-col :span="8">    
@@ -81,7 +81,8 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 5
+        page: 1,
+        size: 10
       },
       isShow: false,
       multipleSelection: [],
@@ -204,13 +205,31 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      // this.gridData = data;
+      this.pages.page = 1;
+      this.pages.size = 10;
+
+      var datas = {
+        name: data.channels,
+        id: data.channelsNum,
+        min_time: data.value1[0],
+        max_time: data.value1[1],
+        status: data.channelsStatus,
+        review: data.channelsStatus1
+      };
+      console.log(datas);
+      this.getList(datas);
     },
     //获取对账异常基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
       console.log("对账异常表格基本信息");
-      // merchantMsg("id").then(res => {
+      var channelURL =
+        "/backend/api/v1/incoming/channellist/?page=" +
+        this.pages.page +
+        "&size=" +
+        this.pages.size;
+      this.isshow = false;
+      // merchantMsg(channelURL,data).then(res => {
       //   console.log(res);
       // });
       setTimeout(() => {
@@ -256,11 +275,14 @@ export default {
 
     //分页功能选择
     handleSizeChange(val) {
+      this.pages.size = val;
+      this.pages.page = 1;
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      this.pages.page = val;
       this.getList();
     }
   }

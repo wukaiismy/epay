@@ -32,6 +32,8 @@ router.beforeEach((to, from, next) => {
           .then(res => {
             // 拉取user_info
             const roles = res.data.roles; // note: roles must be a array! such as: ['editor','develop']
+            console.log("获取roloes");
+            console.log(roles);
             store.dispatch("GenerateRoutes", { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表

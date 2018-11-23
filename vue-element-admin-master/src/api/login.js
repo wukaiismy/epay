@@ -10,8 +10,7 @@ export function loginByUsername(username, password, captcha, timestamp) {
   };
   console.log(data);
   return request({
-    url: "login/",
-    // url: "/login/login",
+    url: "/backend/api/v1/login1/",
     method: "post",
     data
   });
@@ -19,15 +18,22 @@ export function loginByUsername(username, password, captcha, timestamp) {
 
 export function logout() {
   return request({
-    url: "/login/logout",
+    url: "/backend/api/v1/login/logout",
     method: "post"
   });
 }
 
 export function getUserInfo(token) {
   return request({
-    url: "admin/userfile/",
-    // url: "/user/info",
+    url: "/backend/api/v1/admin/userfile/",
+    method: "get"
+    // params: { token }
+  });
+}
+// 验证码
+export function getUserCaptcha() {
+  return request({
+    url: "/backend/api/v1/admin/captcha/",
     method: "get"
     // params: { token }
   });

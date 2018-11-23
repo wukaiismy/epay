@@ -8,8 +8,8 @@
        <div v-show="isShow">
        <div class="basicMsgTitle">基本信息</div>
        <div class="boxMsg bm">
-           <div class="mags">渠道编号：{{detailMsg.id}}</div>
-           <div class="mags">渠道名称：{{detailMsg.name}}</div>
+           <div class="mags">渠道编号：<span v-if="detailMsg.channel" >{{detailMsg.channel.id}}</span></div>
+           <div class="mags">渠道名称：<span v-if="detailMsg.channel" >{{detailMsg.channel.name}}</span></div>
            <!-- <div class="mags">所属渠道：{{msg.m3}}</div>
            <div class="mags">所属渠道商编号：{{msg.m4}}</div> -->
         </div>
@@ -35,8 +35,8 @@
            <div class="mags">法人姓名：{{detailMsg.merchantfile.legal_name}}</div>
            <div class="mags">身份证号：{{detailMsg.merchantfile.legal_id_card}}</div>
            <div class="mags">身份证照片： 
-              <img class="logoImg" :src="detailMsg.merchantfile.legal_id_card_backend" alt=""> 
-              <img class="logoImg" :src="detailMsg.merchantfile.legal_id_card_front" alt=""></div>               
+              <img class="logoImg" :src="'/backend/media/'+detailMsg.merchantfile.legal_id_card_backend" alt=""> 
+              <img class="logoImg" :src="'/backend/media/'+detailMsg.merchantfile.legal_id_card_front" alt=""></div>               
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">营业执照信息</div>
@@ -44,21 +44,23 @@
            <div class="mags">营业执照编号：{{detailMsg.merchantfile.license_no}}</div>
            <div class="mags">营业期限：{{detailMsg.merchantfile.business_begin}}~{{detailMsg.merchantfile.business_end}}</div>
            <div class="mags">营业范围：{{detailMsg.merchantfile.business_scope}}</div>           
-           <div class="mags">营业执照： <img class="logoImg" :src="detailMsg.merchantfile.license_image" alt=""> </div> 
-           <div class="mags">运营协议： <img class="logoImg" :src="detailMsg.merchantfile.operator_agreement" alt=""> </div>               
-           <div class="mags">补充材料： <img class="logoImg"  v-for="(item, index) in detailMsg.supplement" :key="index" :src="item" alt=""></div>
+           <div class="mags">营业执照： <img class="logoImg" :src="'/backend/media/'+detailMsg.merchantfile.license_image" alt=""> </div> 
+           <div class="mags">商户Logo： <img class="logoImg" :src="'/backend/media/'+detailMsg.merchant_logo" alt=""> </div>               
+           <div class="mags">补充材料：<div class="showimg"> 
+             <img class="logoImg"  v-for="(item, index) in detailMsg.merchantfile.supplement.split(',')" :key="index" :src="'/backend/media/'+item" alt="">
+             </div></div>
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">结算信息</div>
        <div class="boxMsg">
             <div class="mags">结算类型：
                 <template>
-                  <span v-if="detailMsg.merchantfile.clear_type=='0'">个人</span>
-                  <span v-if="detailMsg.merchantfile.clear_type=='1'">企业</span>            
+                  <span v-if="detailMsg.merchantfile.clear_type=='1'">企业</span>
+                  <span v-if="detailMsg.merchantfile.clear_type=='2'">个人</span>            
                 </template>
                 </div>
-            <div class="mags">结算户名：{{detailMsg.merchantfile.admin_user}}</div>
-            <div class="mags">结算银行：{{detailMsg.merchantfile.bankcard_name}}</div>
+            <div class="mags">结算户名：{{detailMsg.merchantfile.bankcard_name}}</div>
+            <div class="mags">结算银行：{{detailMsg.merchantfile.set_bank_name}}</div>
             <div class="mags">结算账号：{{detailMsg.merchantfile.bank_credit}}</div>
         </div>
         <div class="gard1"><Gard /></div>
@@ -74,7 +76,7 @@
         <!-- 渠道信息结束 -->
         <!-- 渠道配置开始 -->
         <div v-show="!isShow">
-            <div class="retes">
+            <!-- <div class="retes">
                 <span>所属渠道商：</span> <el-input
                 :disabled='disabled'
                size='small '
@@ -83,9 +85,11 @@
                     </el-input><span class="changeReta" @click="changeReta">修改</span>
             </div>
             <div class="xieyi">所属渠道编号：{{detailMsg.id}}</div>
-            <div class="xieyi xy">商户所属渠道：平台内部用户</div>
+            <div class="xieyi xy">商户所属渠道：平台内部用户</div> -->
             <div class="xieyi xy">通道费率：{{detailMsg.merchantfile.rate}}‰</div>
-            <div class="xieyi xy">渠道协议：<span class="s3">《信条担保交易-运营协议》</span></div>
+            <div class="xieyi xy">运营协议：<img class="logoImg" :src="'/backend/media/'+detailMsg.merchantfile.operator_agreement" alt="">
+              <!-- <span class="s3">《信条担保交易-运营协议》</span> -->
+              </div>
             
          <div class="gard1"><Gard /></div>
             <!-- 下面的选择按钮 -->
@@ -102,7 +106,7 @@
 <script>
 import Gard from "./Gard.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import uRLS from "../../../assets/wukai.jpg";
+import { channelVolumeActivation } from "@/api/intomanagement";
 export default {
   name: "Details1",
   props: ["detailMsg"],
@@ -116,8 +120,6 @@ export default {
     return {
       isShow: true,
       disabled: true,
-      uRLS: uRLS,
-
       mataMsg: [
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
@@ -150,19 +152,33 @@ export default {
     changeReta() {
       this.disabled = false;
     },
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
+    },
     // 激活
     jihuosJump() {
-      alert("确定激活？");
+      console.log("确定激活？");
 
-      var channeljhURL = "incoming/merchantact";
-      var datas = { ids: this.detailMsg.merchantfile.id };
+      var channeljhURL = "/backend/api/v1/incoming/merchantact/";
+      var datas = { ids: this.detailMsg.merchantfile.id + ",0" };
       channelVolumeActivation(channeljhURL, datas).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     //关闭
     guanbiJump() {
-      alert("确定关闭？");
+      alert("您没有权限关闭");
     }
   }
 };
@@ -218,12 +234,16 @@ export default {
   color: #999999;
   margin-top: 10px;
 }
+.showimg {
+  display: inline-block;
+  width: 85%;
+}
 .gard1 {
   width: 92%;
   margin: 20px 4%;
 }
 .logoImg {
-  width: 32%;
+  width: 30%;
   height: 100px;
   margin-right: 10px;
 }

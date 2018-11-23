@@ -9,7 +9,11 @@
            <div class="els">
                 <div class="grid-content">所属渠道商名称：<el-input v-model="searchList.channels" style="width: 120px;" clearable></el-input></div>
                 <div class="grid-content">所属渠道商编号：<el-input v-model="searchList.channelsNum" style="width: 120px;" clearable></el-input></div>
-                <div class="grid-content">划付状态：<el-input v-model="searchList.payStatus" style="width: 130px;" clearable></el-input></div>
+                <div class="grid-content">划付状态：
+                   <select v-model="searchList.payStatus" class="selectBox"  @click="ss()" >
+                      <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+                   </select>   
+                </div>
                 <span class="userSearch"> 交易日期：</span> 
                 <el-date-picker v-model="searchList.date" value-format="yyyy-MM-dd" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>
                <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
@@ -37,7 +41,22 @@ export default {
         date: ""
       },
 
-      listLoading: false
+      listLoading: false,
+      options: [
+        {
+          value: "",
+          label: "选择划付状态",
+          disabled: ""
+        },
+        {
+          value: "1",
+          label: "划付成功"
+        },
+        {
+          value: "2",
+          label: "划付失败"
+        }
+      ]
     };
   },
   methods: {
@@ -45,6 +64,9 @@ export default {
     handleFilter() {
       console.log(this.searchList);
       this.$emit("channelSearch", this.searchList);
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
     }
   }
 };
@@ -80,5 +102,10 @@ export default {
   font-size: 14px;
   color: #666666;
   margin-left: 20px;
+}
+.selectBox {
+  width: 120px;
+  height: 35px;
+  border: 1px solid #dcdfe6;
 }
 </style>

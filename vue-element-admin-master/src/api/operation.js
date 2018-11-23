@@ -26,7 +26,7 @@ export function deleted(data) {
 // 协议获取基本信息
 export function AgreemenMsg() {
   return request({
-    url: "/protocol/arg-list/",
+    url: "/backend/api/v1/protocol/arg-list/",
     method: "get"
   });
 }
@@ -34,7 +34,7 @@ export function AgreemenMsg() {
 // 具体协议信息
 export function AgreemenDetail(id) {
   return request({
-    url: "/protocol/arg-down/",
+    url: "/backend/api/v1/protocol/arg-down/",
     method: "get",
     params: { id }
   });
@@ -42,16 +42,16 @@ export function AgreemenDetail(id) {
 // 下载协议
 export function AgreemenDownload(id) {
   return request({
-    url: "/protocol/arg-down/",
+    url: "/backend/api/v1/protocol/arg-down/",
     method: "get",
     responseType: "blob",
     params: { id }
   });
 }
 // 编辑协议信息
-export function EditDetail(data) {
+export function EditDetail(URL, data) {
   return request({
-    url: "/article/update",
+    url: URL,
     method: "post",
     data
   });

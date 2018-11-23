@@ -5,20 +5,20 @@
       <div class="bigBoxs">
           <el-table class="tableBox" v-loading="listLoading" :key="tableKey"  :data="gridDatas" border fit @selection-change="handleSelectionChange"  highlight-current-row style="width:100%;">
             <el-table-column  align="center" type="selection" width="55"></el-table-column>
-            <el-table-column property="prepaid_card__create_at" label="创建日期"  align="center" ></el-table-column>
-            <el-table-column property="prepaid_card_id" label="担保账户编号"  align="center"></el-table-column>
-            <el-table-column property="prepaid_card__name" label="担保账户名称"  align="center"></el-table-column>
-            <el-table-column property="prepaid_card__merchant_name" label="商户名称"  align="center"></el-table-column>
+            <el-table-column property="create_at" label="创建日期"  align="center" ></el-table-column>
+            <el-table-column property="guarantee_number" label="担保账户编号"  align="center"></el-table-column>
+            <el-table-column property="guarantee_name" label="担保账户名称"  align="center"></el-table-column>
+            <el-table-column property="merchant_name" label="商户名称"  align="center"></el-table-column>
             <!-- <el-table-column property="sonSotreName" label="子商户"  align="center"></el-table-column> -->
-            <el-table-column property="prepaid_card__merchant__channel__name" label="所属渠道商"  align="center"></el-table-column>
+            <el-table-column property="channel_name" label="所属渠道商"  align="center"></el-table-column>
             <el-table-column label="充值金额"  align="center"  width="95%">
               <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.prepaid_card__amount| toThousandFilter}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.recharge_amount.toString()| toThousandFilter}}</span>
               </template>
             </el-table-column>
             <el-table-column label="赠送金额"  align="center"  width="90%">
                <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">￥{{scope.row.prepaid_card__gift| toThousandFilter}}</span>
+                <span type="text" size="small" class="moneyStyles">￥{{scope.row.gift_amount.toString()| toThousandFilter}}</span>
               </template>
             </el-table-column>
             <!-- <el-table-column  label="充值数量"  align="center"  width="80%">
@@ -38,9 +38,9 @@
             </el-table-column> -->
             <el-table-column  label="状态"  align="center" width="80%" >
               <template slot-scope="scope">
-                <span type="text" size="small" class="ppss"  v-if="scope.row.prepaid_card__status==0" >上架中</span>
-                <span type="text" size="small" class="noppss" v-if="scope.row.prepaid_card__status==1">已下架</span>
-                <span type="text" size="small" class="stopServer" v-if="scope.row.prepaid_card__status==2">暂停服务</span>
+                <span type="text" size="small" class="ppss"  v-if="scope.row.status" >上架中</span>
+                <span type="text" size="small" class="noppss" v-else>已下架</span>
+                <!-- <span type="text" size="small" class="stopServer" v-if="scope.row.status==2">暂停服务</span> -->
               </template>
             </el-table-column>         
             <el-table-column  label="操作"   align="center" width="90%">
@@ -61,40 +61,43 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
      <!-- 下面是详情模态框啊 -->
       <el-dialog :visible.sync="dialogTableVisible" custom-class='sssss'   width="500px" >
           <div class="diaTilte"><div class="titleMotai">账户信息</div>
-              <div class="item"><div class="abs">创建日期：</div><span>2018-10-01 10:10:10</span></div>
-              <div class="item"><div class="abs">账户编号：</div><span>10002154885</span></div>
-              <div class="item"><div class="abs">账户名称：</div><span>充300减200</span></div>
-              <div class="item"><div class="abs">优惠时段：</div><span>2018-10-01~2018-10-01</span></div>              
-              <div class="item"><div class="abs">充值金额：</div><span>￥9000</span></div>
-              <div class="item"><div class="abs">赠送金额：</div><span>￥1000</span></div>
-              <div class="item"><div class="abs">违约赔付比例：</div><span>41%</span></div>
+              <div class="item"><div class="abs">创建日期：</div><span>{{detailMsg.create_at}}</span></div>
+              <div class="item"><div class="abs">账户编号：</div><span>{{detailMsg.guarantee_number}}</span></div>
+              <div class="item"><div class="abs">账户名称：</div><span>{{detailMsg.guarantee_name}}</span></div>
+              <div class="item"><div class="abs">优惠时段：</div><span>{{detailMsg.offer_time}}</span></div>              
+              <div class="item"><div class="abs">充值金额：</div><span>￥{{detailMsg.recharge_amount}}</span></div>
+              <div class="item"><div class="abs">赠送金额：</div><span>￥{{detailMsg.gift_amount}}</span></div>
+              <div class="item"><div class="abs">违约赔付比例：</div><span>{{detailMsg.promise_rate}}%</span></div>
               <!-- <div class="item"><div class="abs">优惠是否自动翻倍：</div><span>是</span></div>
               <div class="item"><div class="abs">到期是否自动下架：</div><span>是</span></div> -->
           </div>
 
           <div class="diaTilte title2"><div class="titleMotai">账户状态</div>
-              <div class="item"><div class="abs">账户状态：</div><span class="shangjia">上架中</span></div>
-              <div class="item"><div class="abs">充值数量：</div><span>998</span></div>
+              <div class="item"><div class="abs">账户状态：</div>
+              <span class="shangjia" v-if="detailMsg.status">上架中</span>
+              <span class="shangjia" v-else>已下架</span>
+              </div>
+              <!-- <div class="item"><div class="abs">充值数量：</div><span>998</span></div>
               <div class="item"><div class="abs">充值总额：</div><span>￥99999.99</span></div>
               <div class="item"><div class="abs">赠送总额：</div><span>￥29999.99</span></div>
               <div class="item"><div class="abs">剩余总额：</div><span>￥8000.90</span></div>
-              <div class="item"><div class="abs">剩余赠送：</div><span>￥1000.00</span></div>
+              <div class="item"><div class="abs">剩余赠送：</div><span>￥1000.00</span></div> -->
           </div>
             
           <div class="diaTilte title2"><div class="titleMotai">商家信息</div>
-              <div class="item"><div class="abs">商家类型：</div><span class="">连锁商家</span></div>
-              <div class="item"><div class="abs">商家名称：</div><span>金桔联盟</span></div>
-              <div class="item"><div class="abs">商家编号：</div><span>1472589639</span></div>
-              <div class="item"><div class="abs">使用门店：</div><span>红旗超市</span></div>
-              <div class="item"><div class="abs">所属渠道商名称：</div><span>成都巴啦啦公司</span></div>
-              <div class="item"><div class="abs">所属渠道商编号：</div><span>952795279527</span></div>
+              <div class="item"><div class="abs">商家类型：</div><span class="">{{detailMsg.merchant_type}}</span></div>
+              <div class="item"><div class="abs">商家名称：</div><span>{{detailMsg.merchant_name}}</span></div>
+              <div class="item"><div class="abs">商家编号：</div><span>{{detailMsg.merchant_id}}</span></div>
+              <div class="item"><div class="abs">使用门店：</div><span>{{detailMsg.merchant_name}}</span></div>
+              <div class="item"><div class="abs">所属渠道商名称：</div><span>{{detailMsg.channel_name}}</span></div>
+              <div class="item"><div class="abs">所属渠道商编号：</div><span>{{detailMsg.channel_id}}</span></div>
           </div>        
       </el-dialog>
        
@@ -186,7 +189,6 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 2,
         page: 1,
         size: 10
       },
@@ -236,7 +238,14 @@ export default {
   },
   computed: {
     rate: function() {
-      var aa = this.msg.rechargeMoney + ":" + this.msg.giveMoney;
+      var sum = this.msg.rechargeMoney * 1 + this.msg.giveMoney * 1;
+      var money = 0;
+      if (!sum && !this.msg.rechargeMoney) {
+        sum = 1;
+      } else {
+        money = this.msg.rechargeMoney;
+      }
+      var aa = (money / sum).toFixed(2);
       this.msg.rate = aa;
       return aa;
     }
@@ -248,7 +257,8 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      var searchURL = "prepaid/merchantprepa/";
+      this.pages.page = 1;
+      this.pages.size = 10;
       var datas = {
         merchant_name: data.storeName,
         merchantid: data.storeNums,
@@ -261,11 +271,24 @@ export default {
       console.log(datas);
       this.getList(datas);
     },
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
+    },
     // 获取商户交易基本列表信息
     getList(data) {
       this.listLoading = true;
       var basicURL =
-        "prepaid/merchantprepa/?page=" +
+        "/backend/api/v1/prepaid/merchantprepa/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
@@ -276,11 +299,7 @@ export default {
         var dataList = res.data.data.ret;
         console.log(dataList);
         for (var i = 0; i < dataList.length; i++) {
-          dataList[i].prepaid_card__create_at = dataList[
-            i
-          ].prepaid_card__create_at
-            .split("T")
-            .join(" ");
+          dataList[i].create_at = dataList[i].create_at.split("T").join(" ");
         }
         this.total = res.data.data.count;
         this.gridDatas = dataList;
@@ -300,11 +319,12 @@ export default {
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
       console.log(data);
-      var detailURL = "prepaid/merchantid/";
-      // merchantDetail(detailURL,data.id).then(res => {
-      //   console.log(res);
-      // this.detailMsg=data
-      // });
+      var detailURL = "/backend/api/v1/prepaid/merchantprepaid/";
+      merchantDetail(detailURL, data.guarantee_number).then(res => {
+        console.log(res);
+        this.detailMsg = res.data;
+        this.detailMsg.create_at = data.create_at;
+      });
     },
     // 修改按钮
     returnsubmit(data) {
@@ -322,6 +342,7 @@ export default {
       this.multipleSelection.forEach(function(v) {
         dataList.push(v.prepaid_card_id);
       });
+      dataList.push(0);
       var datas = { ids: dataList.join(",") };
       return datas;
     },
@@ -329,25 +350,28 @@ export default {
     jihuoJump() {
       console.log("批量上架");
       console.log(this.dataDeal());
-      var PutawayURL = "prepaid/cardshelf/";
+      var PutawayURL = "/backend/api/v1/prepaid/cardshelf/";
       merchantPutaway(PutawayURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 批量下架按钮
     passJump() {
       console.log("批量下架");
-      var SoldOutURL = "prepaid/cardobtained/";
+      var SoldOutURL = "/backend/api/v1/prepaid/cardobtained/";
       merchantSoldOut(SoldOutURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 暂停服务按钮
     stopServes() {
       console.log("暂停服务");
-      var StopURL = "prepaid/cardout/";
+      var StopURL = "/backend/api/v1/prepaid/cardout/";
       merchantStop(StopURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 添加按钮
@@ -358,7 +382,7 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "prepaid/prepaidtoexcel/";
+      var DownloadURL = "/backend/api/v1/prepaid/prepaidtoexcel/";
       merchantDownload(DownloadURL, this.dataDeal()).then(res => {
         console.log(res);
         let url = window.URL.createObjectURL(new Blob([res.data]));
@@ -374,6 +398,7 @@ export default {
     //分页功能选择
     handleSizeChange(val) {
       console.log("选择个数");
+      this.pages.page = 1;
       this.pages.size = val;
       this.getList();
     },
@@ -388,7 +413,7 @@ export default {
     submitAdd() {
       alert("添加成功");
       console.log(this.msg);
-      var AddURL = "prepaid/creprepa/";
+      var AddURL = "/backend/api/v1/prepaid/creprepa/";
       merchantAdd(AddURL, this.msg).then(res => {
         console.log(res);
       });

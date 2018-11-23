@@ -37,7 +37,7 @@
     </div>
      <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!-- 主体内容结束 -->
 
@@ -74,12 +74,7 @@
 <script>
 import Search from "./Search.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import {
-  clearedSearch,
-  merchantMsg,
-  merchantDetail,
-  merchantDownload
-} from "@/api/vi";
+import { merchantMsg, merchantDetail, merchantDownload } from "@/api/cleared";
 
 export default {
   name: "Table",
@@ -89,7 +84,6 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 2,
         page: 1,
         size: 10
       },
@@ -139,102 +133,6 @@ export default {
           JSNum: "200854855255545",
           rechargeMoney: "9000",
           statuss: "2"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "1"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "1"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "1"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "2"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "1"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "1"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "2"
-        },
-        {
-          startDate: "2018-09-10 10:10:10",
-          tardDate: "2018-09-10 10:10:10",
-          payTardNum: "158854855255545",
-          sotreName: "阳关海岸会所",
-          sotreJC: "阳关海岸",
-          channelName: "成都一股云有限公司",
-          JSName: "阿里巴巴",
-          JSNum: "200854855255545",
-          rechargeMoney: "9000",
-          statuss: "1"
         }
       ],
       detailMsg: {},
@@ -254,38 +152,38 @@ export default {
       console.log(data);
       this.pages.page = 1;
       this.pages.size = 10;
-      // var datas = {
-      //   merchant_name: data.storeName,
-      //   merchantid: data.storeNums,
-      //   id1: data.tardNum,
-      //   channelid: data.channelsNum,
-      //   channel_name: data.channels,
-      //   begin_time: data.date[0],
-      //   end_time: data.date[1],
-      //   status: data.statuss
-      // };
+      var datas = {
+        merchant_name: data.storeName,
+        merchant_id: data.storeNums,
+        channel_id: data.channelsNum,
+        channel_name: data.channels,
+        begin_time: data.date[0],
+        end_time: data.date[1],
+        status: data.payStatus,
+        bank_cardid: data.setAccount
+      };
       // console.log(datas);
-      // this.getList(datas);
+      this.getList(datas);
     },
     // 获取商户结算基本列表信息
     getList(data) {
       this.listLoading = true;
       console.log("商户结算表格基本信息");
       var basicURL =
-        "record/expenselist/?page=" +
+        "/backend/api/v1/statements/showmerchant/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
-      // merchantMsg(basicURL, data).then(res => {
-      //   console.log(res);
-      //   var dataList = res.data.data.ret;
-      //   console.log(dataList);
-      //   for (var i = 0; i < dataList.length; i++) {
-      //     dataList[i].create_at = dataList[i].create_at.split("T").join(" ");
-      //   }
-      //   this.total = res.data.data.count;
-      //   this.gridDatas = dataList;
-      // });
+      merchantMsg(basicURL, data).then(res => {
+        console.log(res);
+        // var dataList = res.data.data.ret;
+        // console.log(dataList);
+        // for (var i = 0; i < dataList.length; i++) {
+        //   dataList[i].create_at = dataList[i].create_at.split("T").join(" ");
+        // }
+        this.total = res.data.data.count;
+        // this.gridDatas = dataList;
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);
@@ -301,6 +199,7 @@ export default {
       this.multipleSelection.forEach(function(v) {
         dataList.push(v.id);
       });
+      dataList.push(0);
       var datas = { ids: dataList.join(",") };
       return datas;
     },
@@ -308,7 +207,7 @@ export default {
     handleClick(val) {
       console.log(val);
       this.dialogTableVisible = true;
-      var detailURL = "record/expenseid/";
+      var detailURL = "/backend/api/v1/statements/showmerchant/";
       console.log("你点击了详情按钮");
       // merchantDetail(detailURL,val.id).then(res => {
       //   console.log(res);
@@ -326,7 +225,7 @@ export default {
       //   let link = document.createElement("a");
       //   link.style.display = "none";
       //   link.href = url;
-      //   link.setAttribute("download", "商户交易.xls");
+      //   link.setAttribute("download", "商户结算.xls");
       //   document.body.appendChild(link);
       //   link.click();
       // });
@@ -336,6 +235,7 @@ export default {
     handleSizeChange(val) {
       console.log("选择个数");
       this.pages.size = val;
+      this.pages.page = 1;
       this.getList();
     },
     //分页功能选择

@@ -1,19 +1,11 @@
 import request from "@/utils/request";
-// 信条交易搜索功能
-export function clearedSearch(URL, data) {
+
+// 交易账户基本信息获取
+export function merchantMsg(URL, data) {
   return request({
     url: URL,
     method: "get",
     params: data
-  });
-}
-
-// 交易账户基本信息获取
-export function merchantMsg(URL, id) {
-  return request({
-    url: URL,
-    method: "get",
-    params: id
   });
 }
 //交易详情请求
@@ -21,7 +13,7 @@ export function merchantDetail(URL, id) {
   return request({
     url: URL,
     method: "get",
-    params: id
+    params: { id }
   });
 }
 //导出请求

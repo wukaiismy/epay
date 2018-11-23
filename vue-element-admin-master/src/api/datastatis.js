@@ -2,7 +2,7 @@ import request from "@/utils/request";
 // 数据统计中交易概况基本数据
 export function dataMsg() {
   return request({
-    url: "/statistics/showdatasum/",
+    url: "/backend/api/v1/statistics/showdatasum/",
     method: "get"
   });
 }
@@ -17,26 +17,26 @@ export function searchDay(URL, data) {
 // 表格的基本信息获取
 export function tebleMsg(data) {
   return request({
-    url: "/statistics/somedaylist/",
+    url: "/backend/api/v1/statistics/somedaylist/",
     method: "get",
-    params: data 
+    params: data
   });
 }
-// 渠道搜索请求
-export function searchDataMsg(data) {
-  return request({
-    url: "/article/update",
-    method: "post",
-    data
-  });
-}
+// // 渠道搜索请求
+// export function searchDataMsg(data) {
+//   return request({
+//     url: "/article/update",
+//     method: "post",
+//     data
+//   });
+// }
 
-// 渠道担保交易请求
-export function channelMsgList(data) {
+// 渠道交易统计请求
+export function channelMsgList(URL, data) {
   return request({
-    url: "/article/update",
-    method: "post",
-    data
+    url: URL,
+    method: "get",
+    params: data
   });
 }
 // 渠道担保交易导出

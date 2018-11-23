@@ -32,15 +32,15 @@
                 <span type="text" size="small" class="moneyStyles">{{scope.row.giveMoney | toThousandFilter}}</span>
               </template>
             </el-table-column> -->
-            <el-table-column  label="渠道分润"  align="center" >
+            <el-table-column  label="平台分润"  align="center" >
                <template slot-scope="scope">
-                 <span type="text" size="small" class="moneyStyles">{{scope.row.day_gift*1 | toThousandFilter}}</span>
+                 <span type="text" size="small" class="moneyStyles">{{scope.row.day_divided*1 | toThousandFilter}}</span>
                </template>
             </el-table-column>              
             <el-table-column  label="操作"   align="center">
               <template slot-scope="scope" >
                 <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz" >支付详情</el-button>
-                <el-button type="text" size="small" class="stopServer" @click="returnsubmit(scope.row)">退款详情</el-button>
+                <!-- <el-button type="text" size="small" class="stopServer" @click="returnsubmit(scope.row)">退款详情</el-button> -->
               </template>
             </el-table-column>       
     </el-table>
@@ -118,7 +118,7 @@ export default {
       };
       tebleMsg(data).then(res => {
         console.log("表格基本信息");
-        // console.log(res);
+        console.log(res);
         this.gridDatas = res.data.data.ret;
         this.total = res.data.data.count;
         // console.log(this.gridDatas);
@@ -134,7 +134,12 @@ export default {
       this.dialogTableVisible = true;
       console.log(data);
       //跳转到支付详情页面
-      this.$router.push({ path: "/trade/merchantTrad" });
+      this.$router.push({
+        path: "/backend/api/v1/trade/merchantTrad",
+        query: {
+          date: data.day
+        }
+      });
     },
     // 退款详情按钮
     returnsubmit(data) {
@@ -143,7 +148,7 @@ export default {
       console.log(data);
       //跳转到退款详情页面
       this.$router.push({
-        path: "/trade/userRefund",
+        path: "/backend/api/v1/trade/userRefund",
         query: {
           date: data.day
         }

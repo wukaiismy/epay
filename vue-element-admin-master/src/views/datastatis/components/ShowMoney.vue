@@ -23,9 +23,9 @@
                 <count-to :start-val="0" :end-val="searchMsg.sum_gift_range*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
               </el-col>
                <div class="gards1 g5"></div>
-              <el-col   :xs="5" :sm="5" :md="5" :lg="5" :xl="5" class="twosItem" :class="isShow=='4'?'selceted':''"  @click.native="checked(4,'sum_gift_range')">
+              <el-col   :xs="5" :sm="5" :md="5" :lg="5" :xl="5" class="twosItem" :class="isShow=='4'?'selceted':''"  @click.native="checked(4,'sum_divided')">
                 <div class="grid-title">{{title[4]}}</div>
-                <count-to :start-val="0" :end-val="searchMsg.sum_gift_range*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
+                <count-to :start-val="0" :end-val="searchMsg.sum_divided*1" :duration="2600" :decimals='2' class="card-panel-nums"/>  
               </el-col>                
             </el-row>
     </div>

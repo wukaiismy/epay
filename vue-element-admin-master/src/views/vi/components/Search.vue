@@ -11,7 +11,7 @@
             <div class="grid-content">所属渠道商编号：<el-input v-model="searchList.channelsNum" style="width: 130px;" clearable></el-input></div>      
             <span class="userSearch"> 创建时间：</span><el-date-picker v-model="searchList.date" type="daterange"  
                 value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']"></el-date-picker>             
-            <div class="grid-content">状态：<el-input v-model="searchList.channelsStatus" style="width: 120px;" clearable></el-input></div>           
+            <!-- <div class="grid-content">状态：<el-input v-model="searchList.channelsStatus" style="width: 120px;" clearable></el-input></div>            -->
             <el-button v-waves class="searchs" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>        
         </div>
   </div>

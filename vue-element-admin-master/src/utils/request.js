@@ -5,21 +5,21 @@ import { getToken } from "@/utils/auth";
 import Qs from "qs";
 //  创建axios实例
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api 的 base_url
+  // baseURL: process.env.BASE_API, // api 的 base_url
   timeout: 5000 //  请求超时时间
 });
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
 // //整理数据
 service.defaults.transformRequest = function(data) {
-  data = Qs.stringify(data);
-  // data = JSON.stringify(data);
+  // data = Qs.stringify(data);
+  data = JSON.stringify(data);
   return data;
 };
 // request拦截器
 service.interceptors.request.use(
   config => {
-    // config.headers["Content-Type"] = "application/json;charset=UTF-8";
+    config.headers["Content-Type"] = "application/json;charset=UTF-8";
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改

@@ -8,9 +8,9 @@ export function channelSearch(URL, datas) {
   });
 }
 // 批量导入渠道商
-export function bulkImport(id) {
+export function bulkImport(URL, id) {
   return request({
-    url: "/article/list",
+    url: URL,
     method: "get",
     params: { id }
   });
@@ -19,17 +19,19 @@ export function bulkImport(id) {
 export function addChannel(URL, data) {
   return request({
     url: URL,
-    method: "POST",
-    headers: { "Content-Type": "multipart/form-data" },
+    method: "post",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
     data
   });
 }
 // 渠道进件基本信息获取
-export function channelMsg(URL) {
+export function channelMsg(URL, data) {
   return request({
     url: URL,
-    method: "get"
-    // params: { id }
+    method: "get",
+    params: data
   });
 }
 //渠道单个通过请求
@@ -98,11 +100,11 @@ export function channelDetail(URL, id) {
   });
 }
 //新增连锁子商户导入连锁商户请求
-export function storeDetail(URL, storeName) {
+export function storeDetail(URL, name) {
   return request({
     url: URL,
     method: "GET",
-    params: { storeName }
+    params: { name }
   });
 }
 // 图片上传测试

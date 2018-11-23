@@ -155,7 +155,7 @@ export default {
       this.listLoading = true;
       console.log("用户退款表格基本信息");
       var basicURL =
-        "record/expenselist/?page=" +
+        "/backend/api/v1/record/expenselist/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
@@ -191,7 +191,7 @@ export default {
     passsubmit(data) {
       this.dialogTableVisible = true;
       console.log(data);
-      var detailURL = "record/expenseid/";
+      var detailURL = "/backend/api/v1/record/expenseid/";
       // merchantDetail(detailURL,data.id).then(res => {
       //   console.log(res);
       // this.detailMsg=data
@@ -201,7 +201,7 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "record/expensetoexcel/";
+      var DownloadURL = "/backend/api/v1/record/expensetoexcel/";
       merchantDownload(DownloadURL, this.dataDeal()).then(res => {
         console.log(res);
         let url = window.URL.createObjectURL(new Blob([res.data]));

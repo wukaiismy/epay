@@ -13,9 +13,9 @@
             <img class="lines" :src="lines" alt="">
            <!-- 下面是展示部分 -->
            <div class="showBoxs" v-show="isShow1">
-               <div class="items"><div class="titles">渠道所属银行：</div>
+               <!-- <div class="items"><div class="titles">渠道结算方式：</div>
                   <span><el-input  size="small"  style="width:19.375%; height:40px;" v-model="msg.bank" placeholder="请输入银行"></el-input></span>
-               </div>
+               </div> -->
                <div class="items"><div class="titles">渠道名称：</div>
                    <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.name" placeholder="请与营业执照一致，最长100字符"></el-input></span>
                </div>
@@ -25,11 +25,9 @@
                <div class="items"><div class="titles">营业期限：</div>
                   <span> <el-date-picker v-model="msg.date" type="daterange" value-format="yyyy-MM-dd" size='small' style="width:35%; height:33px;" range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker></span>
                </div>
-               <div class="items"><div class="titles">公司地址：</div>
-                 <span>
-                     <el-input  size="small" @change='changeAdress'  style="width:10.4%; height:40px; margin-right: 10px; " v-model="pre" placeholder="省份"></el-input>
-                     <el-input  size="small" @change='changeAdress' style="width:10.4%; height:40px; margin-right: 10px;" v-model="shi" placeholder="市"></el-input>
-                     <el-input  size="small" @change='changeAdress' style="width:10.4%; height:40px;" v-model="qu" placeholder="区"></el-input>
+               <div class="items"><div class="titles tls">公司地址：</div>
+                 <span class="adresss">
+                    <v-distpicker :placeholders="placeholders" @selected="onSelected"></v-distpicker>
                  </span>
                </div>
                <div class="items"><div class="titles">详细地址：</div>
@@ -80,7 +78,7 @@
                  <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.service_tel" placeholder="请输入客服电话"></el-input></span>
                </div>
                <div class="items"><div class="titles">商户类型：</div>
-                  <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.operator_type" placeholder="请输入商户类型 如：企业 连锁店"></el-input></span>
+                  <span><el-input  size="small"  style="width:34.375%; height:40px;" disabled v-model="msg.operator_type" placeholder="请输入商户类型 如：企业 连锁店"></el-input></span>
                </div>
                <div class="items"><div class="titles">经营范围：</div>
                   <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.business_type" placeholder="请输入经营范围"></el-input></span>
@@ -122,9 +120,17 @@
                   <span><el-input  size="small"  style="width:8.34%; height:40px;" v-model="msg.rate" placeholder=""></el-input><i style="margin-left:10px;">‰</i></span>
                </div> 
                <div class="items"><div class="titles">结算类型：</div><span class="ssa">
-                    <el-radio v-model="msg.clear_type" label="1">个人</el-radio>
-                    <el-radio v-model="msg.clear_type" label="2">企业</el-radio>
+                    <el-radio v-model="msg.clear_type" label="1">企业</el-radio>
+                    <el-radio v-model="msg.clear_type" label="2">个人</el-radio>
                    </span></div>
+               
+                <div class="items"><div class="titles">结算方式：</div>
+                 <span>
+                    <select v-model="msg.settlement_method" class="selectBox"  @click="ss()" >
+                   <option v-for="(a,index) in options" :key="index" :value="a.value"  :disabled="a.disabled">{{ a.label }}</option>
+               </select>  
+                 </span>
+               </div> 
                <div class="items"><div class="titles">结算户名：</div>
                  <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.bankcard_name" placeholder="请输入结算户名"></el-input></span>
                </div>
@@ -134,6 +140,9 @@
                <div class="items"><div class="titles">结算账户：</div>
                      <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.bank_credit" placeholder="请输入结算账户"></el-input></span>
                 </div>
+                <div class="items" v-show="msg.clear_type=='2'"><div class="titles">绑定手机：</div>
+                 <span><el-input  size="small"  style="width:34.375%; height:40px;" v-model="msg.set_bank_mobile" placeholder="请输入银行卡绑定手机号"></el-input></span>
+               </div>
                 <!-- 下一步点击按钮 --> 
                      <div class="btnBox">
                     <div class="backs" @click="nextGo">上一步</div>                     
@@ -149,12 +158,13 @@ import { addChannel, imgUp } from "@/api/intomanagement";
 import lines1 from "../../../assets/login/line.png";
 import lines2 from "../../../assets/login/line2.png";
 import lines3 from "../../../assets/login/line3.png";
+import VDistpicker from "v-distpicker";
 // import photos from "../../../assets/wukai.jpg";
 import Back from "@/components/Back";
 import axios from "axios";
 export default {
   name: "AddChain",
-  components: { Back },
+  components: { Back, VDistpicker },
   data() {
     return {
       dialogImageUrl: "",
@@ -166,16 +176,13 @@ export default {
       isShow1: true,
       isShow2: false,
       isShow3: false,
-      pre: "",
-      shi: "",
-      qu: "",
       license_image: "",
       legal_id_card_img: [],
       operator_agreement: "",
       channel_logo: "",
       supplement: [],
       msg: {
-        bank: "",
+        settlement_method: "",
         name: "",
         license_no: "",
         date: "",
@@ -191,36 +198,52 @@ export default {
         operator_mobile: "",
         operator_email: "",
         service_tel: "",
-        operator_type: "",
+        operator_type: "普通渠道商",
         business_type: "",
         operator_agreement: "",
         channel_logo: "",
-        supplement: "",
+        supplement: [],
         rate: "",
         clear_type: "1",
         bankcard_name: "",
         bank_name: "",
-        bank_credit: ""
-      }
+        bank_credit: "",
+        set_bank_mobile: ""
+      },
+      placeholders: {
+        province: "------- 省 -------",
+        city: "----- 市 -----",
+        area: "----- 区 -----"
+      },
+      options: [
+        {
+          value: "",
+          label: "选择结算方式",
+          disabled: ""
+        },
+        {
+          value: "1",
+          label: "日结"
+        },
+        {
+          value: "2",
+          label: "月结"
+        }
+      ]
     };
   },
   methods: {
-    // handleRemove(file, fileList) {
-    //   console.log(file, fileList);
-    // },
-    // handlePictureCardPreview(file) {
-    //   this.dialogImageUrl = file.url;
-    //   this.dialogVisible = true;
-    // },
     //返回进件主页面
     backJump() {
       this.$emit("addChain", "Table");
     },
     //省市区选择拼接
-    changeAdress() {
-      this.msg.city = this.pre + this.shi + this.qu;
-      console.log(this.msg.city);
+    onSelected(data) {
+      console.log(data);
+      console.log(data.province.value + data.city.value + data.area.value);
+      this.msg.city = data.province.value + data.city.value + data.area.value;
     },
+
     //选择查看的信息
     chosed(index) {
       if (index == 1) {
@@ -266,8 +289,8 @@ export default {
     //提交按钮
     submit() {
       console.log(this.msg);
-      alert("渠道商进件添加");
-      let addURL = "incoming/channelup/";
+      console.log("渠道商进件添加");
+      let addURL = "/backend/api/v1/incoming/channelup/";
       addChannel(addURL, this.msg).then(res => {
         console.log(res);
         // 成功后返回渠道商主页面组件
@@ -313,11 +336,13 @@ export default {
           var n = 0;
           if (this.supplement.length >= 8) {
             this.supplement.splice(0, 1);
+            this.msg.supplement.splice(0, 1);
             console.log(++n);
             // console.log(res.result);
           }
           this.supplement.push(res.result);
-          this.msg.supplement = res.result.split(",")[1];
+          var imgUrl = res.result.split(",")[1];
+          this.msg.supplement.push(imgUrl);
         }
       };
       reader.readAsDataURL(file);
@@ -341,6 +366,9 @@ export default {
     deleted1(index) {
       console.log(index);
       this.supplement.splice(index, 1);
+    },
+    ss() {
+      this.options[0].disabled = "disabled";
     }
   }
 };
@@ -403,10 +431,9 @@ export default {
     position: absolute;
     right: 61.9%;
   }
-  // .photos {
-  //   height: 140px;
-  //   margin-right: 20px;
-  // }
+  .tls {
+    top: 10px;
+  }
 }
 .retas {
   font-size: 14px;
@@ -526,5 +553,26 @@ export default {
   height: 20px;
   position: relative;
   top: -10px;
+}
+.items .adresss {
+  display: inline-block;
+  margin-top: 0px !important;
+  margin-bottom: 10px;
+}
+.selectBox {
+  width: 34.375%;
+  height: 35px;
+  border: 1px solid #dcdfe6;
+  margin: -10px 0 10px 0;
+}
+</style>
+<style >
+.distpicker-address-wrapper {
+}
+.distpicker-address-wrapper select {
+  font-size: 0.81rem;
+  height: 32px;
+  padding: 0rem 0rem;
+  width: 120px;
 }
 </style>

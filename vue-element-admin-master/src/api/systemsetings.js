@@ -2,7 +2,7 @@ import request from "@/utils/request";
 // 角色权限搜索功能
 export function RoleSearch(data) {
   return request({
-    url: "incoming/channellist/",
+    url: "/backend/api/v1/incoming/channellist/",
     method: "post",
     data
   });
@@ -39,8 +39,8 @@ export function userMsg(URL, data) {
     params: data
   });
 }
-//账户权限详情
-export function userDetialMsg(URL, id) {
+//账户启用/禁用
+export function changeStyle(URL, id) {
   return request({
     url: URL,
     method: "get",
@@ -56,11 +56,11 @@ export function userDelete(URL, id) {
   });
 }
 //账户权限新增
-export function userAdd(URL, id) {
+export function userAdd(URL, data) {
   return request({
     url: URL,
-    method: "get",
-    params: { id }
+    method: "post",
+    data
   });
 }
 //账户权限导出

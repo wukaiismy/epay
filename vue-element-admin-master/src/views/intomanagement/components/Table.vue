@@ -15,7 +15,7 @@
                 <template slot-scope="scope">
                   <span type="text" size="small" class="ppss"  v-if="scope.row.review=='审核通过'" >审核通过</span>
                   <span type="text" size="small" class="noppss" v-if="scope.row.review=='待审核'">待审核</span>
-                  <span type="text" size="small" class="noppss" v-if="scope.row.statuss==2">驳回</span>
+                  <span type="text" size="small" class="noppss" v-if="scope.row.review=='驳回'">驳回</span>
                 </template>
               </el-table-column>
               <el-table-column  label="激活状态"  align="center" >
@@ -42,7 +42,7 @@
         </div>
         <!-- 分页功能 -->
         <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+          <el-pagination v-show="total>0" :current-page.sync="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
         </div>
      </el-col>
       <el-col :span="8">    
@@ -80,7 +80,6 @@ export default {
   data() {
     return {
       pages: {
-        currentPage: 2,
         page: 1,
         size: 10
       },
@@ -114,27 +113,30 @@ export default {
     // 搜索按钮传值回来
     channelSearch(data) {
       console.log(data);
-      var searchURL = "incoming/channellist/";
+      this.pages.page = 1;
+      this.pages.size = 10;
       var datas = {
-        channel__name: data.channels,
-        merchant__name: data.channelsNum,
-        status: data.channelsStatus1
+        name: data.channels,
+        id: data.channelsNum,
+        min_time: data.value1[0],
+        max_time: data.value1[1],
+        status: data.channelsStatus,
+        review: data.channelsStatus1
       };
       console.log(datas);
-      channelSearch(searchURL, datas).then(response => {
-        console.log(response);
-      });
+      this.getList(datas);
       // this.gridData = data;
     },
     // 获取渠道进件基本列表信息
-    getList() {
+    getList(data) {
       this.listLoading = true;
-      let channelURL =
-        "incoming/channellist/?page=" +
+      var channelURL =
+        "/backend/api/v1/incoming/channellist/?page=" +
         this.pages.page +
         "&size=" +
         this.pages.size;
-      channelMsg(channelURL).then(res => {
+      this.isshow = false;
+      channelMsg(channelURL, data).then(res => {
         console.log("渠道进件表格基本信息");
         this.total = res.data.count;
         this.gridDatas = res.data.results;
@@ -144,10 +146,24 @@ export default {
         this.listLoading = false;
       }, 1.5 * 1000);
     },
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
+    },
     //选择当前行显示具体的信息
     handleCurrentpage(val) {
-      let channelDetailURL = "incoming/channelid";
-      console.log(val);
+      console.log("显示详细信息");
+      let channelDetailURL = "/backend/api/v1/incoming/channelid/";
+      if (!val) return;
       channelDetail(channelDetailURL, val.id).then(res => {
         console.log(res.data[0]);
         this.detailMsg = res.data[0];
@@ -164,20 +180,23 @@ export default {
     passsubmit(data) {
       console.log("你点击了单个通过按钮");
       console.log(data);
-      var channelPassURL = "incoming/channelreview/";
-      var datas = { ids: data.id };
+      var channelPassURL = "/backend/api/v1/incoming/channelreview/";
+      var datas = { ids: data.id + ",0" };
       console.log(datas);
       channelPass(channelPassURL, datas).then(res => {
         console.log(res);
+        // this.$message(res.data.msg);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 单个驳回按钮
     returnsubmit(data) {
       console.log("你点击了单个驳回按钮");
-      var channelRejectedURL = "incoming/channelturndown/";
-      var datas = { ids: data.id };
+      var channelRejectedURL = "/backend/api/v1/incoming/channelturndown/";
+      var datas = { ids: data.id + ",0" };
       channelRejected(channelRejectedURL, datas).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 批量的数据处理
@@ -186,40 +205,45 @@ export default {
       this.multipleSelection.forEach(function(v) {
         dataList.push(v.id);
       });
+      dataList.push(0);
       var datas = { ids: dataList.join(",") };
       return datas;
     },
     // 批量激活按钮
     jihuoJump() {
-      var channeljhURL = "incoming/channelact";
+      var channeljhURL = "/backend/api/v1/incoming/channelact/";
       channelVolumeActivation(channeljhURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 批量通过按钮
     passJump() {
-      var channelAPassURL = "incoming/channelreview/";
+      var channelAPassURL = "/backend/api/v1/incoming/channelreview/";
       channelVolumeActivation(channelAPassURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 批量激活和通过按钮
     allJump() {
-      var channelAllURL = "incoming/channelactandrev/";
+      var channelAllURL = "/backend/api/v1/incoming/channelactandrev/";
       channelALL(channelAllURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 批量驳回按钮
     bohuiJump() {
-      var channelRejectedURL = "incoming/channelturndown";
+      var channelRejectedURL = "/backend/api/v1/incoming/channelturndown/";
       channelVolumeRejected(channelRejectedURL, this.dataDeal()).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     // 导出按钮
     daochuJump() {
-      let channelDownloadURL = "incoming/channeltoexcel/";
+      let channelDownloadURL = "/backend/api/v1/incoming/channeltoexcel/";
       channelDownload(channelDownloadURL, this.dataDeal()).then(res => {
         console.log(res);
         let url = window.URL.createObjectURL(new Blob([res.data]));
@@ -235,11 +259,14 @@ export default {
     //分页功能选择
     handleSizeChange(val) {
       this.pages.size = val;
+      this.pages.page = 1;
+      console.log(val);
       this.getList();
     },
     //分页功能选择
     handleCurrentChange(val) {
       console.log("选择分页");
+      console.log(val);
       this.pages.page = val;
       this.getList();
     }

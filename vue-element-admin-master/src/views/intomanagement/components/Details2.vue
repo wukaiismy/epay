@@ -10,36 +10,36 @@
        <div v-show="isShow=='1'">
        <div class="basicMsgTitle">基本信息</div>
        <div class="boxMsg bm">
-           <div class="mags">子商户编号：{{detailMsg.id}}</div>
-           <div class="mags">子商户名称：{{detailMsg.name}}</div>         
+           <div class="mags">子商户编号：{{detailMsg[0].id}}</div>
+           <div class="mags">子商户名称：{{detailMsg[0].name}}</div>         
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">运营信息</div>
        <div class="boxMsg">
-           <div class="mags">联系人：{{detailMsg.merchantfile.operator_name}}</div>
-           <div class="mags">联系电话：{{detailMsg.merchantfile.operator_mobile}}</div>
-           <div class="mags">客服电话：{{detailMsg.merchantfile.service_tel}}</div>
+           <div class="mags">联系人：{{detailMsg[0].merchantfile.operator_name}}</div>
+           <div class="mags">联系电话：{{detailMsg[0].merchantfile.operator_mobile}}</div>
+           <div class="mags">客服电话：{{detailMsg[0].merchantfile.service_tel}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">商户信息</div>
        <div class="boxMsg">
-           <div class="mags">省份城市：{{detailMsg.merchantfile.city}}</div>
-           <div class="mags">详细地址：{{detailMsg.location}}</div>         
-           <div class="mags">补充材料： <img class="logoImg"  v-for="(item, index) in detailMsg.supplement" :key="index" :src="item" alt=""></div>
+           <div class="mags">省份城市：{{detailMsg[0].merchantfile.city}}</div>
+           <div class="mags">详细地址：{{detailMsg[0].location}}</div>         
+           <div class="mags">补充材料： <img class="logoImg"  v-for="(item, index) in detailMsg[0].merchantfile.supplement.split(',')" :key="index" :src="'http://192.168.1.28:8001/media/'+item" alt=""></div>
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">结算信息</div>
        <div class="boxMsg">
-            <div class="mags">结算单位：{{detailMsg.name}}</div>
+            <div class="mags">结算单位：{{detailMsg[0].name}}</div>
             <div class="mags">结算类型：
                 <template>
-                  <span v-if="detailMsg.merchantfile.clear_type=='0'">个人</span>
-                  <span v-if="detailMsg.merchantfile.clear_type=='1'">企业</span>            
+                  <span v-if="detailMsg[0].merchantfile.clear_type=='1'">个人</span>
+                  <span v-if="detailMsg[0].merchantfile.clear_type=='2'">企业</span>            
                 </template>
             </div>
-            <div class="mags">结算户名：{{detailMsg.merchantfile.admin_user}}</div>
-            <div class="mags">结算银行：{{detailMsg.merchantfile.bankcard_name}}</div>
-            <div class="mags">结算账号：{{detailMsg.merchantfile.bank_credit}}</div>
+            <div class="mags">结算户名：{{detailMsg[0].merchantfile.bankcard_name}}</div>
+            <div class="mags">结算银行：{{detailMsg[0].merchantfile.set_bank_name}}</div>
+            <div class="mags">结算账号：{{detailMsg[0].merchantfile.bank_credit}}</div>
         </div>
         <div class="gard1"><Gard /></div>
 
@@ -58,50 +58,58 @@
        <div v-show="isShow=='2'">
        <div class="basicMsgTitle">基本信息</div>
        <div class="boxMsg bm">
-           <div class="mags">连锁商户编号：{{msg.m14}}</div>
-           <div class="mags">连锁商户名称：{{msg.m15}}</div>
-           <div class="mags">所属渠道商编号：{{msg.m16}}</div>
-           <div class="mags">所属渠道商名称：{{msg.m17}}</div>
+           <div class="mags">连锁商户编号：{{detailMsg[1].id}}</div>
+           <div class="mags">连锁商户名称：{{detailMsg[1].name}}</div>
+           <div class="mags">所属渠道商编号：<span v-if="detailMsg[1].channel" >{{detailMsg[1].channel.id}}</span></div>
+           <div class="mags">所属渠道商名称：<span v-if="detailMsg[1].channel" >{{detailMsg[1].channel.name}}</span></div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">运营信息</div>
        <div class="boxMsg">
-           <div class="mags">联系人：{{msg.m18}}</div>
-           <div class="mags">联系电话：{{msg.m19}}</div>
-           <div class="mags">电子邮箱：{{msg.m20}}</div>
-           <div class="mags">经营类目：{{msg.m21}}</div>
-           <div class="mags">客服电话：{{msg.m22}}</div>
+           <div class="mags">联系人：{{detailMsg[1].merchantfile.operator_name}}</div>
+           <div class="mags">联系电话：{{detailMsg[1].merchantfile.operator_mobile}}</div>
+           <div class="mags">电子邮箱：{{detailMsg[1].merchantfile.operator_email}}</div>
+           <div class="mags">经营类目：{{detailMsg[1].merchantfile.operator_type}}</div>
+           <div class="mags">客服电话：{{detailMsg[1].merchantfile.service_tel}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">商户信息</div>
        <div class="boxMsg">
-           <div class="mags">商户名称：{{msg.m23}}</div>
-           <div class="mags">省份城市：{{msg.m24}}</div>
-           <div class="mags">详细地址：{{msg.m25}}</div>
+           <div class="mags">商户名称：{{detailMsg[1].name}}</div>
+           <div class="mags">省份城市：{{detailMsg[1].merchantfile.city}}</div>
+           <div class="mags">详细地址：{{detailMsg[1].location}}</div>
         </div>
         <div class="gard1"><Gard /></div>
         <div class="basicMsgTitle bs">法人信息</div>
        <div class="boxMsg">
-          <div class="mags">法人姓名：{{msg.m26}}</div>
-           <div class="mags">身份证号：{{msg.m27}}</div>
-           <div class="mags">身份证照片： <img class="logoImg"  v-for="(item, index) in msg.m28" :key="index" :src="item" alt=""></div>
+          <div class="mags">法人姓名：{{detailMsg[1].merchantfile.legal_name}}</div>
+           <div class="mags">身份证号：{{detailMsg[1].merchantfile.legal_id_card}}</div>
+           <div class="mags">身份证照片： 
+             <img class="logoImg" :src="'/backend/media/'+detailMsg[1].merchantfile.legal_id_card_backend" alt=""> 
+              <img class="logoImg" :src="'/backend/media/'+detailMsg[1].merchantfile.legal_id_card_front" alt=""></div>  
+              
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">营业执照信息</div>
        <div class="boxMsg">
-          <div class="mags">营业执照编号：{{msg.m29}}</div>
-           <div class="mags">营业期限：{{msg.m30}}</div>
-           <div class="mags">营业范围：{{msg.m31}}</div>           
-           <div class="mags">营业执照：<img class="logoImg" :src="msg.m32" alt=""> </div> 
-           <div class="mags">商户logo：<img class="logoImg" :src="msg.m33" alt=""> </div>               
+          <div class="mags">营业执照编号：{{detailMsg[1].merchantfile.license_no}}</div>
+           <div class="mags">营业期限：{{detailMsg[1].merchantfile.business_begin}}~{{detailMsg[1].merchantfile.business_end}}</div>
+           <div class="mags">营业范围：{{detailMsg[1].merchantfile.business_scope}}</div>           
+           <div class="mags">营业执照：<img class="logoImg" :src="'/backend/media/'+detailMsg[1].merchantfile.license_image"  alt=""> </div> 
+           <div class="mags">商户Logo：<img class="logoImg" :src="'/backend/media/'+detailMsg[1].merchant_logo" > </div>               
         </div>
         <div class="gard1"><Gard /></div>
          <div class="basicMsgTitle bs">结算信息</div>
        <div class="boxMsg">
-           <div class="mags">结算类型：{{msg.m34}}</div>
-            <div class="mags">结算户名：{{msg.m35}}</div>
-            <div class="mags">结算银行：{{msg.m36}}</div>
-            <div class="mags">结算账号：{{msg.m37}}</div>
+           <div class="mags">结算类型：
+                <template>
+                  <span v-if="detailMsg[1].merchantfile.clear_type=='1'">企业</span>
+                  <span v-if="detailMsg[1].merchantfile.clear_type=='2'">个人</span>            
+                </template>
+                </div>
+            <div class="mags">结算户名：{{detailMsg[1].merchantfile.bankcard_name}}</div>
+            <div class="mags">结算银行：{{detailMsg[1].merchantfile.set_bank_name}}</div>
+            <div class="mags">结算账号：{{detailMsg[1].merchantfile.bank_credit}}</div>
         </div>
         
         </div>
@@ -112,15 +120,15 @@
                 <span>商户渠道类型：</span> <el-input
                 :disabled='disabled'
                size='small '
-                        v-model="qudaoType"
+                        v-model="detailMsg[0].mechant_type"
                        class="retas" style="width:220px; height:20px;">
                     </el-input><span class="changeReta" @click="changeReta">修改</span>
             </div>
             <div class="tishi" >提示：渠道商商户不可修改</div>
-            <div class="xieyi">所属渠道编号：125465855685</div>
-            <div class="xieyi xy">商户所属渠道：平台内部用户</div>
-            <div class="xieyi xy">通道费率：3‰</div>
-            <div class="xieyi xy">运营协议：<img class="xieyiImg" :src="uRLS" alt="" srcset=""><span class="s3">《信条担保交易-运营协议》电子协议</span></div>
+            <!-- <div class="xieyi">所属渠道编号：125465855685</div> -->
+            <!-- <div class="xieyi xy">商户所属渠道：平台内部用户</div> -->
+            <div class="xieyi xy">通道费率：{{detailMsg[0].rate}} ‰</div>
+            <div class="xieyi xy">运营协议：<img class="xieyiImg" :src="'/backend/media/'+detailMsg[1].merchantfile.operator_agreement"  alt="" srcset=""><span class="s3">《信条担保交易-运营协议》电子协议</span></div>
             
          <div class="gard1"><Gard /></div>
             <!-- 下面的选择按钮 -->
@@ -138,6 +146,8 @@
 import Gard from "./Gard.vue";
 import waves from "@/directive/waves"; // 水波纹指令
 import uRLS from "../../../assets/wukai.jpg";
+import { channelVolumeActivation } from "@/api/intomanagement";
+
 export default {
   name: "Details2",
   props: ["detailMsg"],
@@ -154,45 +164,7 @@ export default {
       uRLS: uRLS,
       qudaoStore: "金桔联盟",
       qudaoType: "平台直营商户",
-      msg: {
-        m1: "12545885285",
-        m2: "成都易付云金融科技",
-        m3: "张学友",
-        m4: "135400213254",
-        m5: "028-2201-000",
-        m6: "四川省成都市天府新区",
-        m7: "天府大道220号饺子金融科技中心a210",
-        m8: [uRLS, uRLS],
-        m9: "连锁子商户",
-        m10: "个人",
-        m11: "张学友",
-        m12: "华夏银行",
-        m13: "125 2252 222 2222",
-        m14: "5112012121252",
-        m15: "金桔联盟",
-        m16: "12545885285",
-        m17: "金爵联盟",
-        m18: "列的和",
-        m19: "13522200000",
-        m20: "1209786352@qq.com",
-        m21: "企业 / 生活 / 家具建材 / 大型家居买卖市场",
-        m22: "800-820-8820",
-        m23: "成都易付云金融科技中心",
-        m24: "四川省成都市天府新区",
-        m25: "天府大道220号饺子金融科技中心a210",
-        m26: "张家辉",
-        m27: "5112012121252",
-        m28: [uRLS, uRLS],
-        m29: "3jhjhj3ihjk3jlkjkl3jjkjlkj3jkljlkjl3jk",
-        m30: "2018-12-29～2088-12-30",
-        m31: "建设材料 / 装潢材料 / 日常用品 / 机电设备及配件 / 办公用品 ",
-        m32: uRLS,
-        m33: uRLS,
-        m34: "企业",
-        m35: "金桔联盟",
-        m36: "华夏银行",
-        m37: "125 2252 222 2222"
-      },
+      msg: {},
       mataMsg: [
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
         "2018-01-20 12:20:10 审核通过 200984llkfj.cn",
@@ -229,19 +201,32 @@ export default {
     changeReta() {
       this.disabled = false;
     },
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
+    },
     // 激活
     jihuosJump() {
-      alert("确定激活？");
-      // alert("确定激活？");
-      var channeljhURL = "incoming/merchantact";
-      var datas = { ids: this.detailMsg.merchantfile.id };
+      console.log("确定激活？");
+      var channeljhURL = "/backend/api/v1/incoming/merchantact/";
+      var datas = { ids: this.detailMsg.merchantfile.id + ",0" };
       channelVolumeActivation(channeljhURL, datas).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     //关闭
     guanbiJump() {
-      alert("确定关闭？");
+      alert("您没有权限关闭");
     }
   }
 };

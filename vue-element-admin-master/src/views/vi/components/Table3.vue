@@ -283,7 +283,7 @@ export default {
     // 获取用户押金基本列表信息
     getList() {
       this.listLoading = true;
-      var basicURL = "incoming/channellist/";
+      var basicURL = "/backend/api/v1/incoming/channellist/";
       console.log("用户押金表格基本信息");
       // merchantMsg(basicURL,"1").then(res => {
       //   console.log(res);
@@ -301,7 +301,7 @@ export default {
     passsubmit(data) {
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
-      var detailURL = "incoming/channellist/";
+      var detailURL = "/backend/api/v1/incoming/channellist/";
       // merchantDetail(detailURL,data.userAccount).then(res => {
       //   console.log(res);
       // this.detailMsg=data
@@ -310,7 +310,7 @@ export default {
     // 表格右边单个解压按钮
     jieyaJump1(data) {
       console.log("你点击了单个解压");
-      var UnpackURL = "incoming/channellist/";
+      var UnpackURL = "/backend/api/v1/incoming/channellist/";
       // userUnpack(UnpackURL,data.userAccount ).then(res => {
       //   console.log(res);
       // this.detailMsg=data
@@ -319,7 +319,7 @@ export default {
     // 解压按钮
     jieyaJump() {
       console.log("你点击了解压");
-      var UnpackURL = "incoming/channellist/";
+      var UnpackURL = "/backend/api/v1/incoming/channellist/";
       // userUnpack(UnpackURL,this.multipleSelection ).then(res => {
       //   console.log(res);
       // this.detailMsg=data
@@ -329,7 +329,7 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "incoming/channelact";
+      var DownloadURL = "/backend/api/v1/incoming/channelact";
       // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
       //   console.log(res);
       // this.msg=data

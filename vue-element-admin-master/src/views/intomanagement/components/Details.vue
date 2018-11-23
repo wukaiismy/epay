@@ -22,7 +22,10 @@
            <div class="mags">经营类目：{{detailMsg.operator_type}}</div>
            <div class="mags">经营范围：{{detailMsg.business_type}}</div>
            <div class="mags">客服电话：{{detailMsg.service_tel}}</div>
-           <div class="mags">渠道协议：{{detailMsg.operator_agreement}}</div>
+           <div class="mags">渠道协议：
+           
+              <img class="logoImg" :src="'/backend/media/'+detailMsg.operator_agreement" alt="">
+             </div>
        </div>
        <div class="gard1"><Gard /></div>
        <div class="basicMsgTitle bs">企业信息</div>
@@ -38,8 +41,8 @@
            <div class="mags">法人姓名：{{detailMsg.legal_name}}</div>
            <div class="mags">身份证号：{{detailMsg.legal_id_card}}</div>
            <div class="mags">身份证照片：
-              <img class="logoImg" :src="detailMsg.legal_id_card_backend" alt=""> 
-              <img class="logoImg" :src="detailMsg.legal_id_card_front" alt=""></div>           
+              <img class="logoImg" :src="'/backend/media/'+detailMsg.legal_id_card_backend" alt=""> 
+              <img class="logoImg" :src="'/backend/media/'+detailMsg.legal_id_card_front" alt=""></div>           
        </div>
        <div class="gard1"><Gard /></div>
        <div class="basicMsgTitle bs">营业执照信息</div>
@@ -47,14 +50,19 @@
            <div class="mags">营业执照编号：{{detailMsg.license_no}}</div>
            <div class="mags">营业期限：{{detailMsg.business_begin}}~{{detailMsg.business_end}}</div>
            <div class="mags">营业范围：{{detailMsg.business_scope}}</div>           
-           <div class="mags">营业执照： <img class="logoImg" :src="detailMsg.license_image" alt=""> </div> 
+           <div class="mags">营业执照： <img class="logoImg" :src="'/backend/media/'+detailMsg.license_image" alt=""> </div> 
        </div>
        <div class="gard1"><Gard /></div>
        <div class="basicMsgTitle bs">结算信息</div>
        <div class="boxMsg">          
-           <div class="mags">结算类型：企业</div>
-           <div class="mags">结算户名：{{detailMsg.bank_name}}</div>
-           <div class="mags">结算银行：{{detailMsg.bankcard_name}}</div>
+           <div class="mags">结算类型：
+             <template >
+                   <span v-if="detailMsg.clear_type==1" >企业</span>
+                   <span v-if="detailMsg.clear_type==2">个人</span>
+             </template>
+             </div>
+           <div class="mags">结算户名：{{detailMsg.bankcard_name}}</div>
+           <div class="mags">结算银行：{{detailMsg.bank_name}}</div>
            <div class="mags">结算账号：{{detailMsg.bank_credit}}</div>
         </div>
         <div class="gard1"><Gard /></div>
@@ -78,7 +86,7 @@
                     </el-input> <span>&nbsp; ‰</span> <span class="changeReta" @click="changeReta">修改</span>
             </div>
             <div class="xieyi">渠道协议：<span class="s1">《信条担保交易-运营协议》</span><span class="s2">下载</span><span class="s3">在线观看</span></div>
-            <div class="xieyi imgshow"><span>运营协议：</span><img class="xieyiImg" :src="detailMsg.supplement" alt="" srcset=""></div>
+            <div class="xieyi imgshow"><span>运营协议：</span><img class="xieyiImg" :src="'/backend/media/'+detailMsg.operator_agreement" alt="" srcset=""></div>
          <div class="gard1"><Gard /></div>
             <!-- 下面的选择按钮 -->
             <div class="allChose">
@@ -98,6 +106,7 @@
 <script>
 import Gard from "./Gard.vue";
 import waves from "@/directive/waves"; // 水波纹指令
+import { channelVolumeActivation } from "@/api/intomanagement";
 export default {
   name: "Details",
   props: ["detailMsg"],
@@ -140,18 +149,32 @@ export default {
     changeReta() {
       this.disabled = false;
     },
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
+    },
     // 激活
     jihuosJump() {
       // alert("确定激活？");
-      var channeljhURL = "incoming/channelact";
-      var datas = { ids: this.detailMsg.id };
+      var channeljhURL = "/backend/api/v1/incoming/channelact/";
+      var datas = { ids: this.detailMsg.id + ",0" };
       channelVolumeActivation(channeljhURL, datas).then(res => {
         console.log(res);
+        this.message(res.data.msg, res.data.code);
       });
     },
     //关闭
     guanbiJump() {
-      alert("确定关闭？");
+      alert("您没有权限关闭");
     }
   }
 };

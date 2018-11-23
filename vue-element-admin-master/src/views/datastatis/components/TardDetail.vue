@@ -82,7 +82,7 @@ export default {
   methods: {
     //获取初始数据
     getMsgs(data) {
-      var searchUrl = "/statistics/rangeplat/";
+      var searchUrl = "/backend/api/v1/statistics/rangeplat/";
       console.log(data);
       searchDay(searchUrl, data).then(res => {
         console.log("查询结果");
@@ -95,7 +95,8 @@ export default {
           count_range: {},
           sum_all_range: {},
           sum_amount_range: {},
-          sum_gift_range: {}
+          sum_gift_range: {},
+          sum_divided: {}
         };
         echarList = res.data.all_order_someone.sum_list;
         console.log(echarList);
@@ -109,6 +110,9 @@ export default {
           return item[0];
         });
         lineChartData.sum_gift_range.xDatas = echarList.map(function(item) {
+          return item[0];
+        });
+        lineChartData.sum_divided.xDatas = echarList.map(function(item) {
           return item[0];
         });
         lineChartData.count_range.expectedData = echarList.map(function(item) {
@@ -128,6 +132,9 @@ export default {
           item
         ) {
           return item[4];
+        });
+        lineChartData.sum_divided.expectedData = echarList.map(function(item) {
+          return item[5];
         });
 
         this.lineChartDataList = lineChartData;
@@ -150,12 +157,13 @@ export default {
       }
     },
     change(index) {
-      console.log(6666);
       if (index == "1") {
         this.datemsg = this.date;
       } else if (index == "2") {
         this.datemsg = this.date1;
       }
+      console.log(6666);
+      console.log(this.datemsg);
     },
     // 搜索按钮提交
     searchDate() {

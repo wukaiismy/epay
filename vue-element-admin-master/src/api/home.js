@@ -32,7 +32,7 @@ export function DownloadList(data) {
 // 获取主页面基本信息
 export function allMsgList() {
   return request({
-    url: "inhome/index/",
+    url: "/backend/api/v1/inhome/index/",
     method: "get"
   });
 }

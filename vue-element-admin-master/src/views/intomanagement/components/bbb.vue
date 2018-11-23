@@ -311,7 +311,7 @@ export default {
       console.log("====================================");
       console.log(param.get("license_image"));
       console.log("====================================");
-      let addURL = "incoming/channelup/";
+      let addURL = "/backend/api/v1/incoming/channelup/";
       addChannel(addURL, param).then(res => {
         console.log(res);
       });

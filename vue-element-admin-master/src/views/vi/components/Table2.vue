@@ -389,7 +389,7 @@ export default {
     getList() {
       this.listLoading = true;
       console.log("商户押金表格基本信息");
-      var basicURL = "incoming/channellist/";
+      var basicURL = "/backend/api/v1/incoming/channellist/";
       // merchantMsg(basicURL,"1").then(res => {
       //   console.log(res);
       // });
@@ -407,7 +407,7 @@ export default {
       console.log("你点击了详情按钮");
       this.dialogTableVisible = true;
       console.log(data);
-      var detailURL = "incoming/channellist/";
+      var detailURL = "/backend/api/v1/incoming/channellist/";
       // merchantDetail(detailURL,data.danbaoNum).then(res => {
       //   console.log(res);
       // this.detailMsg=data
@@ -425,7 +425,7 @@ export default {
     // 批量上架按钮
     jihuoJump() {
       console.log("批量上架");
-      var PutawayURL = "incoming/channelact";
+      var PutawayURL = "/backend/api/v1/incoming/channelact";
       // merchantPutaway(PutawayURL,this.multipleSelection).then(res => {
       //   console.log(res);
       // this.msg=data
@@ -434,7 +434,7 @@ export default {
     // 批量下架按钮
     passJump() {
       console.log("批量下架");
-      var SoldOutURL = "incoming/channelact";
+      var SoldOutURL = "/backend/api/v1/incoming/channelact";
       // merchantSoldOut(SoldOutURL,this.multipleSelection).then(res => {
       //   console.log(res);
       // this.msg=data
@@ -443,7 +443,7 @@ export default {
     // 暂停服务按钮
     stopServes() {
       console.log("暂停服务");
-      var StopURL = "incoming/channelact";
+      var StopURL = "/backend/api/v1/incoming/channelact";
       // merchantStop(StopURL,this.multipleSelection).then(res => {
       //   console.log(res);
       // this.msg=data
@@ -457,7 +457,7 @@ export default {
     // 导出按钮
     daochuJump() {
       console.log("导出按钮");
-      var DownloadURL = "incoming/channelact";
+      var DownloadURL = "/backend/api/v1/incoming/channelact";
       // merchantDownload(DownloadURL,this.multipleSelection).then(res => {
       //   console.log(res);
       // this.msg=data

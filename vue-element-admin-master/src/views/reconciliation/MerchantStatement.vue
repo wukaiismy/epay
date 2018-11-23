@@ -54,14 +54,15 @@ export default {
   methods: {
     //下载对账单
     sumbit() {
-      var DownloadURL = "prepaid/prepaidtoexcel/";
+      var DownloadURL = "/backend/api/v1/prepaid/prepaidtoexcel/";
+      console.log(this.dataList);
       // reconDownload(DownloadURL,this.dataList).then(res => {
       //   console.log(res);
       //  let url = window.URL.createObjectURL(new Blob([res.data]));
       //   let link = document.createElement("a");
       //   link.style.display = "none";
       //   link.href = url;
-      //   link.setAttribute("download", "商户交易.xls");
+      //   link.setAttribute("download", "商户对账单.xls");
       //   document.body.appendChild(link);
       //   link.click();
       // if(res.data.code='202'){

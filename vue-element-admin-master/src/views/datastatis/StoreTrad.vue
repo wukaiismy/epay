@@ -60,7 +60,6 @@ export default {
   box-sizing: border-box;
   float: left;
   text-align: center;
-
   cursor: pointer;
 }
 .clear {

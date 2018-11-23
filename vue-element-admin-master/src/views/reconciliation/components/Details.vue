@@ -105,8 +105,9 @@ export default {
     //父组件调用传值并发起请求
     getMsg(data) {
       console.log(data);
-
-      // merchantDetail(data).then(res => {
+      let channelDetailURL = "/backend/api/v1/incoming/channelid/";
+      if (!data) return;
+      // merchantDetail(channelDetailURL,data).then(res => {
       //   console.log(res);
       // this.msg=data.msg
       // this.gridData=data.gridData
