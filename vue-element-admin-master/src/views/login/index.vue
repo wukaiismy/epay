@@ -4,7 +4,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h4 class="title">企业后台管理系统</h4>
+        <h4 class="title">信条后台管理系统</h4>
       
       </div>
       <!-- 登录部分 -->
@@ -110,7 +110,7 @@ export default {
     return {
       loginForm: {
         username: "420663746",
-        password: "123456",
+        password: "111111qq",
         captcha: "",
         timestamp: ""
       },

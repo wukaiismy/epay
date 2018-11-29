@@ -1,23 +1,39 @@
 <template>
-    <div>
-       <!-- 我是表格组件 -->
-      <div class="bigBoxs">
-          <el-table class="tableBox"  v-loading="listLoading"  :key="tableKey"  :data="gridDatas" border fit highlight-current-row style="width:100%;">
-           
-            <el-table-column property="day" label="日期"  align="center" ></el-table-column>
-            <el-table-column property="oneday_count" label="交易总笔数"  align="center"></el-table-column>
-            <el-table-column property="oneday_count"   label="交易成功笔数"  align="center"></el-table-column>
-            <el-table-column label="交易成功总额"  align="center">
-                 <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.all_oneday_sum*1 | toThousandFilter }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  label="交易成功现金额"  align="center">
-                <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.day_oper*1 | toThousandFilter }}</span>
-              </template>
-            </el-table-column>
-            <!-- <el-table-column label="退款笔数"  align="center">
+  <div>
+    <!-- 我是表格组件 -->
+    <div class="bigBoxs">
+      <el-table
+        class="tableBox"
+        v-loading="listLoading"
+        :key="tableKey"
+        :data="gridDatas"
+        border
+        fit
+        highlight-current-row
+        style="width:100%;"
+      >
+        <el-table-column property="day" label="日期" align="center"></el-table-column>
+        <el-table-column property="oneday_count" label="交易总笔数" align="center"></el-table-column>
+        <el-table-column property="oneday_count" label="交易成功笔数" align="center"></el-table-column>
+        <el-table-column label="交易成功总额" align="center">
+          <template slot-scope="scope">
+            <span
+              type="text"
+              size="small"
+              class="moneyStyles"
+            >{{scope.row.all_oneday_sum*1 | toThousandFilter }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="交易成功现金额" align="center">
+          <template slot-scope="scope">
+            <span
+              type="text"
+              size="small"
+              class="moneyStyles"
+            >{{scope.row.day_oper*1 | toThousandFilter }}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="退款笔数"  align="center">
                  <template slot-scope="scope">
                 <span type="text" size="small" class="moneyStyles">{{scope.row.sotreQudao | toThousandFilter }}</span>
               </template>
@@ -31,26 +47,40 @@
                <template slot-scope="scope">
                 <span type="text" size="small" class="moneyStyles">{{scope.row.giveMoney | toThousandFilter}}</span>
               </template>
-            </el-table-column> -->
-            <el-table-column  label="平台分润"  align="center" >
-               <template slot-scope="scope">
-                 <span type="text" size="small" class="moneyStyles">{{scope.row.day_divided*1 | toThousandFilter}}</span>
-               </template>
-            </el-table-column>              
-            <el-table-column  label="操作"   align="center">
-              <template slot-scope="scope" >
-                <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz" >支付详情</el-button>
-                <!-- <el-button type="text" size="small" class="stopServer" @click="returnsubmit(scope.row)">退款详情</el-button> -->
-              </template>
-            </el-table-column>       
-    </el-table>
+        </el-table-column>-->
+        <el-table-column label="平台分润" align="center">
+          <template slot-scope="scope">
+            <span
+              type="text"
+              size="small"
+              class="moneyStyles"
+            >{{scope.row.day_divided*1 | toThousandFilter}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button @click="passsubmit(scope.row)" type="text" size="small" class="xiaz">支付详情</el-button>
+            <!-- <el-button type="text" size="small" class="stopServer" @click="returnsubmit(scope.row)">退款详情</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-     <!-- 分页功能 -->
+    <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination
+        v-show="total>0"
+        :current-page="pages.page"
+        :page-sizes="[10,20,30, 50]"
+        :page-size="10"
+        :total="total"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <!-- 主体内容结束 -->
-    </div>
+  </div>
 </template>
 
 <script>
@@ -80,7 +110,7 @@ export default {
       filename: "",
       autoWidth: true,
       gridDatas: [],
-      times: []
+      times: [],
     };
   },
   mounted() {
@@ -90,11 +120,17 @@ export default {
     datemsg: {
       deep: true,
       handler(val) {
-        this.getList(val);
+         this.page(val)    
       }
     }
   },
-  methods: {
+ methods: {
+    page(val){
+        this.pages.page = 1;
+        this.pages.size = 10;
+        this.times = val;  
+        this.getList(val);
+    },
     // 获取基本列表信息
     getListbase() {
       var val = [];
@@ -109,6 +145,7 @@ export default {
         val = this.times;
       }
       this.listLoading = true;
+      console.log("看看是什么");
       console.log(val);
       var data = {
         pg: this.pages.page,
@@ -116,6 +153,8 @@ export default {
         begin_time: val[0],
         end_time: val[1]
       };
+      console.log("啊啊啊啊啊");
+      console.log(data);
       tebleMsg(data).then(res => {
         console.log("表格基本信息");
         console.log(res);
@@ -135,7 +174,7 @@ export default {
       console.log(data);
       //跳转到支付详情页面
       this.$router.push({
-        path: "/backend/api/v1/trade/merchantTrad",
+        path: "/trade/merchantTrad",
         query: {
           date: data.day
         }
@@ -159,6 +198,7 @@ export default {
     handleSizeChange(val) {
       console.log("选择个数");
       console.log(val);
+          this.pages.page =1;
       this.pages.size = val;
       this.getList();
     },
@@ -214,10 +254,9 @@ export default {
 <style scoped>
 .bigBoxs {
   width: 100%;
-
   background-color: #fff;
   padding-bottom: 20px;
-  display: inline-block;
+   display: inline-block;
 }
 .tableBox {
   margin-bottom: 10px;

@@ -286,6 +286,19 @@ export default {
       this.isShow3 = true;
       this.lines = lines3;
     },
+    // 提示框函数
+    message(msg, status) {
+      var types = "";
+      if (status == "200") {
+        types = "success";
+      } else {
+        types = "error";
+      }
+      this.$message({
+        message: msg,
+        type: types
+      });
+    },
     //提交按钮
     submit() {
       console.log(this.msg);
@@ -293,8 +306,15 @@ export default {
       let addURL = "/backend/api/v1/incoming/channelup/";
       addChannel(addURL, this.msg).then(res => {
         console.log(res);
-        // 成功后返回渠道商主页面组件
-        this.$emit("addChain", "Table");
+        if (res.data.code == "400") {
+          // 成功后返回渠道商主页面组件
+
+          this.message(res.data.msg, res.data.code);
+        } else {
+          console.log("进件成功");
+          this.$emit("addChain", "Table");
+          this.message("进件成功", 200);
+        }
       });
     },
     // 打开图片上传

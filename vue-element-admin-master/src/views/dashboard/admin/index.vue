@@ -260,8 +260,8 @@ export default {
     },
     // 查看操作日志
     actBlog() {
-      console.log("查看操作日志,暂不提供");
-      return;
+      console.log("查看操作日志");
+
       this.$store.dispatch("componentsId", "operationblog");
     }
   }

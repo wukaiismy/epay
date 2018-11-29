@@ -53,6 +53,7 @@ export function EditDetail(URL, data) {
   return request({
     url: URL,
     method: "post",
+    headers: { "Content-Type": "multipart/form-data" },
     data
   });
 }

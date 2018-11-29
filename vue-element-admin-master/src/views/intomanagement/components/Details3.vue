@@ -105,7 +105,7 @@
 <script>
 import Gard from "./Gard.vue";
 import waves from "@/directive/waves"; // 水波纹指令
-import { channelVolumeActivation } from "@/api/intomanagement";
+import { showReview, channelVolumeActivation } from "@/api/intomanagement";
 
 export default {
   name: "Details3",
@@ -130,7 +130,28 @@ export default {
       ]
     };
   },
+  watch: {
+    detailMsg: {
+      deep: true,
+      handler(val) {
+        this.showView(val);
+      }
+    }
+  },
+  mounted() {
+    this.showView();
+  },
   methods: {
+    // 获取操作记录
+    showView(val) {
+      console.log("获取操作记录");
+      var imgURLs = "/backend/api/v1/incoming/showreview/";
+      // var datas = { ids: this.detailMsg.id + ",0" };
+      showReview(imgURLs).then(res => {
+        console.log(res);
+        // this.message(res.data.msg, res.data.code);
+      });
+    },
     blur() {
       console.log(11111);
     },

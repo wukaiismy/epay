@@ -1,58 +1,94 @@
 <template>
-    <div>
-      <Search @addChain='addChain' @channelSearch='channelSearch' />
-      <!-- 我是表格组件 -->
-      <el-row :gutter="20">
-        <el-col :span="16"> 
-          <div class="bigBoxs">
-            <el-table class="tableBox" v-loading="listLoading"  highlight-current-row
-                     @current-change="handleCurrentpage" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange"  style="width:100%;">
-              <el-table-column align="center" type="selection" width="55"></el-table-column>
-              <el-table-column property="id" label="渠道编号"  align="center" ></el-table-column>
-              <el-table-column property="name" label="渠道名称"  align="center"></el-table-column>
-              <el-table-column property="bank_name" label="银行通道"  align="center"></el-table-column>
-              <el-table-column  label="审核状态"  align="center" >
-                <template slot-scope="scope">
-                  <span type="text" size="small" class="ppss"  v-if="scope.row.review=='审核通过'" >审核通过</span>
-                  <span type="text" size="small" class="noppss" v-if="scope.row.review=='待审核'">待审核</span>
-                  <span type="text" size="small" class="noppss" v-if="scope.row.review=='驳回'">驳回</span>
-                </template>
-              </el-table-column>
-              <el-table-column  label="激活状态"  align="center" >
-                <template slot-scope="scope">
-                  <span type="text" size="small" class="ppss"  v-if="scope.row.status=='激活'" >已激活</span>
-                  <span type="text" size="small" class="noppss" v-if="scope.row.status=='未激活'">未激活</span>
-                </template>
-              </el-table-column>
-              <el-table-column  label="操作"   align="center">
-                <template slot-scope="scope" >
-                  <el-button @click.stop="passsubmit(scope.row)" type="text" size="small" class="xiaz">通过</el-button>
-                  <el-button type="text" size="small" class="shanchu" @click.stop="returnsubmit(scope.row)">驳回</el-button>
-                </template>
-              </el-table-column>               
+  <div>
+    <Search @addChain="addChain" @channelSearch="channelSearch"/>
+    <!-- 我是表格组件 -->
+    <el-row :gutter="20">
+      <el-col :span="16">
+        <div class="bigBoxs">
+          <el-table
+            class="tableBox"
+            v-loading="listLoading"
+            highlight-current-row
+            @current-change="handleCurrentpage"
+            :key="tableKey"
+            :data="gridDatas"
+            border
+            fit
+            @selection-change="handleSelectionChange"
+            style="width:100%;"
+          >
+            <el-table-column align="center" type="selection" width="55"></el-table-column>
+            <el-table-column property="id" label="渠道编号" align="center"></el-table-column>
+            <el-table-column property="name" label="渠道名称" align="center"></el-table-column>
+            <el-table-column property="bank_name" label="银行通道" align="center"></el-table-column>
+            <el-table-column label="审核状态" align="center">
+              <template slot-scope="scope">
+                <span type="text" size="small" class="ppss" v-if="scope.row.review=='审核通过'">审核通过</span>
+                <span type="text" size="small" class="noppss" v-if="scope.row.review=='待审核'">待审核</span>
+                <span type="text" size="small" class="noppss" v-if="scope.row.review=='驳回'">驳回</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="激活状态" align="center">
+              <template slot-scope="scope">
+                <span type="text" size="small" class="ppss" v-if="scope.row.status=='激活'">已激活</span>
+                <span type="text" size="small" class="noppss" v-if="scope.row.status=='未激活'">未激活</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" align="center">
+              <template slot-scope="scope">
+                <el-button
+                  @click.stop="passsubmit(scope.row)"
+                  type="text"
+                  size="small"
+                  class="xiaz"
+                >通过</el-button>
+                <el-button
+                  type="text"
+                  size="small"
+                  class="shanchu"
+                  @click.stop="returnsubmit(scope.row)"
+                >驳回</el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <!-- 下面的选择按钮 -->
           <div class="allChose">
-            <el-button v-waves class="searchs" type="primary"  @click="jihuoJump">批量激活</el-button>
-            <el-button v-waves class="searchs" type="primary"  @click="passJump">批量通过</el-button>
-            <el-button v-waves class="searchs" type="primary"  @click="allJump">批量通过和激活</el-button>
-            <el-button v-waves class="searchs" type="primary"  @click="bohuiJump">批量驳回</el-button>
-            <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button>
-          </div> 
+            <el-button v-waves class="searchs" type="primary" @click="jihuoJump">批量激活</el-button>
+            <el-button v-waves class="searchs" type="primary" @click="passJump">批量通过</el-button>
+            <el-button v-waves class="searchs" type="primary" @click="allJump">批量通过和激活</el-button>
+            <el-button v-waves class="searchs" type="primary" @click="bohuiJump">批量驳回</el-button>
+            <el-button
+              v-waves
+              class="searchs"
+              type="primary"
+              icon="el-icon-download"
+              @click="daochuJump"
+            >导出</el-button>
+          </div>
         </div>
         <!-- 分页功能 -->
         <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page.sync="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+          <el-pagination
+            v-show="total>0"
+            :current-page.sync="pages.page"
+            :page-sizes="[10,20,30, 50]"
+            :page-size="10"
+            :total="total"
+            background
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
         </div>
-     </el-col>
-      <el-col :span="8">    
-          <!-- 下面是每个渠道商信息显示部门 -->
-          <div class="rightMenu" v-if="isshow">
-            <Details :detailMsg='detailMsg' />
-          </div>
+      </el-col>
+      <el-col :span="8">
+        <!-- 下面是每个渠道商信息显示部门 -->
+        <div class="rightMenu" v-if="isshow">
+          <Details :detailMsg="detailMsg"/>
+        </div>
       </el-col>
     </el-row>
- </div>
+  </div>
 </template>
 
 <script>
@@ -162,6 +198,7 @@ export default {
     //选择当前行显示具体的信息
     handleCurrentpage(val) {
       console.log("显示详细信息");
+      // this.isshow = false;
       let channelDetailURL = "/backend/api/v1/incoming/channelid/";
       if (!val) return;
       channelDetail(channelDetailURL, val.id).then(res => {

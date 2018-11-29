@@ -4,35 +4,39 @@
       <div class="bigBoxs">
           <el-table class="tableBox"  v-loading="listLoading"  :key="tableKey"  :data="gridData" border fit highlight-current-row style="width:100%;">
            
-            <el-table-column property="date" label="创建日期"  align="center" ></el-table-column>
-            <el-table-column property="storeName" label="商户名称"  align="center"></el-table-column>
-            <el-table-column property="storeNum" label="商户编号"  align="center"></el-table-column> 
-            <el-table-column property="channelName" label="所属渠道商"  align="center"></el-table-column>                      
+            <!-- <el-table-column property="date" label="创建日期"  align="center" ></el-table-column>          -->
+            <el-table-column property="channel_id" label="渠道编号"  align="center"></el-table-column> 
+            <el-table-column property="channel_name" label="渠道商名称"  align="center"></el-table-column>                      
             <el-table-column  label="用户担保交易总数"  align="center">
                 <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.sonSotreName | toThousandFilter }}</span>
+                <span type="text" size="small" class="moneyStyles">{{scope.row.dpre_count_all | toThousandFilter }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="用户担保交易总额"  align="center">
+            <el-table-column label="用户担保交易总现金额"  align="center">
                  <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.sotreQudao | toThousandFilter }}</span>
+                <span type="text" size="small" class="moneyStyles">{{scope.row.dpre_sum_all_amount | toThousandFilter }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="担保交易总现金额"  align="center"  >
-              <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeMoney | toThousandFilter }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="交易笔数"  align="center"  >
+             <el-table-column  label="用户担保交易总赠送金额"  align="center" >
                <template slot-scope="scope">
-                <span type="text" size="small" class="moneyStyles">{{scope.row.giveMoney | toThousandFilter}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column  label="支付总现金额"  align="center" >
-               <template slot-scope="scope">
-                 <span type="text" size="small" class="moneyStyles">{{scope.row.rechargeNum | toThousandFilter}}</span>
+                 <span type="text" size="small" class="moneyStyles">{{scope.row.dpre_sum_all_gift | toThousandFilter}}</span>
                </template>
-            </el-table-column>              
+            </el-table-column>    
+            <el-table-column label="用户担保交易总额"  align="center"  >
+              <template slot-scope="scope">
+                <span type="text" size="small" class="moneyStyles">{{(scope.row.dpre_sum_all_amount*1+scope.row.dpre_sum_all_gift*1). toString()  | toThousandFilter }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="交易总笔数"  align="center"  >
+               <template slot-scope="scope">
+                <span type="text" size="small" class="moneyStyles">{{(scope.row.dpre_count_all*1+scope.row.pre_count_all*1). toString()  | toThousandFilter }}</span>
+              </template>
+            </el-table-column>
+             <el-table-column  label="余额支付总现金额"  align="center" >
+               <template slot-scope="scope">
+                 <span type="text" size="small" class="moneyStyles">{{scope.row.pre_sum_all_amount | toThousandFilter}}</span>
+               </template>
+            </el-table-column>                     
             <el-table-column  label="操作"   align="center">
               <template slot-scope="scope" >
                 <el-button @click="passsubmit(scope.row)" type="text" size="small" class="moneyStyles" >详情</el-button>              
@@ -76,37 +80,34 @@ export default {
       gridData: [
         {
           date: "2018-09-10 10:11:00",
-          storeName: "暴雪联盟",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
+          channel_id: "100000000030",
+          channel_name: "金桔联盟",
+          dpre_count_all: "9000",
+          dpre_sum_all_amount: "900000.22",
+          dpre_sum_all_gift: "9000.22",
+          pre_count_all: "10001",
+          pre_sum_all_amount: "8003.59"
         },
         {
           date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
+          channel_id: "100000000030",
+          channel_name: "金桔联盟",
+          dpre_count_all: "90009",
+          dpre_sum_all_amount: "900000.22",
+          dpre_sum_all_gift: "9000.22",
+          pre_count_all: "1000",
+          pre_sum_all_amount: "8003.59"
         },
 
         {
           date: "2018-09-10 10:11:00",
-          storeName: "网易集团",
-          storeNum: "100000000030",
-          channelName: "金桔联盟",
-          sonSotreName: "9000009.99",
-          sotreQudao: "900000.22",
-          rechargeMoney: "9000.22",
-          giveMoney: "1000111.09",
-          rechargeNum: "1003.59"
+          channel_id: "100000000030",
+          channel_name: "金桔联盟",
+          dpre_count_all: "9009",
+          dpre_sum_all_amount: "900000.22",
+          dpre_sum_all_gift: "9000.22",
+          pre_count_all: "10",
+          pre_sum_all_amount: "8003.59"
         }
       ],
       filename: "交易统计",
@@ -132,6 +133,8 @@ export default {
         this.pages.size;
       channelMsgList(Urls, data).then(res => {
         console.log(res);
+        this.total = res.data.data.count;
+        this.gridDatas = res.data.data.ret;
       });
       setTimeout(() => {
         this.listLoading = false;

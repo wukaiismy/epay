@@ -49,7 +49,8 @@ export default {
     return {
       date: "",
       date1: "",
-      table_msg: "",
+      table_msg: [],
+      serchUrl: "/backend/api/v1/statistics/rangeplat/",
       datemsg: "",
       lineChartData: {
         expectedData: [],
@@ -84,9 +85,17 @@ export default {
     getMsgs(data) {
       var searchUrl = "/backend/api/v1/statistics/rangeplat/";
       console.log(data);
-      searchDay(searchUrl, data).then(res => {
+      searchDay(this.serchUrl, data).then(res => {
         console.log("查询结果");
         console.log(res);
+        if (res.data.begin_time) {
+          this.table_msg = [];
+          this.table_msg.push(res.data.begin_time);
+          this.table_msg.push(res.data.end_time);
+        }
+        console.log("2222");
+        console.log(this.table_msg);
+
         this.searchMsg = res.data.all_order_someone;
         //截取每天的数据列表
         // this.lineChartDataList = res.data.all_order_someone.sum_list;
@@ -145,6 +154,7 @@ export default {
     //按日、月查询
     searchChoose(index) {
       if (index == "1") {
+        // 按月
         this.dateType = false;
         this.datemsg = this.date1;
       } else if (index == "2") {
@@ -152,6 +162,7 @@ export default {
         //   console.log(res);
         // this.searchMsg=res.data
         // });
+        // 按日
         this.dateType = true;
         this.datemsg = this.date;
       }
@@ -159,23 +170,27 @@ export default {
     change(index) {
       if (index == "1") {
         this.datemsg = this.date;
+        this.serchUrl = "/backend/api/v1/statistics/rangeplat/";
       } else if (index == "2") {
         this.datemsg = this.date1;
+        this.serchUrl = "/backend/api/v1/statistics/monthrange/";
       }
       console.log(6666);
       console.log(this.datemsg);
     },
+
     // 搜索按钮提交
     searchDate() {
       console.log(this.datemsg);
-      this.table_msg = this.datemsg;
-      var data = {};
-      var data = { begin_time: this.datemsg[0], end_time: this.datemsg[1] };
+      if (this.dateType == true) {
+        this.table_msg = this.datemsg;
+        var data = {};
+        var data = { begin_time: this.datemsg[0], end_time: this.datemsg[1] };
+      } else {
+        var data = {};
+        var data = { month: this.datemsg };
+      }
       console.log(data);
-      // searchDay(this.date).then(res => {
-      //   console.log(res);
-      // this.searchMsg=res.data
-      // });
       this.getMsgs(data);
     },
     handleSetLineChartData(type, title) {

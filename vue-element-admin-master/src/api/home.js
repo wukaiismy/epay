@@ -1,10 +1,10 @@
 import request from "@/utils/request";
 //  操作日志的api
-export function fetchList(query) {
+export function fetchList(URL) {
   return request({
-    url: "/article/list",
-    method: "get",
-    params: query
+    url: URL,
+    method: "get"
+    // params: query
   });
 }
 export function searchList(data) {

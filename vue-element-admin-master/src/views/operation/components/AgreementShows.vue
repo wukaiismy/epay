@@ -1,10 +1,24 @@
 <template>
-    <div class="bigBox">
-     <div class="agreeTitle">协议标题：<span>{{datalist.title}}</span></div>
-     <div class="agreeTitle">协议类型：<span>{{datalist.title}}</span></div>
-     <div class="agreeTitle">协议附件：<span><a class="jumps" href="#"  title="点击下载" @click="downLoad">用户认证协议.pdf</a></span></div>
-     <div class="agreeTitle"> <div class="titles">协议内容：</div><div class="showcontent"  v-html="content"></div></div>
+  <div class="bigBox">
+    <div class="agreeTitle">
+      协议标题：
+      <span>{{datalist.title}}</span>
     </div>
+    <div class="agreeTitle">
+      协议类型：
+      <span>{{datalist.agreement_type}}</span>
+    </div>
+    <div class="agreeTitle">
+      协议附件：
+      <span>
+        <a class="jumps" href="#" title="点击下载" @click="downLoad">{{datalist.title}}.pdf</a>
+      </span>
+    </div>
+    <div class="agreeTitle">
+      <div class="titles">协议内容：</div>
+      <div class="showcontent" v-html="datalist.html"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -25,19 +39,17 @@ export default {
     //获取具体协议
     getMsg() {
       console.log("获取具体协议基本信息信息");
-      AgreemenDownload(1).then(res => {
-        console.log(res);
-      });
+      console.log(this.datalist);
     },
     downLoad() {
-      alert("您点击了下载查看");
-      AgreemenDownload(1).then(res => {
+      AgreemenDownload(this.datalist.id).then(res => {
+        console.log("下载的协议====");
         console.log(res);
         let url = window.URL.createObjectURL(new Blob([res.data]));
         let link = document.createElement("a");
         link.style.display = "none";
         link.href = url;
-        link.setAttribute("download", "协议.xls");
+        link.setAttribute("download", this.datalist.title + ".pdf");
         document.body.appendChild(link);
         link.click();
       });

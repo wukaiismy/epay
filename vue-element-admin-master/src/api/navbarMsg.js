@@ -8,13 +8,9 @@ export function navbarDownLoads(query) {
   });
 }
 // 账户密码修改ajax请求
-export function navbarPswdChange(password, newpassword) {
-  const data = {
-    password,
-    newpassword
-  };
+export function navbarPswdChange(data) {
   return request({
-    url: "/article/list",
+    url: "/backend/api/v1/admin/updatepassword/",
     method: "post",
     data
   });

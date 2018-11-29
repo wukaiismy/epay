@@ -1,20 +1,28 @@
 <template>
-    <div class="agreeBox">
-         <el-table class="tableBox" :header-cell-style="{background:'#F0F0F0'}"  :data="gridData" border fit highlight-current-row style="width:100%;">                            
-            <el-table-column property="title" label="协议标题"  align="center"></el-table-column>
-            <el-table-column property="title" label="协议类型"   align="center"></el-table-column>                                                                        
-            <el-table-column  label="操作"   align="center" >
-              <template slot-scope="scope" >
-                <el-button @click="passsubmit(scope.row)" type="text" size="small" class="moneyStyles" >查看</el-button>                
-                <el-button @click="edits(scope.row)" type="text" size="small" class="stopServer" >编辑</el-button>              
-              </template>
-            </el-table-column>       
+  <div class="agreeBox">
+    <el-table
+      class="tableBox"
+      :header-cell-style="{background:'#F0F0F0'}"
+      :data="gridData"
+      border
+      fit
+      highlight-current-row
+      style="width:100%;"
+    >
+      <el-table-column property="title" label="协议标题" align="center"></el-table-column>
+      <el-table-column property="agreement_type" label="协议类型" align="center"></el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button @click="passsubmit(scope.row)" type="text" size="small" class="moneyStyles">查看</el-button>
+          <el-button @click="edits(scope.row)" type="text" size="small" class="stopServer">编辑</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-     <!-- 下面的选择按钮 -->
-       <div class="allChose">  
-            <el-button v-waves class="adds"   icon="el-icon-plus"  @click="addSumbit">新增协议</el-button>    
-       </div> 
+    <!-- 下面的选择按钮 -->
+    <div class="allChose">
+      <el-button v-waves class="adds" icon="el-icon-plus" @click="addSumbit">新增协议</el-button>
     </div>
+  </div>
 </template>
 
 <script>
@@ -27,24 +35,7 @@ export default {
   },
   data() {
     return {
-      gridData: [
-        {
-          agreeTitle: "用户认证协议",
-          agreeType: "c端用户认证协议"
-        },
-        {
-          agreeTitle: "担保账户协议",
-          agreeType: "担保账户充值协议"
-        },
-        {
-          agreeTitle: "商户运营协议",
-          agreeType: "商户运营申请协议"
-        },
-        {
-          agreeTitle: "渠道运营协议",
-          agreeType: "渠道业务申请协议"
-        }
-      ]
+      gridData: []
     };
   },
   created() {
@@ -72,7 +63,7 @@ export default {
     // 编辑按钮
     edits(data) {
       console.log(data);
-      this.$emit("editAgree", data.agreeType);
+      this.$emit("editAgree", data);
     },
     // 新增
 

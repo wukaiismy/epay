@@ -123,3 +123,10 @@ export function imgURL(Url) {
     method: "get"
   });
 }
+// 获取操作记录
+export function showReview(Url) {
+  return request({
+    url: Url,
+    method: "get"
+  });
+}

@@ -149,6 +149,7 @@ export default {
         this.pages.page +
         "&size=" +
         this.pages.size;
+      this.isshow = false;
       channelMsg(channelURL, data).then(res => {
         this.total = res.data.count;
         this.gridDatas = res.data.results;

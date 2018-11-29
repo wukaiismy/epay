@@ -1,81 +1,176 @@
 <template>
-    <div id="dalos">
-         <Search  @channelSearch='channelSearch' />
-         <!-- 我是表格组件 -->
-         <div class="bigBoxs">
-            <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridData"  @selection-change="handleSelectionChange" border fit highlight-current-row style="width:100%;">      
-                <el-table-column  align="center" type="selection" width="55"></el-table-column>
-                <el-table-column property="date" label="交易日期"  align="center"  width="95%"  ></el-table-column>
-                <el-table-column property="tardNum" label="交易编号"  align="center"   ></el-table-column>
-                <el-table-column property="userName" label="用户姓名"  width="80%"  align="center"></el-table-column>
-                <el-table-column property="sotreName" label="商户名称"     align="center"></el-table-column>
-                <el-table-column property="sotreType" label="商户类型"  align="center"></el-table-column>
-                <el-table-column property="lsStoreName" label="连锁商户名称"  align="center"></el-table-column>
-                <el-table-column property="qdName" label="渠道商名称"  align="center"></el-table-column>
-                <el-table-column  label="交易金额" width="85%"  align="center">
-                  <template slot-scope="scope">
-                    <span type="text" size="small" class="moneyStyles">￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
-                  </template>
-                </el-table-column>
-                  <el-table-column property="payFcu" label="支付方式"  align="center"></el-table-column>
-                <el-table-column label="状态"  align="center"  width="95%">
-                  <template slot-scope="scope">
-                    <span type="text" size="small" class="shangjia"  v-if="scope.row.statuss==1" >已处理</span>
-                    <span type="text" size="small" class="stopServer" v-if="scope.row.statuss==2">未处理</span>
-                  </template>
-                </el-table-column>               
-                <el-table-column  label="操作" align="center" width="90%">
-                  <template slot-scope="scope" >
-                    <span type="text" size="small" class="moneyStyles"  v-if="scope.row.statuss==1"  @click="handleClick(scope.row)" >详情</span>
-                    <span type="text" size="small" class="chuli" v-if="scope.row.statuss==2"  @click="abOrder(scope.row)">立即处理</span>                   
-                  </template>
-                </el-table-column>   
-            </el-table>
-            <!-- 下面的选择按钮 -->
-            <div class="allChose">  
-              <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button>
-            </div> 
+  <div id="dalos">
+    <Search @channelSearch="channelSearch"/>
+    <!-- 我是表格组件 -->
+    <div class="bigBoxs">
+      <el-table
+        class="tableBox"
+        v-loading="listLoading"
+        :key="tableKey"
+        :data="gridData"
+        @selection-change="handleSelectionChange"
+        border
+        fit
+        highlight-current-row
+        style="width:100%;"
+      >
+        <el-table-column align="center" type="selection" width="55"></el-table-column>
+        <el-table-column property="date" label="交易日期" align="center" width="95%"></el-table-column>
+        <el-table-column property="tardNum" label="交易编号" align="center"></el-table-column>
+        <el-table-column property="userName" label="用户姓名" width="80%" align="center"></el-table-column>
+        <el-table-column property="sotreName" label="商户名称" align="center"></el-table-column>
+        <el-table-column property="sotreType" label="商户类型" align="center"></el-table-column>
+        <el-table-column property="lsStoreName" label="连锁商户名称" align="center"></el-table-column>
+        <el-table-column property="qdName" label="渠道商名称" align="center"></el-table-column>
+        <el-table-column label="交易金额" width="85%" align="center">
+          <template slot-scope="scope">
+            <span
+              type="text"
+              size="small"
+              class="moneyStyles"
+            >￥{{scope.row.rechargeMoney| toThousandFilter}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column property="payFcu" label="支付方式" align="center"></el-table-column>
+        <el-table-column label="状态" align="center" width="95%">
+          <template slot-scope="scope">
+            <span type="text" size="small" class="shangjia" v-if="scope.row.statuss==1">已处理</span>
+            <span type="text" size="small" class="stopServer" v-if="scope.row.statuss==2">未处理</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="90%">
+          <template slot-scope="scope">
+            <span
+              type="text"
+              size="small"
+              class="moneyStyles"
+              v-if="scope.row.statuss==1"
+              @click="handleClick(scope.row)"
+            >详情</span>
+            <span
+              type="text"
+              size="small"
+              class="chuli"
+              v-if="scope.row.statuss==2"
+              @click="abOrder(scope.row)"
+            >立即处理</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 下面的选择按钮 -->
+      <div class="allChose">
+        <el-button
+          v-waves
+          class="searchs"
+          type="primary"
+          icon="el-icon-download"
+          @click="daochuJump"
+        >导出</el-button>
+      </div>
+    </div>
+    <!-- 分页功能 -->
+    <div class="pagination-container">
+      <el-pagination
+        v-show="total>0"
+        :current-page="pages.currentPage"
+        :page-sizes="[10,20,30, 50]"
+        :page-size="10"
+        :total="total"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+    <!-- 主体内容结束 -->
+    <!-- 下面是详情模态框 -->
+    <el-dialog :visible.sync="dialogTableVisible" custom-class="sssss" top="10vh" width="500px">
+      <div class="diaTilte">
+        <div class="titleMotai">异常交易处理详情</div>
+        <div class="item">
+          <div class="abs">异常原因：</div>
+          <span>PDS子账号交易失败</span>
         </div>
-        <!-- 分页功能 -->
-        <div class="pagination-container">
-          <el-pagination v-show="total>0" :current-page="pages.currentPage" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+        <div class="item">
+          <div class="abs">处理结果：</div>
+          <span class="ppss">已处理</span>
         </div>
-        <!-- 主体内容结束 -->
-
-        <!-- 下面是详情模态框 -->
-        <el-dialog :visible.sync="dialogTableVisible" custom-class='sssss' top="10vh"   width="500px" >
-            <div class="diaTilte"><div class="titleMotai">异常交易处理详情</div>
-                <div class="item"><div class="abs">异常原因：</div><span>PDS子账号交易失败</span></div>
-                <div class="item"><div class="abs">处理结果：</div><span class="ppss">已处理</span></div>
-                <div class="item"><div class="abs">处理详情：</div><span class=" shuoms ">设置后，到期自动解押；我的话说完，否则需要手动解押，谁赞成谁反对？</span></div>
-                <div class="item"><div class="abs">处理人：</div><span>张娜拉</span></div>
-                <div class="item"><div class="abs">处理账号：</div><span>1000000000020.mch</span></div>             
-            </div>           
-        </el-dialog>
-        <!-- 详情展示页结束 -->
-
-         <!-- 异常处理模态框开始 -->
-        <el-dialog :visible.sync="dialogTableVisible1" custom-class='sssss' top="10vh"   width="500px" >
-            <div class="diaTilte"><div class="titleMotai">异常交易处理详情</div>
-               <div class="item"><div class="abs">异常原因：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.abReason" placeholder="请输入异常原因"></el-input></span></div>
-               <div class="item"><div class="abs">处理结果：</div><span >
-                 <el-radio v-model="msg.status" label="1">已处理</el-radio>
-                 <el-radio v-model="msg.status" label="2">未处理</el-radio>
-                </span></div>
-              <div class="item"><div class="abs">处理详情：</div><span class=" shuoms "><el-input type="textarea" autosize placeholder="请输入处理详情" v-model="msg.detail"></el-input></span></div>
-              <div class="item"><div class="abs">处理人：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.abUser" placeholder=""></el-input></span></div>
-              <div class="item"><div class="abs">处理账号：</div><span><el-input  size="small"  style="width:46.17%; height:40px;" v-model="msg.abUserNum" placeholder="请输入处理账号"></el-input></span></div> 
-              <!-- 下面是按钮 -->
-              <div class="btnBox">
-                  <el-button class="btnsubs"   @click="submitAdd">确定</el-button>
-                </div>             
-            </div>         
-      </el-dialog>
+        <div class="item">
+          <div class="abs">处理详情：</div>
+          <span class="shuoms">设置后，到期自动解押；我的话说完，否则需要手动解押，谁赞成谁反对？</span>
+        </div>
+        <div class="item">
+          <div class="abs">处理人：</div>
+          <span>张娜拉</span>
+        </div>
+        <div class="item">
+          <div class="abs">处理账号：</div>
+          <span>1000000000020.mch</span>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 详情展示页结束 -->
+    <!-- 异常处理模态框开始 -->
+    <el-dialog :visible.sync="dialogTableVisible1" custom-class="sssss" top="10vh" width="500px">
+      <div class="diaTilte">
+        <div class="titleMotai">异常交易处理详情</div>
+        <div class="item">
+          <div class="abs">异常原因：</div>
+          <span>
+            <el-input
+              size="small"
+              style="width:46.17%; height:40px;"
+              v-model="msg.abReason"
+              placeholder="请输入异常原因"
+            ></el-input>
+          </span>
+        </div>
+        <div class="item">
+          <div class="abs">处理结果：</div>
+          <span>
+            <el-radio v-model="msg.status" label="1">已处理</el-radio>
+            <el-radio v-model="msg.status" label="2">未处理</el-radio>
+          </span>
+        </div>
+        <div class="item">
+          <div class="abs">处理详情：</div>
+          <span class="shuoms">
+            <el-input type="textarea" autosize placeholder="请输入处理详情" v-model="msg.detail"></el-input>
+          </span>
+        </div>
+        <div class="item">
+          <div class="abs">处理人：</div>
+          <span>
+            <el-input
+              size="small"
+              style="width:46.17%; height:40px;"
+              v-model="msg.abUser"
+              placeholder
+            ></el-input>
+          </span>
+        </div>
+        <div class="item">
+          <div class="abs">处理账号：</div>
+          <span>
+            <el-input
+              size="small"
+              style="width:46.17%; height:40px;"
+              v-model="msg.abUserNum"
+              placeholder="请输入处理账号"
+            ></el-input>
+          </span>
+        </div>
+        <!-- 下面是按钮 -->
+        <div class="btnBox">
+          <el-button class="btnsubs" @click="submitAdd">确定</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import Search from "./Search.vue";
+import Search from "./AbSearch.vue";
 import waves from "@/directive/waves"; // 水波纹指令
 import {
   merchantMsg,

@@ -1,89 +1,169 @@
 <template>
-    <div id="dalos">
-        <Search   @channelSearch='channelSearch'  />
-      <!-- 我是表格组件 -->
-        <div class="bigBoxs">
-           <el-table class="tableBox" v-loading="listLoading" :key="tableKey" :data="gridDatas" border fit @selection-change="handleSelectionChange" highlight-current-row style="width:100%;">                
-              <el-table-column  align="center" type="selection" width="55"></el-table-column>
-              <el-table-column property="create_at" label="交易日期"  align="center"   ></el-table-column>
-              <el-table-column property="id" label="交易编号"  align="center" ></el-table-column>
-              <el-table-column property="user_name" label="用户姓名"  width="80%" align="center"></el-table-column>
-              <el-table-column property="merchant__name" label="商户名称"  align="center"></el-table-column>
-              <el-table-column property="merchant_type" label="商户类型"  align="center"></el-table-column>
-              <!-- <el-table-column property="lsStoreName" label="连锁商户名称"  align="center"></el-table-column> -->
-              <el-table-column property="channel_name" label="渠道商名称" align="center"></el-table-column>
-              <el-table-column  label="交易金额" width="85%" align="center">
-                <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">￥{{scope.row.amount| toThousandFilter}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column  label="支付方式"  align="center">
-               <template slot-scope="scope">
-                  <span type="text" size="small" class="moneyStyles">担保账户+信条支付</span>
-                </template> 
-                </el-table-column>
-              <el-table-column label="状态"  align="center"  width="95%">
-                <template slot-scope="scope">
-                   <span type="text" size="small" class="ppss"  v-if="scope.row.status==1" >支付成功</span>
-                   <span type="text" size="small" class="stopServer" v-if="scope.row.status==2">待支付</span>
-                </template>
-              </el-table-column>              
-              <el-table-column  label="操作"   align="center" width="90%">
-                <template slot-scope="scope" >
-                   <el-button @click="showDetail(scope.row)" type="text" size="small" class="moneyStyles" >详情</el-button>                 
-                </template>
-              </el-table-column>        
-           </el-table>
-          <!-- 下面的选择按钮 -->
-          <div class="allChose">  
-            <el-button v-waves class="searchs" type="primary"  icon="el-icon-download"  @click="daochuJump">导出</el-button>
-         </div> 
+  <div id="dalos">
+    <Search @channelSearch="channelSearch"/>
+    <!-- 我是表格组件 -->
+    <div class="bigBoxs">
+      <el-table
+        class="tableBox"
+        v-loading="listLoading"
+        :key="tableKey"
+        :data="gridDatas"
+        border
+        fit
+        @selection-change="handleSelectionChange"
+        highlight-current-row
+        style="width:100%;"
+      >
+        <el-table-column align="center" type="selection" width="55"></el-table-column>
+        <el-table-column property="create_at" label="交易日期" align="center"></el-table-column>
+        <el-table-column property="id" label="交易编号" align="center"></el-table-column>
+        <el-table-column property="user_name" label="用户姓名" width="80%" align="center"></el-table-column>
+        <el-table-column property="merchant__name" label="商户名称" align="center"></el-table-column>
+        <el-table-column property="merchant_type" label="商户类型" align="center"></el-table-column>
+        <!-- <el-table-column property="lsStoreName" label="连锁商户名称"  align="center"></el-table-column> -->
+        <el-table-column property="channel_name" label="渠道商名称" align="center"></el-table-column>
+        <el-table-column label="交易金额" width="85%" align="center">
+          <template slot-scope="scope">
+            <span
+              type="text"
+              size="small"
+              class="moneyStyles"
+            >￥{{scope.row.amount| toThousandFilter}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="支付方式" align="center">
+          <template slot-scope="scope">
+            <span type="text" size="small" class="moneyStyles">担保账户+信条支付</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center" width="95%">
+          <template slot-scope="scope">
+            <span type="text" size="small" class="ppss" v-if="scope.row.status==1">支付成功</span>
+            <span type="text" size="small" class="stopServer" v-if="scope.row.status==2">待支付</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="90%">
+          <template slot-scope="scope">
+            <el-button
+              @click="showDetail(scope.row)"
+              type="text"
+              size="small"
+              class="moneyStyles"
+            >详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 下面的选择按钮 -->
+      <div class="allChose">
+        <el-button
+          v-waves
+          class="searchs"
+          type="primary"
+          icon="el-icon-download"
+          @click="daochuJump"
+        >导出</el-button>
+      </div>
     </div>
-     <!-- 分页功能 -->
+    <!-- 分页功能 -->
     <div class="pagination-container">
-      <el-pagination v-show="total>0" :current-page="pages.page" :page-sizes="[10,20,30, 50]" :page-size="10" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination
+        v-show="total>0"
+        :current-page="pages.page"
+        :page-sizes="[10,20,30, 50]"
+        :page-size="10"
+        :total="total"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <!-- 主体内容结束 -->
+    <!-- 下面是详情模态框 -->
+    <el-dialog :visible.sync="dialogTableVisible" custom-class="sssss" top="10vh" width="500px">
+      <div class="diaTilte">
+        <div class="titleMotai">交易信息</div>
+        <div class="item">
+          <div class="abs">交易日期：</div>
+          <span>{{detailMsg.create_at}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">交易编号：</div>
+          <span>{{detailMsg.id}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">交易金额：</div>
+          <span>￥{{detailMsg.amount| toThousandFilter}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">支付方式：</div>
+          <span>担保账户支付</span>
+        </div>
+        <!-- <div class="item"><div class="abs">担保账户支付：</div><span>￥2000.00</span></div> -->
+        <div class="item">
+          <div class="abs">担保账号：</div>
+          <span>{{detailMsg.userprepaidcard_id}}</span>
+        </div>
+        <!-- <div class="item"><div class="abs">信条支付：</div><span>￥1000.00</span></div> -->
+        <!-- <div class="item"><div class="abs">信条账户：</div><span>90215487965221</span></div> -->
+        <div class="item">
+          <div class="abs">支付状态：</div>
+          <template>
+            <span type="text" size="small" class="ppss" v-if="detailMsg.status=='1'">支付成功</span>
+            <span type="text" size="small" class="stopServer" v-if="detailMsg.status=='2'">支付失败</span>
+          </template>
+        </div>
+      </div>
 
-     <!-- 下面是详情模态框 -->
-      <el-dialog :visible.sync="dialogTableVisible" custom-class='sssss' top="10vh"   width="500px" >
-          <div class="diaTilte"><div class="titleMotai">交易信息</div>
-              <div class="item"><div class="abs">交易日期：</div><span>{{detailMsg.create_at}}</span></div>
-              <div class="item"><div class="abs">交易编号：</div><span>{{detailMsg.id}}</span></div>
-              <div class="item"><div class="abs">交易金额：</div><span>￥{{detailMsg.amount| toThousandFilter}}</span></div>
-              <div class="item"><div class="abs">支付方式：</div><span>担保账户支付</span></div>
-              <!-- <div class="item"><div class="abs">担保账户支付：</div><span>￥2000.00</span></div> -->
-              <div class="item"><div class="abs">担保账号：</div><span>{{detailMsg.userprepaidcard_id}}</span></div>
-              <!-- <div class="item"><div class="abs">信条支付：</div><span>￥1000.00</span></div> -->
-              <!-- <div class="item"><div class="abs">信条账户：</div><span>90215487965221</span></div> -->
-              <div class="item"><div class="abs">支付状态：</div>
-               <template>
-                   <span type="text" size="small" class="ppss"  v-if="detailMsg.status=='1'" >支付成功</span>
-                   <span type="text" size="small" class="stopServer" v-if="detailMsg.status=='2'">支付失败</span>
-               </template>
-             
-              </div>
-          </div>
-          
-          <div class="diaTilte title2"><div class="titleMotai">用户信息</div><div class="item">
-              <div class="abs">用户姓名：</div><span class="shangjia">{{detailMsg.username}}</span></div>
-              <div class="item"><div class="abs">用户手机号：</div><span>{{detailMsg.usermobile}}</span></div> 
-          </div>
+      <div class="diaTilte title2">
+        <div class="titleMotai">用户信息</div>
+        <div class="item">
+          <div class="abs">用户姓名：</div>
+          <span class="shangjia">{{detailMsg.username}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">用户手机号：</div>
+          <span>{{detailMsg.usermobile}}</span>
+        </div>
+      </div>
 
-          <div class="diaTilte title2"><div class="titleMotai">商家信息</div>
-              <div class="item"><div class="abs">商户类型：</div><span class="shangjia">{{detailMsg.merchent_mechant_type}}</span></div>
-              <div class="item"><div class="abs">商户名称：</div><span>{{detailMsg.merchent_name}}</span></div>
-              <div class="item"><div class="abs">商户编号：</div><span>{{detailMsg.merchent_id}}</span></div>         
-          </div>
-            
-          <div class="diaTilte title2"><div class="titleMotai">结算信息</div>
-              <div class="item"><div class="abs">现金支付金额：</div><span class="">￥{{detailMsg.amount| toThousandFilter}}</span></div>
-              <div class="item"><div class="abs">现金赠送金额：</div><span>￥{{detailMsg.gift| toThousandFilter}}</span></div>
-              <div class="item"><div class="abs">通道费率：</div><span>{{detailMsg.rate}} ‰</span></div>
-              <div class="item"><div class="abs">结算金额：</div><span>￥{{detailMsg.all_sum| toThousandFilter}}</span></div>
-          </div>          
-      </el-dialog>
-    </div>
+      <div class="diaTilte title2">
+        <div class="titleMotai">商家信息</div>
+        <div class="item">
+          <div class="abs">商户类型：</div>
+          <span class="shangjia">{{detailMsg.merchent_mechant_type}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">商户名称：</div>
+          <span>{{detailMsg.merchent_name}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">商户编号：</div>
+          <span>{{detailMsg.merchent_id}}</span>
+        </div>
+      </div>
+
+      <div class="diaTilte title2">
+        <div class="titleMotai">结算信息</div>
+        <div class="item">
+          <div class="abs">现金支付金额：</div>
+          <span class>￥{{detailMsg.amount| toThousandFilter}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">现金赠送金额：</div>
+          <span>￥{{detailMsg.gift| toThousandFilter}}</span>
+        </div>
+        <div class="item">
+          <div class="abs">通道费率：</div>
+          <span>{{detailMsg.rate}} ‰</span>
+        </div>
+        <div class="item">
+          <div class="abs">结算金额：</div>
+          <span>￥{{detailMsg.all_sum| toThousandFilter}}</span>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -140,20 +220,30 @@ export default {
   },
   created() {
     if (this.$route.query.date) {
-      var datas = {
-        begin_time: this.$route.query.date,
-        end_time: "2018-11-09"
-      };
-      console.log("====================================");
-      console.log(datas);
-      console.log("====================================");
-      this.getList(datas);
+       
+      this.getList( this.nextDate(this.$route.query.date));
     } else {
       this.getList();
     }
   },
   mounted() {},
   methods: {
+    nextDate(val){
+ // 根据时间获取后一天的时间
+      var end_times= val;
+       var now = new Date(end_times); //当前日期
+       now =+now + 1000*60*60*24;
+       now = new Date(now);
+      var nowDay = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate(); 
+      var datas = {
+        begin_time: val,
+        end_time: nowDay
+      };
+      console.log("====================================");
+      console.log(datas);
+      console.log("====================================");
+      return datas
+   },
     // 搜索按钮传值回来
     channelSearch(data) {
       // console.log(data);

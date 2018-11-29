@@ -8,18 +8,27 @@ const service = axios.create({
   // baseURL: process.env.BASE_API, // api 的 base_url
   timeout: 5000 //  请求超时时间
 });
-axios.defaults.headers.post["Content-Type"] =
-  "application/x-www-form-urlencoded";
+service.defaults.headers.post["Content-Type"] =
+  "application/json;charset=UTF-8";
+service.defaults.headers.get["Content-Type"] = "application/json;charset=UTF-8";
 // //整理数据
 service.defaults.transformRequest = function(data) {
-  // data = Qs.stringify(data);
+  var newDate = data;
   data = JSON.stringify(data);
+  // console.log(data);
+  if (data == "{}") {
+    // console.log(1111);
+    data = newDate;
+  } else {
+    // console.log("=====做过数据处理=====");
+  }
   return data;
+  // data = Qs.stringify(data);
 };
 // request拦截器
 service.interceptors.request.use(
   config => {
-    config.headers["Content-Type"] = "application/json;charset=UTF-8";
+    // config.headers["Content-Type"] = "application/json;charset=UTF-8";
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改

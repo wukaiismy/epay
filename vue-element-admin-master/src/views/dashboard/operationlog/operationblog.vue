@@ -6,14 +6,15 @@
       <span class="userSearch"> 选择时间：</span>
       <el-date-picker
       v-model="value1"
+       value-format="yyyy-MM-dd"
       type="daterange"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
       :default-time="['00:00:00', '23:59:59']">
     </el-date-picker>
       <el-button v-waves class="filter-item searchHandle" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>   
-       <el-button v-waves  class="filter-item searchHandle" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
-       <el-button v-waves  class="filter-item searchHandle" type="danger" icon="el-icon-warning" @click="deleted">删除记录</el-button>
+       <!-- <el-button v-waves  class="filter-item searchHandle" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button> -->
+       <!-- <el-button v-waves  class="filter-item searchHandle" type="danger" icon="el-icon-warning" @click="deleted">删除记录</el-button> -->
        <el-button v-waves  class="filter-item searchHandle backspaces" type="warning" icon="el-icon-close" @click="exitss">退出</el-button>
     </div> 
 
@@ -38,36 +39,36 @@
       </el-table-column>
       <el-table-column label="登录时间" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.date  }}</span>
+          <span>{{ scope.row.login_time  }}</span>
         </template>
       </el-table-column>
       <el-table-column label="登录账号"   align="center">
         <template slot-scope="scope">
-          <span >{{ scope.row.title }}</span>
+          <span >{{ scope.row.admin_user_id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="登录地点"  align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.login_adress }}</span>
         </template>
       </el-table-column>
       
       <el-table-column label="IP"  align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.ip }}</span>
+          <span>{{ scope.row.login_ip }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作情况" align="center" >
         <template slot-scope="scope">
-          <span v-if="scope.row.pageviews" >{{ scope.row.pageviews }}</span>
-          <span v-else>0</span>
+          <span v-if="scope.row.situation" >{{ scope.row.situation[0] }}</span>
+          <span v-else>未知</span>
         </template>
       </el-table-column>    
          
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination  :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination v-show="total>0"  :current-page="listQuery.page" :page-sizes="[10,20,30, 50]"  :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
   </div>
 </template>
@@ -85,81 +86,16 @@ export default {
 
   data() {
     return {
-      gridData: [
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        },
-
-        {
-          id: "111",
-          date: "2018-09-10 10:11：00",
-          title: "100000451920.mch",
-          author: "四川省成都市",
-          ip: "192.168.2.112",
-          pageviews: "回家打卡"
-        }
-      ],
+      gridData: [],
       multipleSelection: [],
       value1: "",
       tableKey: 0,
       list: null,
-      total: 100,
+      total: 1,
+
       listLoading: true,
       listQuery: {
-        page: 5,
+        page: 1,
         limit: 10,
         importance: undefined,
         title: undefined,
@@ -178,16 +114,25 @@ export default {
       console.log(val);
       console.log(111);
     },
-    //   获取初始化数据，每当搜索或者点击分页时都会执行一次
+    //   获取初始化数据，查看操作日志
     getList() {
       this.listLoading = true;
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items;
-      //   this.total = response.data.total;
-
-      //   // Just to simulate the time of the request
-
-      // });
+      var UrlLog =
+        "/backend/api/v1/admin/login-log/?page=" +
+        this.listQuery.page +
+        "&size=" +
+        this.listQuery.limit;
+      fetchList(UrlLog).then(response => {
+        console.log(response);
+        this.gridData = response.data;
+        for (var i = 0; i < this.gridData.length; i++) {
+          this.gridData[i].login_time = this.gridData[i].login_time
+            .split("T")
+            .join(" ")
+            .substr(0, 19);
+        }
+        this.total =this.gridData.length;
+      });
       setTimeout(() => {
         this.listLoading = false;
       }, 1.5 * 1000);

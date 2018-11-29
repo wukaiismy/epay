@@ -154,6 +154,7 @@ export default {
         this.pages.page +
         "&size=" +
         this.pages.size;
+      this.isshow = false;
       channelMsg(channelURL, data).then(res => {
         console.log(res);
         this.total = res.data.count;
