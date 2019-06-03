@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"sit"',
-  BASE_API: '"http://47.107.45.63:80"'
+  BASE_API: '"http://127.0.0.1:80"'
 };
